@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SLD Minecraft 伺服器 - 冒險，從這裡開始！</title>
+    <title>Lazy Sheep Minecraft 伺服器 - 冒險，從這裡開始！</title>
     <!-- 引入 Google Fonts：中文採用 Noto Sans，標題採用復古像素風 Press Start 2P -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- 引入 FontAwesome 圖示 -->
@@ -44,9 +44,26 @@
             margin-bottom: 40px;
         }
 
+        /* 伺服器圖示外框 - 呈現 3D 麥塊物品欄質感 */
+        .server-icon {
+            width: 96px;
+            height: 96px;
+            object-fit: cover;
+            image-rendering: pixelated;
+            background-color: #2e2e2e;
+            border: 4px solid #000;
+            box-shadow: 
+                inset -4px -4px 0px #1a1a1a, 
+                inset 4px 4px 0px #5c5c5c,
+                0px 6px 12px rgba(0,0,0,0.5);
+            margin-bottom: 15px;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
         .server-logo {
             font-family: 'Press Start 2P', cursive;
-            font-size: 2.2rem;
+            font-size: 2rem;
             color: #ffaa00;
             text-shadow: 4px 4px 0px #3f2a00;
             margin-bottom: 10px;
@@ -397,9 +414,11 @@
 
         <!-- 網頁標頭 -->
         <header class="header">
-            <h1 class="server-logo">SLD SERVER</h1>
-            <p style="color: #aaaaaa; font-weight: bold;">開啟你的方塊新紀元</p>
-            <span class="server-version">Java 1.20+ (最新版支援)</span>
+            <!-- 伺服器圖示 icon.png（含備用載入錯誤機制，防斷圖） -->
+            <img class="server-icon" src="icon.png" alt="Lazy Sheep Server Icon" onerror="this.onerror=null; this.src='https://placehold.co/128x128/2e2e2e/ffff55?text=🐏';">
+            <h1 class="server-logo">Lazy Sheep</h1>
+            <p style="color: #aaaaaa; font-weight: bold;">Lazy Sheep 創的專屬伺服器</p>
+            <span class="server-version">Java 26.2</span>
         </header>
 
         <!-- Aternos 伺服器狀態提醒 -->
@@ -412,8 +431,8 @@
                 因此，若你發現伺服器目前處於離線狀態，請在開始遊玩前<strong>通知管理員幫你開服</strong>！
             </p>
             <div class="btn-group">
-                <!-- 寄信通知管理員：自動帶入主旨與預設罐頭文字 -->
-                <a class="mc-btn mc-btn-email" href="mailto:yangyang1005m@gmail.com?subject=【Minecraft開服申請】請幫忙開啟%20SLD%20伺服器！&body=你好！我想進去%20SLD%20伺服器（java.mcsvr.sld.tw）遊玩，目前伺服器似乎是關閉狀態，能麻煩管理員幫忙開啟 Aternos 伺服器嗎？感謝！" target="_blank">
+                <!-- 寄信通知管理員：自動帶入 Lazy Sheep 伺服器主旨與預設罐頭文字 -->
+                <a class="mc-btn mc-btn-email" href="mailto:yangyang1005m@gmail.com?subject=【Lazy Sheep開服申請】請幫忙開啟%20Lazy%20Sheep%20伺服器！&body=你好！我想進去%20Lazy%20Sheep%20伺服器（java.mcsvr.sld.tw）遊玩，目前伺服器似乎是關閉狀態，能麻煩管理員幫忙開啟 Aternos 伺服器嗎？感謝！" target="_blank">
                     <i class="fa-solid fa-envelope"></i> 寄信通知管理員開服
                 </a>
                 <!-- 備用：直接複製管理員的 Email 信箱 -->
@@ -494,7 +513,7 @@
 
         <!-- 頁尾 -->
         <footer class="footer">
-            <p>&copy; 2026 SLD Minecraft Server. 本伺服器與 Mojang Studios / Microsoft 無關。</p>
+            <p>&copy; 2026 Lazy Sheep Minecraft Server. 本伺服器與 Mojang Studios / Microsoft 無關。</p>
         </footer>
 
     </div>
