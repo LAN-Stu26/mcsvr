@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLD Minecraft 伺服器 - 冒險，從這裡開始！</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 基礎樣式設定 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #1a1a1a;
+            /* 模擬 Minecraft 暗色基岩/石頭背景效果 */
+            background-image: 
+                radial-gradient(circle, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.9) 100%),
+                linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)),
+                url('https://images.unsplash.com/photo-1607988795691-3d0147b43231?q=80&w=1920&auto=format&fit=crop'); /* 高質感暗色背景圖 */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f0f0f0;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* --- 伺服器標題區 --- */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .server-logo {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2.2rem;
+            color: #ffaa00;
+            text-shadow: 4px 4px 0px #3f2a00;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            word-wrap: break-word;
+        }
+
+        .server-version {
+            display: inline-block;
+            background-color: #55ff55;
+            color: #000;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            box-shadow: 2px 2px 0px #00aa00;
+        }
+
+        /* --- 核心資訊卡片（Minecraft 經典容器風） --- */
+        .card {
+            background-color: #2e2e2e;
+            border: 4px solid #000;
+            box-shadow: 
+                inset -4px -4px 0px #1a1a1a, 
+                inset 4px 4px 0px #5c5c5c,
+                0px 8px 16px rgba(0,0,0,0.6);
+            padding: 30px;
+            margin-bottom: 30px;
+            image-rendering: pixelated;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #ffff55;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #5c5c5c;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title::before {
+            content: "■";
+            color: #ff5555;
+        }
+
+        /* --- IP 複製區塊 --- */
+        .ip-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background-color: #151515;
+            border: 3px solid #000;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .ip-label {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9rem;
+            color: #55ffff;
+        }
+
+        .ip-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #ffffff;
+            word-break: break-all;
+        }
+
+        /* --- Minecraft 經典 3D 灰/綠按鈕 --- */
+        .mc-btn {
+            display: inline-block;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #ffffff;
+            background-color: #4a4a4a;
+            border: 3px solid #000;
+            box-shadow: 
+                inset -3px -3px 0px #2e2e2e, 
+                inset 3px 3px 0px #8b8b8b;
+            padding: 12px 28px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.1s ease;
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .mc-btn:hover {
+            background-color: #5b8e22; /* 經典草地綠 */
+            box-shadow: 
+                inset -3px -3px 0px #3f6317, 
+                inset 3px 3px 0px #8be134;
+        }
+
+        .mc-btn:active {
+            box-shadow: 
+                inset 3px 3px 0px #2e2e2e, 
+                inset -3px -3px 0px #8b8b8b;
+            transform: translateY(2px);
+        }
+
+        /* 複製成功提示 */
+        .toast {
+            display: none;
+            background-color: #55ff55;
+            color: #000000;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: 2px solid #000;
+            margin-top: 15px;
+            box-shadow: 3px 3px 0px #00aa00;
+            text-align: center;
+        }
+
+        /* --- 特色介紹清單 --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            background-color: #252525;
+            border: 2px solid #5c5c5c;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .feature-title {
+            color: #ff55ff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- 步驟說明 --- */
+        .steps {
+            list-style: none;
+        }
+
+        .steps li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .steps li::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 26px;
+            height: 26px;
+            background-color: #ffaa00;
+            color: #000;
+            font-weight: bold;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #000;
+            box-shadow: 1px 1px 0px #3f2a00;
+        }
+
+        /* 頁尾 */
+        .footer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #777777;
+            margin-top: 50px;
+            border-top: 1px solid #2e2e2e;
+            padding-top: 20px;
+        }
+
+        /* 響應式微調 */
+        @media (max-width: 600px) {
+            .server-logo {
+                font-size: 1.6rem;
+            }
+            .ip-text {
+                font-size: 1.3rem;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="header">
+            <h1 class="server-logo">SLD SERVER</h1>
+            <p style="color: #aaaaaa; font-weight: bold;">開啟你的方塊新紀元</p>
+            <span class="server-version">Java 1.20+ (最新版支援)</span>
+        </header>
+
+        <section class="card">
+            <h2 class="card-title">立即加入伺服器</h2>
+            <p>我們的伺服器專為 Java 版玩家打造，歡迎複製下方網域並加入我們！</p>
+            
+            <div class="ip-container">
+                <span class="ip-label">SERVER IP</span>
+                <span class="ip-text" id="server-ip">java.mcsvr.sld.tw</span>
+                <button class="mc-btn" onclick="copyIp()">複製網域位址</button>
+                <div class="toast" id="toast">✔ IP 複製成功！快去遊戲裡貼上吧！</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="card-title">伺服器特色</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-title"><span>✦</span> 經典生存</div>
+                    <p style="color: #ccc; font-size: 0.95rem;">最純粹的麥塊合作生存，與好友們一同開拓領地、建造夢想家園。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-title"><span>✦</span> 穩定順暢</div>
+                    <p style="color: #ccc; font-size: 0.95rem;">採用高效能專屬主機，24小時不打烊，保障你最流暢的遊戲體驗。</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-title"><span>✦</span> 友善社群</div>
+                    <p style="color: #ccc; font-size: 0.95rem;">設有專業管理團隊，杜絕外掛與惡意破壞，提供最溫馨的冒險環境。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="card-title">如何開始遊戲？</h2>
+            <ul class="steps">
+                <li data-step="1">
+                    <strong>開啟 Minecraft：</strong><br>
+                    啟動您的 Minecraft Java 版客戶端。
+                </li>
+                <li data-step="2">
+                    <strong>進入多人遊戲：</strong><br>
+                    在主選單中點選 <strong>「多人遊戲 (Multiplayer)」</strong>。
+                </li>
+                <li data-step="3">
+                    <strong>新增伺服器：</strong><br>
+                    點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器位址輸入欄貼上本站複製的網域。
+                </li>
+                <li data-step="4">
+                    <strong>連線冒險：</strong><br>
+                    點擊 <strong>「完成 (Done)」</strong>，雙擊伺服器即可直接進入世界！
+                </li>
+            </ul>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2026 SLD Minecraft Server. 本伺服器與 Mojang Studios / Microsoft 無關。</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function copyIp() {
+            const ipText = document.getElementById('server-ip').innerText;
+            
+            // 使用新版 Clipboard API
+            navigator.clipboard.writeText(ipText).then(() => {
+                showToast();
+            }).catch(err => {
+                // 備用複製方案（防瀏覽器不支援）
+                const tempInput = document.createElement('input');
+                tempInput.value = ipText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            
+            // 3秒後自動隱藏提示
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
