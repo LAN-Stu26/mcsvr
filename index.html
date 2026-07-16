@@ -84,6 +84,57 @@
             box-shadow: 2px 2px 0px #00aa00;
         }
 
+        /* 新增：伺服器即時狀態標籤與動畫效果 */
+        .server-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #555555;
+            color: #fff;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            margin-left: 8px;
+            box-shadow: 2px 2px 0px #222222;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #aaa;
+            display: inline-block;
+        }
+
+        /* 在線狀態 */
+        .status-online {
+            background-color: #55ff55;
+            box-shadow: 2px 2px 0px #00aa00;
+            color: #000;
+        }
+        .status-online .status-dot {
+            background-color: #00ff00;
+            animation: pulse-green 1.5s infinite;
+        }
+
+        /* 離線狀態 */
+        .status-offline {
+            background-color: #ff5555;
+            box-shadow: 2px 2px 0px #aa0000;
+            color: #fff;
+        }
+        .status-offline .status-dot {
+            background-color: #ff0000;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(85, 255, 85, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(85, 255, 85, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(85, 255, 85, 0); }
+        }
+
         /* --- 核心資訊卡片（Minecraft 經典容器風） --- */
         .card {
             background-color: #2e2e2e;
@@ -420,6 +471,12 @@
             <h1 class="server-logo">Lazy Sheep</h1>
             <p style="color: #aaaaaa; font-weight: bold;">Lazy Sheep 創的專屬伺服器</p>
             <span class="server-version">Java 26.2</span>
+            
+            <!-- 新增：動態伺服器狀態顯示標籤 -->
+            <span class="server-status-badge" id="api-status-badge">
+                <span class="status-dot"></span>
+                <span id="api-status-text">正在偵測狀態...</span>
+            </span>
         </header>
 
         <!-- Aternos 伺服器狀態提醒 -->
@@ -547,8 +604,45 @@
         </div>
     </div>
 
-    <!-- 複製功能 JavaScript 邏輯 -->
+    <!-- 複製功能與 API 偵測 JavaScript 邏輯 -->
     <script>
+        // 伺服器狀態自動偵測功能 (使用免費免密鑰的 mcsrvstat.us API)
+        function checkServerStatus() {
+            // 使用你在網頁上呈現的主網域進行檢測
+            const serverIP = "LAN_Studio.aternos.me"; 
+            const statusBadge = document.getElementById('api-status-badge');
+            const statusText = document.getElementById('api-status-text');
+
+            fetch(`https://api.mcsrvstat.us/2/${serverIP}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.online) {
+                        statusBadge.className = "server-status-badge status-online";
+                        // 如果有玩家在線，一併顯示人數，例如：在線中 (3/20)
+                        if (data.players) {
+                            statusText.innerText = `連線中 (${data.players.online}/${data.players.max})`;
+                        } else {
+                            statusText.innerText = "連線中";
+                        }
+                    } else {
+                        statusBadge.className = "server-status-badge status-offline";
+                        statusText.innerText = "已離線 (請聯絡開服)";
+                    }
+                })
+                .catch(err => {
+                    console.error("無法取得伺服器狀態:", err);
+                    statusBadge.className = "server-status-badge status-offline";
+                    statusText.innerText = "偵測失敗";
+                });
+        }
+
+        // 網頁載入完成時，立即執行一次狀態檢查
+        window.addEventListener('DOMContentLoaded', (event) => {
+            checkServerStatus();
+            // 每隔 60 秒自動重新整理一次狀態（避免頻繁發送請求被 API 鎖定）
+            setInterval(checkServerStatus, 60000);
+        });
+
         // 複製 IP 功能
         function copyIp() {
             const ipText = document.getElementById('server-ip').innerText;
