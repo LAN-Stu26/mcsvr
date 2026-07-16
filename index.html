@@ -180,7 +180,7 @@
             text-align: center;
             text-decoration: none;
             flex: 1;
-            min-width: 220px;
+            min-width: 200px;
             max-width: 320px;
         }
 
@@ -190,6 +190,14 @@
             box-shadow: 
                 inset -3px -3px 0px #3f6317, 
                 inset 3px 3px 0px #8be134;
+        }
+
+        /* 無法加入 紅石/熔岩橘紅效果 */
+        .mc-btn-help:hover {
+            background-color: #e04a3f;
+            box-shadow: 
+                inset -3px -3px 0px #8a2119, 
+                inset 3px 3px 0px #f5847a;
         }
 
         /* 信件通知黃色/金色效果 */
@@ -228,6 +236,73 @@
             text-align: center;
             width: 100%;
             max-width: 500px;
+        }
+
+        /* --- 經典 Minecraft 彈出視窗 (Modal) --- */
+        .mc-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .mc-modal {
+            background-color: #2e2e2e;
+            border: 4px solid #000;
+            box-shadow: 
+                inset -4px -4px 0px #1a1a1a, 
+                inset 4px 4px 0px #5c5c5c,
+                0px 12px 24px rgba(0,0,0,0.8);
+            max-width: 500px;
+            width: 100%;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            animation: mc-pop 0.2s ease-out;
+        }
+
+        @keyframes mc-pop {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .mc-modal-title {
+            font-size: 1.3rem;
+            color: #ffff55;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .mc-modal-body {
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .backup-ip-box {
+            background-color: #151515;
+            border: 3px solid #000;
+            padding: 12px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #55ffff;
+            margin: 15px 0;
+            text-align: center;
+            word-break: break-all;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.5);
         }
 
         /* --- 特色介紹清單 --- */
@@ -359,9 +434,17 @@
             <div class="ip-container">
                 <span class="ip-label">SERVER IP</span>
                 <span class="ip-text" id="server-ip">java.mcsvr.sld.tw</span>
-                <button class="mc-btn mc-btn-copy" onclick="copyIp()">
-                    <i class="fa-solid fa-paste"></i> 複製網域位址
-                </button>
+                
+                <div class="btn-group">
+                    <button class="mc-btn mc-btn-copy" onclick="copyIp()">
+                        <i class="fa-solid fa-paste"></i> 複製網域位址
+                    </button>
+                    <!-- 新增「無法加入？」按鈕 -->
+                    <button class="mc-btn mc-btn-help" onclick="openHelpModal()">
+                        <i class="fa-solid fa-circle-question"></i> 無法加入？
+                    </button>
+                </div>
+                
                 <div class="toast" id="toast-ip">✔ IP 複製成功！快去遊戲裡貼上吧！</div>
             </div>
         </section>
@@ -416,6 +499,34 @@
 
     </div>
 
+    <!-- 無法加入的備用網域視窗 (Modal Overlay) -->
+    <div class="mc-modal-overlay" id="help-modal" onclick="closeHelpModalOuter(event)">
+        <div class="mc-modal" onclick="event.stopPropagation()">
+            <div class="mc-modal-title">
+                <i class="fa-solid fa-circle-info" style="color: #ffff55;"></i> 連線疑難排解
+            </div>
+            <div class="mc-modal-body">
+                <p>若主網域 <strong style="color: #ffff55;">java.mcsvr.sld.tw</strong> 無法正常連線，可能是自訂解析服務延遲。</p>
+                <p style="margin-top: 10px;">請嘗試使用下面的 <strong>Aternos 原生備用網域</strong>：</p>
+                
+                <div class="backup-ip-box" id="backup-ip">LAN_Studio.aternos.me</div>
+                
+                <p style="font-size: 0.85rem; color: #aaa; text-align: center;">兩者指向相同的伺服器，可以放心連線遊玩！</p>
+            </div>
+            <div class="btn-group" style="margin-top: 15px;">
+                <button class="mc-btn mc-btn-copy" onclick="copyBackupIp()" style="min-width: 140px;">
+                    <i class="fa-solid fa-copy"></i> 複製備用網域
+                </button>
+                <button class="mc-btn" onclick="closeHelpModal()" style="background-color: #5c5c5c; min-width: 140px;">
+                    關閉
+                </button>
+            </div>
+            <center>
+                <div class="toast" id="toast-backup-ip" style="margin-top: 15px;">✔ 備用網域複製成功！</div>
+            </center>
+        </div>
+    </div>
+
     <!-- 複製功能 JavaScript 邏輯 -->
     <script>
         // 複製 IP 功能
@@ -448,6 +559,37 @@
                 document.body.removeChild(tempInput);
                 showToast('toast-email');
             });
+        }
+
+        // 複製 備用 IP 功能
+        function copyBackupIp() {
+            const backupText = document.getElementById('backup-ip').innerText;
+            navigator.clipboard.writeText(backupText).then(() => {
+                showToast('toast-backup-ip');
+            }).catch(err => {
+                const tempInput = document.createElement('input');
+                tempInput.value = backupText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('toast-backup-ip');
+            });
+        }
+
+        // 彈出視窗開關控制
+        function openHelpModal() {
+            document.getElementById('help-modal').style.display = 'flex';
+        }
+
+        function closeHelpModal() {
+            document.getElementById('help-modal').style.display = 'none';
+            document.getElementById('toast-backup-ip').style.display = 'none';
+        }
+
+        function closeHelpModalOuter(event) {
+            // 點擊背景空白處亦可關閉
+            closeHelpModal();
         }
 
         // 顯示通知訊息並自動消失
