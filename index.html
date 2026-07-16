@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLD Minecraft 伺服器 - 冒險，從這裡開始！</title>
+    <!-- 引入 Google Fonts：中文採用 Noto Sans，標題採用復古像素風 Press Start 2P -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         /* --- 基礎樣式設定 --- */
@@ -19,9 +22,9 @@
             background-color: #1a1a1a;
             /* 模擬 Minecraft 暗色基岩/石頭背景效果 */
             background-image: 
-                radial-gradient(circle, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.9) 100%),
-                linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)),
-                url('https://images.unsplash.com/photo-1607988795691-3d0147b43231?q=80&w=1920&auto=format&fit=crop'); /* 高質感暗色背景圖 */
+                radial-gradient(circle, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%),
+                linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)),
+                url('https://images.unsplash.com/photo-1607988795691-3d0147b43231?q=80&w=1920&auto=format&fit=crop'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -92,7 +95,33 @@
             color: #ff5555;
         }
 
-        /* --- IP 複製區塊 --- */
+        /* --- Aternos 伺服器狀態提示框 --- */
+        .aternos-warning {
+            background-color: #3d231d;
+            border: 3px solid #ff5555;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: inset -3px -3px 0px #211310, inset 3px 3px 0px #5c342b;
+            position: relative;
+        }
+
+        .aternos-header {
+            color: #ff5555;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .aternos-desc {
+            color: #e0b3b3;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        /* --- IP 與通知區塊 --- */
         .ip-container {
             display: flex;
             flex-direction: column;
@@ -101,7 +130,7 @@
             gap: 15px;
             background-color: #151515;
             border: 3px solid #000;
-            padding: 20px;
+            padding: 25px;
             margin: 20px 0;
             text-align: center;
         }
@@ -120,41 +149,73 @@
             word-break: break-all;
         }
 
-        /* --- Minecraft 經典 3D 灰/綠按鈕 --- */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* --- Minecraft 經典 3D 灰/綠/紅按鈕 --- */
         .mc-btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             font-family: 'Noto Sans TC', sans-serif;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #ffffff;
             background-color: #4a4a4a;
             border: 3px solid #000;
             box-shadow: 
                 inset -3px -3px 0px #2e2e2e, 
                 inset 3px 3px 0px #8b8b8b;
-            padding: 12px 28px;
+            padding: 12px 24px;
             cursor: pointer;
             user-select: none;
             transition: all 0.1s ease;
             text-align: center;
-            min-width: 180px;
+            text-decoration: none;
+            flex: 1;
+            min-width: 220px;
+            max-width: 320px;
         }
 
-        .mc-btn:hover {
-            background-color: #5b8e22; /* 經典草地綠 */
+        /* 複製 IP 綠色效果 */
+        .mc-btn-copy:hover {
+            background-color: #5b8e22;
             box-shadow: 
                 inset -3px -3px 0px #3f6317, 
                 inset 3px 3px 0px #8be134;
         }
 
+        /* 信件通知黃色/金色效果 */
+        .mc-btn-email:hover {
+            background-color: #df9f00;
+            box-shadow: 
+                inset -3px -3px 0px #9f6f00, 
+                inset 3px 3px 0px #ffcf40;
+        }
+
+        /* 備用複製信箱藍色效果 */
+        .mc-btn-copy-mail:hover {
+            background-color: #1d7aa2;
+            box-shadow: 
+                inset -3px -3px 0px #114c66, 
+                inset 3px 3px 0px #3ca6d8;
+        }
+
         .mc-btn:active {
             box-shadow: 
-                inset 3px 3px 0px #2e2e2e, 
-                inset -3px -3px 0px #8b8b8b;
+                inset 3px 3px 0px #1a1a1a, 
+                inset -3px -3px 0px #5c5c5c;
             transform: translateY(2px);
         }
 
-        /* 複製成功提示 */
+        /* 提示通知樣式 */
         .toast {
             display: none;
             background-color: #55ff55;
@@ -165,6 +226,8 @@
             margin-top: 15px;
             box-shadow: 3px 3px 0px #00aa00;
             text-align: center;
+            width: 100%;
+            max-width: 500px;
         }
 
         /* --- 特色介紹清單 --- */
@@ -232,7 +295,7 @@
         }
 
         /* 響應式微調 */
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
             .server-logo {
                 font-size: 1.6rem;
             }
@@ -242,6 +305,14 @@
             .card {
                 padding: 20px;
             }
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .mc-btn {
+                width: 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -249,24 +320,53 @@
 
     <div class="container">
 
+        <!-- 網頁標頭 -->
         <header class="header">
             <h1 class="server-logo">SLD SERVER</h1>
             <p style="color: #aaaaaa; font-weight: bold;">開啟你的方塊新紀元</p>
             <span class="server-version">Java 1.20+ (最新版支援)</span>
         </header>
 
+        <!-- Aternos 伺服器狀態提醒 -->
+        <div class="aternos-warning">
+            <div class="aternos-header">
+                <i class="fa-solid fa-triangle-exclamation"></i> 伺服器狀態重要提醒
+            </div>
+            <p class="aternos-desc">
+                本伺服器為 <strong>Aternos 免費主機</strong>，若長時間無人遊玩，系統將會<strong>自動關機</strong>。
+                因此，若你發現伺服器目前處於離線狀態，請在開始遊玩前<strong>通知管理員幫你開服</strong>！
+            </p>
+            <div class="btn-group">
+                <!-- 寄信通知管理員：自動帶入主旨與預設罐頭文字 -->
+                <a class="mc-btn mc-btn-email" href="mailto:yangyang1005m@gmail.com?subject=【Minecraft開服申請】請幫忙開啟%20SLD%20伺服器！&body=你好！我想進去%20SLD%20伺服器（java.mcsvr.sld.tw）遊玩，目前伺服器似乎是關閉狀態，能麻煩管理員幫忙開啟 Aternos 伺服器嗎？感謝！" target="_blank">
+                    <i class="fa-solid fa-envelope"></i> 寄信通知管理員開服
+                </a>
+                <!-- 備用：直接複製管理員的 Email 信箱 -->
+                <button class="mc-btn mc-btn-copy-mail" onclick="copyEmail()">
+                    <i class="fa-solid fa-copy"></i> 複製管理員信箱
+                </button>
+            </div>
+            <center>
+                <div class="toast" id="toast-email">✔ 管理員信箱複製成功！(yangyang1005m@gmail.com)</div>
+            </center>
+        </div>
+
+        <!-- 連線資訊卡片 -->
         <section class="card">
-            <h2 class="card-title">立即加入伺服器</h2>
-            <p>我們的伺服器專為 Java 版玩家打造，歡迎複製下方網域並加入我們！</p>
+            <h2 class="card-title">伺服器連線資訊</h2>
+            <p>複製下方的伺服器專屬網域，即可透過 Minecraft Java 遊戲內直接連線！</p>
             
             <div class="ip-container">
                 <span class="ip-label">SERVER IP</span>
                 <span class="ip-text" id="server-ip">java.mcsvr.sld.tw</span>
-                <button class="mc-btn" onclick="copyIp()">複製網域位址</button>
-                <div class="toast" id="toast">✔ IP 複製成功！快去遊戲裡貼上吧！</div>
+                <button class="mc-btn mc-btn-copy" onclick="copyIp()">
+                    <i class="fa-solid fa-paste"></i> 複製網域位址
+                </button>
+                <div class="toast" id="toast-ip">✔ IP 複製成功！快去遊戲裡貼上吧！</div>
             </div>
         </section>
 
+        <!-- 遊戲玩法與特色 -->
         <section class="card">
             <h2 class="card-title">伺服器特色</h2>
             <div class="features-grid">
@@ -275,8 +375,8 @@
                     <p style="color: #ccc; font-size: 0.95rem;">最純粹的麥塊合作生存，與好友們一同開拓領地、建造夢想家園。</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-title"><span>✦</span> 穩定順暢</div>
-                    <p style="color: #ccc; font-size: 0.95rem;">採用高效能專屬主機，24小時不打烊，保障你最流暢的遊戲體驗。</p>
+                    <div class="feature-title"><span>✦</span> 隨開隨玩</div>
+                    <p style="color: #ccc; font-size: 0.95rem;">自由度極高！只要聯絡管理員，隨時都能開啟世界與朋友同樂。</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-title"><span>✦</span> 友善社群</div>
@@ -285,20 +385,22 @@
             </div>
         </section>
 
+        <!-- 簡易加入教學 -->
         <section class="card">
             <h2 class="card-title">如何開始遊戲？</h2>
             <ul class="steps">
                 <li data-step="1">
-                    <strong>開啟 Minecraft：</strong><br>
-                    啟動您的 Minecraft Java 版客戶端。
+                    <strong>確認伺服器是否開啟：</strong><br>
+                    若發現伺服器未連線，請點選上方按鈕聯絡管理員開服。
                 </li>
                 <li data-step="2">
                     <strong>進入多人遊戲：</strong><br>
-                    在主選單中點選 <strong>「多人遊戲 (Multiplayer)」</strong>。
+                    啟動您的 Minecraft Java 版客戶端，點選 <strong>「多人遊戲 (Multiplayer)」</strong>。
                 </li>
                 <li data-step="3">
                     <strong>新增伺服器：</strong><br>
-                    點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器位址輸入欄貼上本站複製的網域。
+                    點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器位址輸入欄貼上複製的網域：<br>
+                    <code style="background: #151515; padding: 2px 6px; border: 1px solid #5c5c5c; color: #55ffff;">java.mcsvr.sld.tw</code>
                 </li>
                 <li data-step="4">
                     <strong>連線冒險：</strong><br>
@@ -307,39 +409,55 @@
             </ul>
         </section>
 
+        <!-- 頁尾 -->
         <footer class="footer">
             <p>&copy; 2026 SLD Minecraft Server. 本伺服器與 Mojang Studios / Microsoft 無關。</p>
         </footer>
 
     </div>
 
+    <!-- 複製功能 JavaScript 邏輯 -->
     <script>
+        // 複製 IP 功能
         function copyIp() {
             const ipText = document.getElementById('server-ip').innerText;
-            
-            // 使用新版 Clipboard API
             navigator.clipboard.writeText(ipText).then(() => {
-                showToast();
+                showToast('toast-ip');
             }).catch(err => {
-                // 備用複製方案（防瀏覽器不支援）
                 const tempInput = document.createElement('input');
                 tempInput.value = ipText;
                 document.body.appendChild(tempInput);
                 tempInput.select();
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
-                showToast();
+                showToast('toast-ip');
             });
         }
 
-        function showToast() {
-            const toast = document.getElementById('toast');
+        // 複製 Email 功能
+        function copyEmail() {
+            const emailText = 'yangyang1005m@gmail.com';
+            navigator.clipboard.writeText(emailText).then(() => {
+                showToast('toast-email');
+            }).catch(err => {
+                const tempInput = document.createElement('input');
+                tempInput.value = emailText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('toast-email');
+            });
+        }
+
+        // 顯示通知訊息並自動消失
+        function showToast(id) {
+            const toast = document.getElementById(id);
             toast.style.display = 'block';
             
-            // 3秒後自動隱藏提示
             setTimeout(() => {
                 toast.style.display = 'none';
-            }, 3000);
+            }, 3500);
         }
     </script>
 </body>
