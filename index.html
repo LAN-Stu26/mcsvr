@@ -688,36 +688,39 @@
             // 產生隨機/時間戳記防快取參數 (Cache-Busting)
             const cacheBuster = Date.now();
 
-            // 【第一步】優先採用反應迅速、快取時間極短的 Minetools API
-            // 網址加上 &nocache=時間戳記，強制瀏覽器與 CDN 抓取當前最新資料
-            fetch(`https://api.minetools.eu/ping/${serverIP}?nocache=${cacheBuster}`)
+            // 【第一步】優先採用反應迅速、精確度高且無 Aternos 虛假快取問題的 mcstatus.io API
+            fetch(`https://api.mcstatus.io/v2/status/java/${serverIP}?nocache=${cacheBuster}`)
                 .then(response => {
-                    if (!response.ok) throw new Error('Minetools API 請求失敗');
+                    if (!response.ok) throw new Error('mcstatus.io API 請求失敗');
                     return response.json();
                 })
                 .then(data => {
-                    // Minetools 成功時，判斷 data 中是否有 error 欄位
-                    if (data.error) {
-                        // 雖然 API 連線成功，但若回傳 error 代表伺服器未開啟 (離線)
-                        updateUI(false, 0, 20);
-                    } else {
-                        // 回傳正常則為在線，並抓取人數
+                    // 若 data.online 為 true，代表伺服器真正開啟中
+                    if (data.online) {
                         const onlinePlayers = data.players ? data.players.online : 0;
                         const maxPlayers = data.players ? data.players.max : 20;
                         updateUI(true, onlinePlayers, maxPlayers);
+                    } else {
+                        updateUI(false, 0, 20);
                     }
                 })
                 .catch(err => {
-                    console.warn("Minetools 偵測失敗，自動嘗試備用方案 (mcstatus.io)...", err);
+                    console.warn("mcstatus.io 偵測失敗，自動嘗試備用方案 (mcsrvstat.us)...", err);
                     
-                    // 【第二步】若第一步失敗，使用 mcstatus.io 做為備用防護
-                    fetch(`https://api.mcstatus.io/v2/status/java/${serverIP}?nocache=${cacheBuster}`)
+                    // 【第二步】若第一步失敗，使用對 Aternos 判定極佳的 mcsrvstat.us 作為備用防護
+                    fetch(`https://api.mcsrvstat.us/3/${serverIP}`)
                         .then(response => {
-                            if (!response.ok) throw new Error('mcstatus.io API 請求失敗');
+                            if (!response.ok) throw new Error('mcsrvstat.us API 請求失敗');
                             return response.json();
                         })
                         .then(data => {
-                            updateUI(data.online, data.players ? data.players.online : 0, data.players ? data.players.max : 20);
+                            if (data.online) {
+                                const onlinePlayers = data.players ? data.players.online : 0;
+                                const maxPlayers = data.players ? data.players.max : 20;
+                                updateUI(true, onlinePlayers, maxPlayers);
+                            } else {
+                                updateUI(false, 0, 20);
+                            }
                         })
                         .catch(err2 => {
                             console.error("所有檢測 API 皆無法正常運作:", err2);
@@ -731,7 +734,8 @@
             function updateUI(isOnline, onlinePlayers, maxPlayers) {
                 if (isOnline) {
                     statusBadge.className = "server-status-badge status-online";
-                    statusText.innerText = `連線中 (${onlinePlayers}/${maxPlayers})`;
+                    // 將原本有爭議的「連線中」改為麥塊標準用語「線上」，體驗更精準
+                    statusText.innerText = `線上 (${onlinePlayers}/${maxPlayers})`;
                 } else {
                     statusBadge.className = "server-status-badge status-offline";
                     statusText.innerText = "已離線 (請聯絡開服)";
