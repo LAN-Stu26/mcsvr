@@ -645,10 +645,10 @@
                 <i class="fa-solid fa-circle-info" style="color: #ffff55;"></i> 連線疑難排解
             </div>
             <div class="mc-modal-body">
-                <p>若主網域 <strong style="color: #ffff55;">LAN_Studio.aternos.me</strong> 無法正常連線，可能是自訂解析服務延遲。</p>
+                <p>若主網域 <strong style="color: #ffff55;">java.mcsvr.sld.tw</strong> 無法正常連線，可能是自訂解析服務延遲。</p>
                 <p style="margin-top: 10px;">請嘗試使用下面的 <strong>Aternos 原生備用網域</strong>：</p>
                 
-                <div class="backup-ip-box" id="backup-ip">java.mcsvr.sld.tw</div>
+                <div class="backup-ip-box" id="backup-ip">LAN_Studio.aternos.me</div>
                 
                 <p style="font-size: 0.85rem; color: #aaa; text-align: center;">兩者指向相同的伺服器，可以放心連線遊玩！</p>
             </div>
@@ -668,16 +668,16 @@
 
     <!-- 複製功能與 API 偵測 JavaScript 邏輯 -->
     <script>
-        // 伺服器狀態自動偵測功能 (使用免費免密鑰的 mcsrvstat.us API)
+        // 伺服器狀態自動偵測功能（雙重 API 安全回退防護）
         function checkServerStatus() {
-            // 使用你在網頁上呈現的主網域進行檢測
+            // Aternos 直連網域，用於向 API 發送偵測請求
             const serverIP = "LAN_Studio.aternos.me"; 
             const statusBadge = document.getElementById('api-status-badge');
             const statusText = document.getElementById('api-status-text');
             const lastCheckedText = document.getElementById('last-checked-time');
             const recheckBtn = document.getElementById('recheck-btn');
 
-            // 按鈕狀態回饋與防點擊
+            // 按鈕點擊防護狀態
             if (recheckBtn) {
                 recheckBtn.disabled = true;
                 recheckBtn.style.pointerEvents = 'none';
@@ -685,42 +685,61 @@
             }
             statusText.innerText = "正在偵測狀態...";
 
-            fetch(`https://api.mcsrvstat.us/2/${serverIP}`)
-                .then(response => response.json())
+            // 【第一步】優先採用快取時間僅有 60 秒的全新 mcstatus.io API（能快速偵測到開服）
+            fetch(`https://api.mcstatus.io/v2/status/java/${serverIP}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('mcstatus.io API 請求失敗');
+                    return response.json();
+                })
                 .then(data => {
-                    if (data.online) {
-                        statusBadge.className = "server-status-badge status-online";
-                        // 如果有玩家在線，一併顯示人數，例如：在線中 (3/20)
-                        if (data.players) {
-                            statusText.innerText = `連線中 (${data.players.online}/${data.players.max})`;
-                        } else {
-                            statusText.innerText = "連線中";
-                        }
-                    } else {
-                        statusBadge.className = "server-status-badge status-offline";
-                        statusText.innerText = "已離線 (請聯絡開服)";
-                    }
+                    // 如果檢測成功，更新 UI
+                    updateUI(data.online, data.players ? data.players.online : 0, data.players ? data.players.max : 20);
                 })
                 .catch(err => {
-                    console.error("無法取得伺服器狀態:", err);
-                    statusBadge.className = "server-status-badge status-offline";
-                    statusText.innerText = "偵測失敗";
-                })
-                .finally(() => {
-                    // 更新檢查時間為目前系統時間
-                    const now = new Date();
-                    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    if (lastCheckedText) {
-                        lastCheckedText.innerText = `最後檢查時間: ${timeString}`;
-                    }
+                    console.warn("mcstatus.io 偵測失敗，自動嘗試備用方案 (mcsrvstat.us)...", err);
                     
-                    // 還原按鈕狀態
-                    if (recheckBtn) {
-                        recheckBtn.disabled = false;
-                        recheckBtn.style.pointerEvents = 'auto';
-                        recheckBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> 重新檢查';
-                    }
+                    // 【第二步】若第一步失敗，使用 mcsrvstat.us 做為備用方案
+                    fetch(`https://api.mcsrvstat.us/2/${serverIP}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error('mcsrvstat.us API 請求失敗');
+                            return response.json();
+                        })
+                        .then(data => {
+                            updateUI(data.online, data.players ? data.players.online : 0, data.players ? data.players.max : 20);
+                        })
+                        .catch(err2 => {
+                            console.error("所有檢測 API 皆無法正常運作:", err2);
+                            statusBadge.className = "server-status-badge status-offline";
+                            statusText.innerText = "偵測失敗";
+                            finalizeCheck();
+                        });
                 });
+
+            // 狀態更新函數
+            function updateUI(isOnline, onlinePlayers, maxPlayers) {
+                if (isOnline) {
+                    statusBadge.className = "server-status-badge status-online";
+                    statusText.innerText = `連線中 (${onlinePlayers}/${maxPlayers})`;
+                } else {
+                    statusBadge.className = "server-status-badge status-offline";
+                    statusText.innerText = "已離線 (請聯絡開服)";
+                }
+                finalizeCheck();
+            }
+
+            // 完成狀態更新後的收尾
+            function finalizeCheck() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                if (lastCheckedText) {
+                    lastCheckedText.innerText = `最後檢查時間: ${timeString}`;
+                }
+                if (recheckBtn) {
+                    recheckBtn.disabled = false;
+                    recheckBtn.style.pointerEvents = 'auto';
+                    recheckBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> 重新檢查';
+                }
+            }
         }
 
         // 網頁載入完成時，立即執行一次狀態檢查
