@@ -685,23 +685,35 @@
             }
             statusText.innerText = "正在偵測狀態...";
 
-            // 【第一步】優先採用快取時間僅有 60 秒的全新 mcstatus.io API（能快速偵測到開服）
-            fetch(`https://api.mcstatus.io/v2/status/java/${serverIP}`)
+            // 產生隨機/時間戳記防快取參數 (Cache-Busting)
+            const cacheBuster = Date.now();
+
+            // 【第一步】優先採用反應迅速、快取時間極短的 Minetools API
+            // 網址加上 &nocache=時間戳記，強制瀏覽器與 CDN 抓取當前最新資料
+            fetch(`https://api.minetools.eu/ping/${serverIP}?nocache=${cacheBuster}`)
                 .then(response => {
-                    if (!response.ok) throw new Error('mcstatus.io API 請求失敗');
+                    if (!response.ok) throw new Error('Minetools API 請求失敗');
                     return response.json();
                 })
                 .then(data => {
-                    // 如果檢測成功，更新 UI
-                    updateUI(data.online, data.players ? data.players.online : 0, data.players ? data.players.max : 20);
+                    // Minetools 成功時，判斷 data 中是否有 error 欄位
+                    if (data.error) {
+                        // 雖然 API 連線成功，但若回傳 error 代表伺服器未開啟 (離線)
+                        updateUI(false, 0, 20);
+                    } else {
+                        // 回傳正常則為在線，並抓取人數
+                        const onlinePlayers = data.players ? data.players.online : 0;
+                        const maxPlayers = data.players ? data.players.max : 20;
+                        updateUI(true, onlinePlayers, maxPlayers);
+                    }
                 })
                 .catch(err => {
-                    console.warn("mcstatus.io 偵測失敗，自動嘗試備用方案 (mcsrvstat.us)...", err);
+                    console.warn("Minetools 偵測失敗，自動嘗試備用方案 (mcstatus.io)...", err);
                     
-                    // 【第二步】若第一步失敗，使用 mcsrvstat.us 做為備用方案
-                    fetch(`https://api.mcsrvstat.us/2/${serverIP}`)
+                    // 【第二步】若第一步失敗，使用 mcstatus.io 做為備用防護
+                    fetch(`https://api.mcstatus.io/v2/status/java/${serverIP}?nocache=${cacheBuster}`)
                         .then(response => {
-                            if (!response.ok) throw new Error('mcsrvstat.us API 請求失敗');
+                            if (!response.ok) throw new Error('mcstatus.io API 請求失敗');
                             return response.json();
                         })
                         .then(data => {
