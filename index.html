@@ -84,6 +84,84 @@
             box-shadow: 2px 2px 0px #00aa00;
         }
 
+        /* 伺服器即時狀態標籤與動畫效果 */
+        .server-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #555555;
+            color: #fff;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            box-shadow: 2px 2px 0px #222222;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #aaa;
+            display: inline-block;
+        }
+
+        /* 在線狀態 */
+        .status-online {
+            background-color: #55ff55;
+            box-shadow: 2px 2px 0px #00aa00;
+            color: #000;
+        }
+        .status-online .status-dot {
+            background-color: #00ff00;
+            animation: pulse-green 1.5s infinite;
+        }
+
+        /* 離線狀態 */
+        .status-offline {
+            background-color: #ff5555;
+            box-shadow: 2px 2px 0px #aa0000;
+            color: #fff;
+        }
+        .status-offline .status-dot {
+            background-color: #ff0000;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(85, 255, 85, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(85, 255, 85, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(85, 255, 85, 0); }
+        }
+
+        /* --- 核心資訊卡片（Minecraft 經典容器風） --- */
+        .card {
+            background-color: #2e2e2e;
+            border: 4px solid #000;
+            box-shadow: 
+                inset -4px -4px 0px #1a1a1a, 
+                inset 4px 4px 0px #5c5c5c,
+                0px 8px 16px rgba(0,0,0,0.6);
+            padding: 30px;
+            margin-bottom: 30px;
+            image-rendering: pixelated;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #ffff55;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #5c5c5c;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title::before {
+            content: "■";
+            color: #ff5555;
+        }
+
         /* --- Aternos 伺服器狀態提示框 --- */
         .aternos-warning {
             background-color: #3d231d;
@@ -92,14 +170,6 @@
             margin-bottom: 25px;
             box-shadow: inset -3px -3px 0px #211310, inset 3px 3px 0px #5c342b;
             position: relative;
-            transition: all 0.3s ease;
-        }
-
-        /* 當伺服器在線時，提示框變為綠色調 */
-        .aternos-warning.is-online {
-            background-color: #1e2e1e;
-            border: 3px solid #55ff55;
-            box-shadow: inset -3px -3px 0px #111a11, inset 3px 3px 0px #2e472e;
         }
 
         .aternos-header {
@@ -109,51 +179,33 @@
             margin-bottom: 10px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             gap: 10px;
         }
 
-        .aternos-warning.is-online .aternos-header {
-            color: #55ff55;
-        }
-
-        .aternos-title-text {
+        /* 即時狀態嵌入面板 */
+        .status-panel {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            background-color: #1a1a1a;
+            border: 2px solid #000;
+            padding: 10px 15px;
+            margin: 15px 0;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.5);
+        }
+
+        .last-checked {
+            font-size: 0.85rem;
+            color: #aaaaaa;
+            font-weight: bold;
         }
 
         .aternos-desc {
             color: #e0b3b3;
             font-size: 1rem;
             margin-bottom: 15px;
-        }
-
-        .aternos-warning.is-online .aternos-desc {
-            color: #b3e0b3;
-        }
-
-        /* --- 重新檢查按鈕與動畫 --- */
-        .btn-refresh {
-            background: #4a4a4a;
-            border: 2px solid #000;
-            color: #fff;
-            padding: 4px 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-family: 'Noto Sans TC', sans-serif;
-            font-weight: bold;
-            box-shadow: inset -2px -2px 0px #2e2e2e, inset 2px 2px 0px #8b8b8b;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-refresh:active {
-            box-shadow: inset 2px 2px 0px #1a1a1a, inset -2px -2px 0px #5c5c5c;
-            transform: translateY(1px);
-        }
-        .spin {
-            animation: fa-spin 1s linear infinite;
         }
 
         /* --- IP 與通知區塊 --- */
@@ -217,6 +269,33 @@
             flex: 1;
             min-width: 200px;
             max-width: 320px;
+        }
+
+        /* 縮小版按鈕 (重新檢查用) */
+        .mc-btn-sm {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            min-width: auto;
+            max-width: auto;
+            flex: none;
+            border-width: 2px;
+            box-shadow: 
+                inset -2px -2px 0px #2e2e2e, 
+                inset 2px 2px 0px #8b8b8b;
+        }
+
+        .mc-btn-sm:active {
+            box-shadow: 
+                inset 2px 2px 0px #1a1a1a, 
+                inset -2px -2px 0px #5c5c5c;
+            transform: translateY(1px);
+        }
+
+        .mc-btn-recheck:hover {
+            background-color: #5555ff;
+            box-shadow: 
+                inset -2px -2px 0px #0000aa, 
+                inset 2px 2px 0px #aaaaff;
         }
 
         /* 複製 IP 綠色效果 */
@@ -423,6 +502,14 @@
                 width: 100%;
                 max-width: 100%;
             }
+            .status-panel {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .status-panel button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -439,23 +526,31 @@
             <span class="server-version">Java 26.2</span>
         </header>
 
-        <!-- Aternos 伺服器狀態提醒（整合動態檢測功能） -->
-        <div class="aternos-warning" id="status-card">
+        <!-- Aternos 伺服器狀態提醒 -->
+        <div class="aternos-warning">
             <div class="aternos-header">
-                <span class="aternos-title-text" id="status-title">
-                    <i class="fa-solid fa-circle-notch spin"></i> 正在偵測伺服器狀態...
-                </span>
-                <button class="btn-refresh" onclick="checkServerStatus()">
-                    <i class="fa-solid fa-rotate" id="refresh-icon"></i> 重新檢查
-                </button>
+                <i class="fa-solid fa-triangle-exclamation"></i> 伺服器狀態重要提醒
             </div>
             
-            <p class="aternos-desc" id="status-desc">
-                正在連線至 Aternos 狀態伺服器，請稍候...
+            <!-- 即時狀態面板 -->
+            <div class="status-panel">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <span class="server-status-badge" id="api-status-badge">
+                        <span class="status-dot"></span>
+                        <span id="api-status-text">正在偵測狀態...</span>
+                    </span>
+                    <span class="last-checked" id="last-checked-time">最後檢查時間: --:--:--</span>
+                </div>
+                <button class="mc-btn mc-btn-sm mc-btn-recheck" id="recheck-btn" onclick="checkServerStatus()">
+                    <i class="fa-solid fa-rotate"></i> 重新檢查
+                </button>
+            </div>
+
+            <p class="aternos-desc">
+                本伺服器為 <strong>Aternos 免費主機</strong>，若長時間無人遊玩，系統將會<strong>自動關機</strong>。
+                因此，若你發現伺服器目前處於離線狀態，請在開始遊玩前<strong>通知管理員幫你開服</strong>！
             </p>
-            
-            <!-- 聯絡資訊區塊：下線時才會經由 JS 顯示 -->
-            <div class="btn-group" id="admin-contact-group" style="display: none;">
+            <div class="btn-group">
                 <!-- 寄信通知管理員：自動帶入 Lazy Sheep 伺服器主旨與預設罐頭文字 -->
                 <a class="mc-btn mc-btn-email" href="mailto:yangyang1005m@gmail.com?subject=【Lazy Sheep開服申請】請幫忙開啟%20Lazy%20Sheep%20伺服器！&body=你好！我想進去%20Lazy%20Sheep%20伺服器（java.mcsvr.sld.tw）遊玩，目前伺服器似乎是關閉狀態，能麻煩管理員幫忙開啟 Aternos 伺服器嗎？感謝！" target="_blank">
                     <i class="fa-solid fa-envelope"></i> 寄信通知管理員開服
@@ -575,70 +670,64 @@
     <script>
         // 伺服器狀態自動偵測功能 (使用免費免密鑰的 mcsrvstat.us API)
         function checkServerStatus() {
+            // 使用你在網頁上呈現的主網域進行檢測
             const serverIP = "LAN_Studio.aternos.me"; 
-            const statusCard = document.getElementById('status-card');
-            const statusTitle = document.getElementById('status-title');
-            const statusDesc = document.getElementById('status-desc');
-            const adminContactGroup = document.getElementById('admin-contact-group');
-            const refreshIcon = document.getElementById('refresh-icon');
+            const statusBadge = document.getElementById('api-status-badge');
+            const statusText = document.getElementById('api-status-text');
+            const lastCheckedText = document.getElementById('last-checked-time');
+            const recheckBtn = document.getElementById('recheck-btn');
 
-            // 啟動重新整理圖示的旋轉動畫，並更新狀態文字
-            refreshIcon.classList.add('spin');
-            statusTitle.innerHTML = `<i class="fa-solid fa-circle-notch spin"></i> 正在偵測伺服器狀態...`;
+            // 按鈕狀態回饋與防點擊
+            if (recheckBtn) {
+                recheckBtn.disabled = true;
+                recheckBtn.style.pointerEvents = 'none';
+                recheckBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 檢查中...';
+            }
+            statusText.innerText = "正在偵測狀態...";
 
             fetch(`https://api.mcsrvstat.us/2/${serverIP}`)
                 .then(response => response.json())
                 .then(data => {
-                    // 移除旋轉動畫
-                    refreshIcon.classList.remove('spin');
-
                     if (data.online) {
-                        // 1. 在線狀態：變更為綠色樣式
-                        statusCard.className = "aternos-warning is-online";
-                        
-                        let playersInfo = "";
+                        statusBadge.className = "server-status-badge status-online";
+                        // 如果有玩家在線，一併顯示人數，例如：在線中 (3/20)
                         if (data.players) {
-                            playersInfo = ` (${data.players.online}/${data.players.max})`;
+                            statusText.innerText = `連線中 (${data.players.online}/${data.players.max})`;
+                        } else {
+                            statusText.innerText = "連線中";
                         }
-                        
-                        statusTitle.innerHTML = `<i class="fa-solid fa-circle-check"></i> 伺服器目前狀態：連線中${playersInfo}`;
-                        statusDesc.innerHTML = `
-                            伺服器目前正在運作中！你可以複製下方的網域直接加入遊戲。
-                            <br><span style="font-size: 0.85rem; opacity: 0.8;">※ 若長時間無人遊玩，系統依然會自動關閉喔。</span>
-                        `;
-                        // 隱藏聯絡管理員開服的按鈕
-                        adminContactGroup.style.display = "none";
                     } else {
-                        // 2. 離線狀態：變更為預設紅色樣式
-                        statusCard.className = "aternos-warning";
-                        statusTitle.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 伺服器目前狀態：已離線`;
-                        statusDesc.innerHTML = `
-                            本伺服器為 <strong>Aternos 免費主機</strong>，若長時間無人遊玩，系統將會<strong>自動關機</strong>。
-                            <br>目前伺服器處於離線狀態，請在開始遊玩前<strong>通知管理員幫你開服</strong>！
-                        `;
-                        // 顯示聯絡管理員開服的按鈕
-                        adminContactGroup.style.display = "flex";
+                        statusBadge.className = "server-status-badge status-offline";
+                        statusText.innerText = "已離線 (請聯絡開服)";
                     }
                 })
                 .catch(err => {
                     console.error("無法取得伺服器狀態:", err);
-                    refreshIcon.classList.remove('spin');
+                    statusBadge.className = "server-status-badge status-offline";
+                    statusText.innerText = "偵測失敗";
+                })
+                .finally(() => {
+                    // 更新檢查時間為目前系統時間
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    if (lastCheckedText) {
+                        lastCheckedText.innerText = `最後檢查時間: ${timeString}`;
+                    }
                     
-                    // 3. 偵測失敗：變更為預設紅色樣式，並顯示聯絡資訊（防護機制）
-                    statusCard.className = "aternos-warning";
-                    statusTitle.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> 狀態偵測失敗`;
-                    statusDesc.innerHTML = `
-                        無法正常取得 Aternos 伺服器狀態。如果您嘗試連線失敗，請直接聯絡管理員確認伺服器是否開啟！
-                    `;
-                    adminContactGroup.style.display = "flex";
+                    // 還原按鈕狀態
+                    if (recheckBtn) {
+                        recheckBtn.disabled = false;
+                        recheckBtn.style.pointerEvents = 'auto';
+                        recheckBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> 重新檢查';
+                    }
                 });
         }
 
         // 網頁載入完成時，立即執行一次狀態檢查
         window.addEventListener('DOMContentLoaded', (event) => {
             checkServerStatus();
-            // 每隔 60 秒自動重新整理一次狀態（避免頻繁發送請求被 API 鎖定）
-            setInterval(checkServerStatus, 60000);
+            // 每隔 5 分鐘（300,000毫秒）自動重新整理一次狀態（避免頻繁發送請求被 API 鎖定）
+            setInterval(checkServerStatus, 300000);
         });
 
         // 複製 IP 功能
@@ -694,14 +783,14 @@
             document.getElementById('help-modal').style.display = 'flex';
         }
 
-        // 關閉 Modal 並隱藏 Modal 內部的 toast 提示，防止下次打開時殘留
+        // 關閉 Modal 排解視窗
         function closeHelpModal() {
             document.getElementById('help-modal').style.display = 'none';
             document.getElementById('toast-backup-ip').style.display = 'none';
         }
 
+        // 點擊背景空白處亦可關閉
         function closeHelpModalOuter(event) {
-            // 點擊背景空白處亦可關閉
             closeHelpModal();
         }
 
