@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 找不到網頁 - Lazy Sheep Minecraft 伺服器</title>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <!-- 引入 Google Fonts：Noto Sans 中文與 Press Start 2P 像素字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 引入 404 專用樣式表 -->
+    <link rel="stylesheet" href="/404.css">
+</head>
+<body>
+    <!-- 使用 script 標籤自動導入通用導覽列 -->
+    <script src="/nav.js"></script>
+
+    <div class="container">
+        <!-- 404 核心錯誤區塊卡片 -->
+        <div class="error-wrapper">
+            <div class="error-code">404</div>
+            <div class="error-icon-box">
+                <i class="fa-solid fa-ghost void-ghost"></i>
+            </div>
+            <h1 class="error-title">你掉進虛空了！</h1>
+            <p class="error-message">
+                糟糕！這個方塊（網頁）似乎不存在，或者已經被終界使者搬走了。<br>
+                請確認你輸入的網址是否正確，或者點擊下方按鈕返回安全的地帶。
+            </p>
+            
+            <!-- 回歸安全區按鈕群，網址全面清除附檔名 -->
+            <div class="btn-group">
+                <a href="/" class="mc-btn mc-btn-home">
+                    <i class="fa-solid fa-house"></i> 返回首頁
+                </a>
+                <a href="/commands/" class="mc-btn mc-btn-cmds">
+                    <i class="fa-solid fa-terminal"></i> 指令大全
+                </a>
+            </div>
+        </div>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>&copy; 2026 Lazy Sheep Minecraft Server. 迷路也是一種冒險。</p>
+        </footer>
+    </div>
+</body>
+</html>
