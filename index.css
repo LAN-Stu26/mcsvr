@@ -19,11 +19,75 @@ body {
     color: #f0f0f0;
     line-height: 1.6;
     padding: 40px 20px;
+    padding-top: 90px; /* 留出頂部空間給固定式的導覽列，防被遮擋 */
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
+}
+
+/* --- 麥塊風頂端導覽列樣式 (新增整合) --- */
+.mc-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2e2e2e;
+    border-bottom: 4px solid #000;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+    z-index: 2000;
+    padding: 12px 20px;
+}
+
+.nav-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.nav-brand {
+    font-family: 'Press Start 2P', cursive;
+    color: #ffaa00;
+    text-decoration: none;
+    font-size: 1.2rem;
+    text-shadow: 2px 2px 0px #3f2a00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-item {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 6px 14px;
+    border: 2px solid transparent;
+    transition: all 0.1s ease;
+}
+
+.nav-item:hover {
+    color: #ffff55;
+    background-color: #212121;
+    border: 2px solid #000;
+    box-shadow: inset -2px -2px 0px #151515, inset 2px 2px 0px #5c5c5c;
+}
+
+.nav-item.active {
+    color: #ffffff;
+    background-color: #151515;
+    border: 2px solid #000;
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.6);
 }
 
 /* --- 伺服器標題區 --- */
@@ -232,7 +296,7 @@ body {
     margin-top: 10px;
 }
 
-/* --- Minecraft 經典 3D 灰/綠/紅按鈕 --- */
+/* --- Minecraft 經典 3D 按鈕 --- */
 .mc-btn {
     display: inline-flex;
     align-items: center;
@@ -258,7 +322,6 @@ body {
     max-width: 320px;
 }
 
-/* 縮小版按鈕 (重新檢查用) */
 .mc-btn-sm {
     padding: 6px 14px;
     font-size: 0.85rem;
@@ -285,7 +348,6 @@ body {
         inset 2px 2px 0px #aaaaff;
 }
 
-/* 複製 IP 綠色效果 */
 .mc-btn-copy:hover {
     background-color: #5b8e22;
     box-shadow: 
@@ -293,7 +355,6 @@ body {
         inset 3px 3px 0px #8be134;
 }
 
-/* 無法加入 紅石/熔岩橘紅效果 */
 .mc-btn-help:hover {
     background-color: #e04a3f;
     box-shadow: 
@@ -301,7 +362,6 @@ body {
         inset 3px 3px 0px #f5847a;
 }
 
-/* 信件通知黃色/金色效果 */
 .mc-btn-email:hover {
     background-color: #df9f00;
     box-shadow: 
@@ -309,7 +369,6 @@ body {
         inset 3px 3px 0px #ffcf40;
 }
 
-/* 備用複製信箱藍色效果 */
 .mc-btn-copy-mail:hover {
     background-color: #1d7aa2;
     box-shadow: 
@@ -324,7 +383,6 @@ body {
     transform: translateY(2px);
 }
 
-/* 提示通知樣式 */
 .toast {
     display: none;
     background-color: #55ff55;
@@ -339,7 +397,7 @@ body {
     max-width: 500px;
 }
 
-/* --- 經典 Minecraft 彈出視窗 (Modal) --- */
+/* --- 經典 Minecraft 彈出視窗 --- */
 .mc-modal-overlay {
     display: none;
     position: fixed;
@@ -472,6 +530,9 @@ body {
 
 /* 響應式微調 */
 @media (max-width: 650px) {
+    body {
+        padding-top: 130px; /* 手機版導覽列變高，預留更多頂部空間 */
+    }
     .server-logo {
         font-size: 1.6rem;
     }
