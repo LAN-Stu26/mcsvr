@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lazy Sheep 伺服器 - 指令大全</title>
-    <link rel="icon" href="../icon.png" type="image/png">
+    <link rel="icon" href="/icon.png" type="image/png">
     <!-- 引入 Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- 引入 FontAwesome 圖示 -->
@@ -13,19 +13,8 @@
     <link rel="stylesheet" href="commands.css">
 </head>
 <body>
-
-    <!-- 麥塊風頂端導覽列 -->
-    <nav class="mc-nav">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-brand">
-                <span class="brand-pixel">🐏</span> Lazy Sheep
-            </a>
-            <div class="nav-links">
-                <a href="../index.html" class="nav-item"><i class="fa-solid fa-house"></i> 返回首頁</a>
-                <a href="index.html" class="nav-item active"><i class="fa-solid fa-terminal"></i> 指令大全</a>
-            </div>
-        </div>
-    </nav>
+    <!-- 使用 script 標籤自動導入通用導覽列 -->
+    <script src="/nav.js"></script>
 
     <div class="container">
         
@@ -192,15 +181,11 @@
     <script>
         let currentCategory = 'all';
 
-        // 複製指令到剪貼簿
         function copyCommand(text) {
-            // 自動過濾掉示範用的 HTML 轉義符
             let cleanText = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-            
             navigator.clipboard.writeText(cleanText).then(() => {
                 showToast();
             }).catch(err => {
-                // 備用複製機制
                 const tempInput = document.createElement('textarea');
                 tempInput.value = cleanText;
                 document.body.appendChild(tempInput);
@@ -211,7 +196,6 @@
             });
         }
 
-        // 顯示複製成功提示
         function showToast() {
             const toast = document.getElementById('cmd-toast');
             toast.style.display = 'block';
@@ -220,19 +204,14 @@
             }, 2500);
         }
 
-        // 類別標籤篩選
         function filterCategory(cat) {
             currentCategory = cat;
-            
-            // 更新按鈕樣式
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            
             filterCommands();
         }
 
-        // 混合搜尋與類別篩選邏輯
         function filterCommands() {
             const searchKeyword = document.getElementById('cmd-search').value.toLowerCase().trim();
             const cards = document.querySelectorAll('.cmd-card');
@@ -243,7 +222,6 @@
                 const items = card.querySelectorAll('.cmd-item');
                 let cardHasVisibleItem = false;
 
-                // 如果卡片類別不符，直接整張卡片隱藏
                 if (currentCategory !== 'all' && cardCategory !== currentCategory) {
                     card.style.display = 'none';
                     return;
@@ -253,7 +231,6 @@
                     const cmdText = item.querySelector('.cmd-code').innerText.toLowerCase();
                     const effectText = item.querySelector('.cmd-effect').innerText.toLowerCase();
                     
-                    // 同時滿足關鍵字比對
                     if (cmdText.includes(searchKeyword) || effectText.includes(searchKeyword)) {
                         item.style.display = 'flex';
                         cardHasVisibleItem = true;
@@ -263,7 +240,6 @@
                     }
                 });
 
-                // 根據卡片內有沒有符合內容決定卡片顯示與否
                 if (cardHasVisibleItem) {
                     card.style.display = 'block';
                 } else {
@@ -271,7 +247,6 @@
                 }
             });
 
-            // 處理全部查無資料的幽靈提示
             const noResults = document.getElementById('no-results');
             if (totalVisibleItems === 0) {
                 noResults.style.display = 'block';
