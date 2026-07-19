@@ -1,0 +1,379 @@
+/* --- 基礎設定與麥塊暗色背景 --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: #1a1a1a;
+    background-image: 
+        radial-gradient(circle, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%),
+        linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9)),
+        url('https://images.unsplash.com/photo-1607988795691-3d0147b43231?q=80&w=1920&auto=format&fit=crop'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #f0f0f0;
+    line-height: 1.6;
+    padding-top: 90px; /* 留空間給固定在最上方的導覽列 */
+    padding-bottom: 40px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- 麥塊風頂端導覽列 --- */
+.mc-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2e2e2e;
+    border-bottom: 4px solid #000;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+    z-index: 2000;
+    padding: 12px 20px;
+}
+
+.nav-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.nav-brand {
+    font-family: 'Press Start 2P', cursive;
+    color: #ffaa00;
+    text-decoration: none;
+    font-size: 1.2rem;
+    text-shadow: 2px 2px 0px #3f2a00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-pixel {
+    image-rendering: pixelated;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-item {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 6px 14px;
+    border: 2px solid transparent;
+    transition: all 0.1s ease;
+}
+
+.nav-item:hover {
+    color: #ffff55;
+    background-color: #212121;
+    border: 2px solid #000;
+    box-shadow: inset -2px -2px 0px #151515, inset 2px 2px 0px #5c5c5c;
+}
+
+.nav-item.active {
+    color: #ffffff;
+    background-color: #151515;
+    border: 2px solid #000;
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.6);
+}
+
+/* --- 頁面標頭區 --- */
+.page-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.page-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.8rem;
+    color: #ffff55;
+    text-shadow: 3px 3px 0px #555500;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.page-subtitle {
+    color: #aaaaaa;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+/* --- 搜尋與篩選器面板 --- */
+.search-box {
+    background-color: #2e2e2e;
+    border: 4px solid #000;
+    box-shadow: inset -4px -4px 0px #1a1a1a, inset 4px 4px 0px #5c5c5c;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    font-size: 1.1rem;
+}
+
+#cmd-search {
+    width: 100%;
+    background-color: #151515;
+    border: 3px solid #000;
+    padding: 12px 12px 12px 45px;
+    color: #fff;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.5);
+}
+
+#cmd-search:focus {
+    border-color: #ffaa00;
+}
+
+/* 篩選標籤按鈕群 */
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-btn {
+    background-color: #4a4a4a;
+    color: #fff;
+    border: 2px solid #000;
+    padding: 6px 14px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: inset -2px -2px 0px #2e2e2e, inset 2px 2px 0px #8b8b8b;
+    user-select: none;
+}
+
+.filter-btn:hover {
+    background-color: #555555;
+    color: #ffff55;
+}
+
+.filter-btn.active {
+    background-color: #ffaa00;
+    color: #000;
+    box-shadow: inset 2px 2px 0px #a66f00, inset -2px -2px 0px #ffe5a3;
+}
+
+/* --- 指令方盒卡片 --- */
+.cmd-card {
+    background-color: #2e2e2e;
+    border: 4px solid #000;
+    box-shadow: inset -4px -4px 0px #1a1a1a, inset 4px 4px 0px #5c5c5c, 0px 6px 12px rgba(0,0,0,0.5);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.card-title {
+    font-size: 1.35rem;
+    color: #ffff55;
+    margin-bottom: 8px;
+}
+
+.card-desc {
+    color: #aaaaaa;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #444;
+    padding-bottom: 12px;
+}
+
+/* --- 指令細項條目排版 --- */
+.cmd-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cmd-item {
+    background-color: #151515;
+    border: 2px solid #444;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s ease;
+}
+
+.cmd-item:hover {
+    border-color: #ffaa00;
+    background-color: #1c1c1c;
+}
+
+/* 點擊時內縮模擬壓下去的感覺 */
+.cmd-item:active {
+    transform: scale(0.99);
+}
+
+/* 指令權限標籤 */
+.cmd-badge {
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 3px;
+    min-width: 65px;
+    text-align: center;
+    flex-shrink: 0;
+    border: 1px solid #000;
+}
+
+.badge-player {
+    background-color: #55ff55;
+    color: #000;
+}
+
+.badge-admin {
+    background-color: #ff5555;
+    color: #fff;
+}
+
+/* 指令主要代碼 */
+.cmd-code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-weight: bold;
+    color: #55ffff;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 220px;
+    max-width: 320px;
+}
+
+/* 管理員特有指令的微調底色 */
+.admin-cmd:hover {
+    background-color: #241818;
+}
+
+/* 指令效果描述 */
+.cmd-effect {
+    color: #dddddd;
+    font-size: 0.95rem;
+    flex-grow: 1;
+}
+
+.cmd-effect code {
+    background-color: #2e2e2e;
+    color: #ffaa00;
+    padding: 1px 5px;
+    border: 1px solid #000;
+    font-family: monospace;
+}
+
+/* --- 全域一鍵複製成功訊息 (Toast) --- */
+.toast {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #55ff55;
+    color: #000000;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0px #00aa00;
+    z-index: 3000;
+    text-align: center;
+    font-size: 1rem;
+    animation: mc-slide-up 0.15s ease-out;
+}
+
+@keyframes mc-slide-up {
+    from { bottom: 10px; opacity: 0; }
+    to { bottom: 30px; opacity: 1; }
+}
+
+/* --- 查無資料錯誤區塊 --- */
+.no-results-box {
+    text-align: center;
+    background-color: #2e2e2e;
+    border: 4px solid #000;
+    padding: 40px;
+    color: #ff5555;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: inset -4px -4px 0px #1a1a1a, inset 4px 4px 0px #5c5c5c;
+}
+
+/* --- 頁尾 --- */
+.footer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666666;
+    margin-top: 40px;
+    border-top: 2px solid #2e2e2e;
+    padding-top: 20px;
+}
+
+/* --- RWD 響應式手機版排版優化 --- */
+@media (max-width: 768px) {
+    body {
+        padding-top: 130px; /* 手機版導覽列變高，預留更多頂部空間 */
+    }
+    
+    .nav-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .page-title {
+        font-size: 1.4rem;
+    }
+    
+    .cmd-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .cmd-code {
+        min-width: 100%;
+        max-width: 100%;
+        font-size: 1rem;
+    }
+    
+    .filter-tags {
+        justify-content: center;
+    }
+    
+    .filter-btn {
+        flex: 1 1 calc(50% - 8px); /* 手機上按鈕兩兩一列 */
+        text-align: center;
+        font-size: 0.85rem;
+    }
+}
