@@ -61,10 +61,6 @@ body {
     gap: 8px;
 }
 
-.brand-pixel {
-    image-rendering: pixelated;
-}
-
 .nav-links {
     display: flex;
     gap: 15px;
@@ -233,7 +229,6 @@ body {
     background-color: #1c1c1c;
 }
 
-/* 點擊時內縮模擬壓下去的感覺 */
 .cmd-item:active {
     transform: scale(0.99);
 }
@@ -273,7 +268,6 @@ body {
     max-width: 320px;
 }
 
-/* 管理員特有指令的微調底色 */
 .admin-cmd:hover {
     background-color: #241818;
 }
@@ -342,7 +336,7 @@ body {
 /* --- RWD 響應式手機版排版優化 --- */
 @media (max-width: 768px) {
     body {
-        padding-top: 130px; /* 手機版導覽列變高，預留更多頂部空間 */
+        padding-top: 130px;
     }
     
     .nav-container {
@@ -372,7 +366,7 @@ body {
     }
     
     .filter-btn {
-        flex: 1 1 calc(50% - 8px); /* 手機上按鈕兩兩一列 */
+        flex: 1 1 calc(50% - 8px);
         text-align: center;
         font-size: 0.85rem;
     }
