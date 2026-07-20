@@ -1,0 +1,180 @@
+/* --- 基礎設定與麥塊暗色背景 --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: #1a1a1a;
+    background-image: 
+        radial-gradient(circle, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%),
+        linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9)),
+        url('https://images.unsplash.com/photo-1607988795691-3d0147b43231?q=80&w=1920&auto=format&fit=crop'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #f0f0f0;
+    line-height: 1.6;
+    padding-top: 90px; /* 預留頂部空間給固定式導覽列 */
+    padding-bottom: 40px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- 頁面標頭區 --- */
+.page-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.page-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.8rem;
+    color: #ffff55;
+    text-shadow: 3px 3px 0px #555500;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.page-subtitle {
+    color: #aaaaaa;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.update-time {
+    display: inline-block;
+    background-color: #151515;
+    color: #ffaa00;
+    border: 2px solid #ffaa00;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    box-shadow: 2px 2px 0px #000;
+}
+
+/* --- 規範卡片 Container --- */
+.rules-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.rule-card {
+    background-color: #2e2e2e;
+    border: 4px solid #000;
+    box-shadow: inset -4px -4px 0px #1a1a1a, inset 4px 4px 0px #5c5c5c, 0px 6px 12px rgba(0,0,0,0.5);
+    padding: 25px;
+    image-rendering: pixelated;
+}
+
+.rule-card-title {
+    font-size: 1.35rem;
+    color: #ffff55;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px dashed #5c5c5c;
+    padding-bottom: 10px;
+}
+
+.rule-card-desc {
+    color: #aaaaaa;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* --- 條目清單樣式 --- */
+.rule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.rule-item {
+    background-color: #151515;
+    border: 2px solid #444;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.5);
+}
+
+.rule-num {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #ffaa00;
+    color: #000;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0px #3f2a00;
+    flex-shrink: 0;
+}
+
+.rule-content {
+    color: #dddddd;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.rule-content code {
+    background-color: #2e2e2e;
+    color: #55ffff;
+    padding: 2px 6px;
+    border: 1px solid #000;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.rule-warning {
+    color: #ff5555;
+    font-weight: bold;
+    display: block;
+    margin-top: 4px;
+}
+
+.rule-note {
+    color: #aaaaaa;
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 4px;
+}
+
+/* --- 頁尾 --- */
+.footer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666666;
+    margin-top: 40px;
+    border-top: 2px solid #2e2e2e;
+    padding-top: 20px;
+}
+
+/* --- RWD 手機版優化 --- */
+@media (max-width: 768px) {
+    body {
+        padding-top: 130px;
+    }
+    
+    .page-title {
+        font-size: 1.4rem;
+    }
+
+    .rule-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .rule-num {
+        align-self: flex-start;
+    }
+}
