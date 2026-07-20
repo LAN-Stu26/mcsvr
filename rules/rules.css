@@ -8,10 +8,11 @@
 body {
     font-family: 'Noto Sans TC', sans-serif;
     background-color: #1a1a1a;
+    /* 使用自訂出生點村莊圖片 bg.png 並疊加暗色半透明遮罩 */
     background-image: 
-        radial-gradient(circle, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%),
-        linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9)),
-        url('https://images.unsplash.com/photo-1607988795691-3d0147b43231?q=80&w=1920&auto=format&fit=crop'); 
+        radial-gradient(circle, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.92) 100%),
+        linear-gradient(rgba(20, 20, 20, 0.82), rgba(20, 20, 20, 0.82)),
+        url('/bg.png'); 
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
