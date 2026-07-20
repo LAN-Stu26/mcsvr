@@ -26,69 +26,6 @@ body {
     margin: 0 auto;
 }
 
-/* --- 麥塊風頂端導覽列樣式 (新增整合) --- */
-.mc-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #2e2e2e;
-    border-bottom: 4px solid #000;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-    z-index: 2000;
-    padding: 12px 20px;
-}
-
-.nav-container {
-    max-width: 800px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.nav-brand {
-    font-family: 'Press Start 2P', cursive;
-    color: #ffaa00;
-    text-decoration: none;
-    font-size: 1.2rem;
-    text-shadow: 2px 2px 0px #3f2a00;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nav-links {
-    display: flex;
-    gap: 15px;
-}
-
-.nav-item {
-    color: #aaaaaa;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 0.95rem;
-    padding: 6px 14px;
-    border: 2px solid transparent;
-    transition: all 0.1s ease;
-}
-
-.nav-item:hover {
-    color: #ffff55;
-    background-color: #212121;
-    border: 2px solid #000;
-    box-shadow: inset -2px -2px 0px #151515, inset 2px 2px 0px #5c5c5c;
-}
-
-.nav-item.active {
-    color: #ffffff;
-    background-color: #151515;
-    border: 2px solid #000;
-    box-shadow: inset 2px 2px 0px rgba(0,0,0,0.6);
-}
-
 /* --- 伺服器標題區 --- */
 .header {
     text-align: center;
