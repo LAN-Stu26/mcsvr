@@ -1,5 +1,5 @@
 (function() {
-    // 建立導覽列的 HTML 結構（首頁為 /，指令為 /commands/，圖示改用 /icon.png）
+    // 建立導覽列的 HTML 結構（首頁 /、指令 /commands/、規範 /rules/，圖示改用 /icon.png）
     const navHTML = `
     <nav class="mc-nav">
         <div class="nav-container">
@@ -9,6 +9,7 @@
             <div class="nav-links">
                 <a href="/" class="nav-item" id="nav-home"><i class="fa-solid fa-house"></i> 返回首頁</a>
                 <a href="/commands/" class="nav-item" id="nav-cmds"><i class="fa-solid fa-terminal"></i> 指令大全</a>
+                <a href="/rules/" class="nav-item" id="nav-rules"><i class="fa-solid fa-book-bookmark"></i> 伺服器規範</a>
             </div>
         </div>
     </nav>
@@ -32,6 +33,10 @@
         // 如果路徑中包含 commands 
         else if (path.includes('/commands')) {
             document.getElementById('nav-cmds').classList.add('active');
+        }
+        // 如果路徑中包含 rules
+        else if (path.includes('/rules')) {
+            document.getElementById('nav-rules').classList.add('active');
         }
     }
 
