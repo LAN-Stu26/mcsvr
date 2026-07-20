@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </a>
                 
                 <!-- 手機版漢堡選單按鈕 -->
-                <button class="nav-toggle" id="navToggle" aria-label="切換選單">
+                <button class="nav-toggle" id="navToggle" aria-label="切換選單" style="display: none;">
                     ☰
                 </button>
 

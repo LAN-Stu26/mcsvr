@@ -62,7 +62,7 @@
 }
 
 .nav-toggle {
-    display: none;
+    display: none !important;
     background-color: #151515;
     color: #ffaa00;
     border: 2px solid #000;
@@ -81,7 +81,7 @@
 
 @media (max-width: 768px) {
     .nav-toggle {
-        display: block;
+        display: block !important;
     }
 
     .nav-links {
