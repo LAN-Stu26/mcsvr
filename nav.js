@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/" class="nav-item ${currentPath === '/' || currentPath.endsWith('/index.html') ? 'active' : ''}">
                         🏠 返回首頁
                     </a>
+                    <a href="/news/" class="nav-item ${currentPath.includes('/news') ? 'active' : ''}">
+                        📰 最新消息
+                    </a>
                     <a href="/commands/" class="nav-item ${currentPath.includes('/commands') ? 'active' : ''}">
                         >_ 指令大全
                     </a>
