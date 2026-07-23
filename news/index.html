@@ -3,71 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lazy Sheep 伺服器 - 最新消息</title>
+    <title>Lazy Sheep 伺服器 - 指令大全</title>
     <link rel="icon" href="/icon.png" type="image/png">
+    <!-- 引入 Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 引入共用導覽列樣式與頁面樣式 -->
     <link rel="stylesheet" href="/nav.css">
-    <link rel="stylesheet" href="news.css">
+    <link rel="stylesheet" href="commands.css">
 </head>
 <body>
+    <!-- 使用 script 標籤自動導入通用導覽列 -->
     <script src="/nav.js"></script>
 
     <div class="container">
+        
+        <!-- 頁面標頭 -->
         <header class="page-header">
-            <p class="page-kicker"><i class="fa-solid fa-bullhorn"></i> 最新公告</p>
-            <h1 class="page-title">NEWS</h1>
-            <p class="page-subtitle">查看伺服器最新更新與公告內容</p>
+            <h1 class="page-title">SERVER COMMANDS</h1>
+            <p class="page-subtitle">伺服器常用指令與工具清單（點擊指令區塊可直接複製）</p>
         </header>
 
-        <main class="news-list">
+        <!-- 即時搜尋與快速過濾列 -->
+        <div class="search-box">
+            <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="cmd-search" placeholder="輸入關鍵字搜尋指令... (例如: lock, 私訊, admin)" oninput="filterCommands()">
+            </div>
+            <div class="filter-tags">
+                <button class="filter-btn active" onclick="filterCategory('all')">全部顯示</button>
+                <button class="filter-btn" onclick="filterCategory('bolt')">🛡️ 防盜鎖定</button>
+                <button class="filter-btn" onclick="filterCategory('lp')">🎨 身份組與顏色</button>
+                <button class="filter-btn" onclick="filterCategory('ess')">💬 基礎與私訊</button>
+                <button class="filter-btn" onclick="filterCategory('vanilla')">⚙️ 原版規則</button>
+            </div>
+        </div>
 
-            <article class="news-card" id="news-3">
-                <div class="news-meta">
-                    <span class="news-tag">更新公告</span>
-                    <span class="news-date">2026/07/22</span>
-                </div>
-                <div class="news-title-row">
-                    <h2 class="news-title">伺服器新增 EconomyShopGUI 插件</h2>
-                    <a href="#news-3" class="share-link" title="分享最新公告">#3 <span class="new-badge">NEW</span></a>
-                </div>
-                <p class="news-content">
-                    從現在起，只需輸入指令即可購買需要品
-                </p>
-            </article>
-            
-            <article class="news-card featured" id="news-2">
-                <div class="news-meta">
-                    <span class="news-tag">重要公告</span>
-                    <span class="news-date">2026/07/22</span>
-                </div>
-                <div class="news-title-row">
-                    <h2 class="news-title">伺服器即將在 8/1 關閉生物破壞</h2>
-                    <a href="#news-2" class="share-link" title="分享這則公告">#2</a>
-                </div>
-                <p class="news-content">
-                    由於伺服器即將進入新的維護與調整階段，生物破壞功能將於 8/1 起正式關閉。
-                </p>
-            </article>
+        <!-- 全域複製提示浮動視窗 -->
+        <center>
+            <div class="toast" id="cmd-toast">✔ 指令已成功複製到剪貼簿！</div>
+        </center>
 
-            <article class="news-card" id="news-1">
-                <div class="news-meta">
-                    <span class="news-tag">更新公告</span>
-                    <span class="news-date">2026/07/22</span>
-                </div>
-                <div class="news-title-row">
-                    <h2 class="news-title">本站最新消息在這!</h2>
-                    <a href="#news-1" class="share-link" title="分享最新公告">#1</a>
-                </div>
-                <p class="news-content">
-                    這裡將會同步伺服器內建的歡迎公告!
-                </p>
-            </article>
-        </main>
+        <!-- 指令卡片區域 -->
+        <div class="commands-grid">
 
+            <!-- 1. 方塊安全防盜系統 (Bolt) -->
+            <section class="cmd-card" data-category="bolt">
+                <h2 class="card-title">🛡️ 1. 方塊安全防盜系統 (Bolt)</h2>
+                <p class="card-desc">這款外掛負責保護世界中的箱子與門，防範偷竊。所有玩家皆可免費使用基礎鎖定。</p>
+                
+                <div class="cmd-list">
+                    <div class="cmd-item" onclick="copyCommand('/bolt lock')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/bolt lock</div>
+                        <div class="cmd-effect">對著箱子/門按<strong>右鍵</strong>，直接進行私人鎖定（所有玩家預設可用）。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/bolt unlock')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/bolt unlock</div>
+                        <div class="cmd-effect">對著自己的箱子按<strong>右鍵</strong>，解除鎖定。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/bolt trust ')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/bolt trust &lt;玩家ID&gt;</div>
+                        <div class="cmd-effect">對著箱子按<strong>右鍵</strong>，將箱子使用權限共享給朋友。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/bolt info')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/bolt info</div>
+                        <div class="cmd-effect">對著任意方塊按<strong>右鍵</strong>，查詢該方塊是誰鎖定的。</div>
+                    </div>
+                    
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/bolt admin')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/bolt admin</div>
+                        <div class="cmd-effect">管理員專用，開啟最高管理模式（可強制拆除他人鎖定的箱子）。</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 身份組與聊天顏色 (LuckPerms) -->
+            <section class="cmd-card" data-category="lp">
+                <h2 class="card-title">🎨 2. 身份組與聊天顏色 (LuckPerms)</h2>
+                <p class="card-desc">這款外掛控制玩家名字前方的標籤（Prefix）與名字顏色，用來劃分權限等級。</p>
+                
+                <div class="cmd-list">
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp editor')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/lp editor</div>
+                        <div class="cmd-effect">產生安全網址，開啟網頁版的視覺化設定面板。</div>
+                    </div>
+                    
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user xxx parent set xxx')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set admin</div>
+                        <div class="cmd-effect">將某人（或自己）提升為管理員組（變更為綠標、黃名）。</div>
+                    </div>
+                    
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp group default meta setprefix &quot;&amp;7[玩家]&amp;f &quot;')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/lp group default meta setprefix "&amp;7[玩家]&amp;f "</div>
+                        <div class="cmd-effect">一鍵設定新進玩家的格式（灰色 [玩家] 標籤 + 白色名字）。</div>
+                    </div>
+                    
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp group admin meta setprefix &quot;&amp;a[管理員]&amp;e &quot;')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/lp group admin meta setprefix "&amp;a[管理員]&amp;e "</div>
+                        <div class="cmd-effect">一鍵設定管理員的格式（鮮綠 [管理員] 標籤 + 黃色名字）。</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 基礎指令與私訊系統 (EssentialsX) -->
+            <section class="cmd-card" data-category="ess">
+                <h2 class="card-title">💬 3. 基礎指令與私訊系統 (EssentialsX)</h2>
+                <p class="card-desc">這款外掛負責伺服器基礎運作、私密對話、暱稱系統以及後台設定重載。</p>
+                
+                <div class="cmd-list">
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/ess reload')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/ess reload</div>
+                        <div class="cmd-effect">修改 config.yml 或 motd.txt 歡迎訊息後，一鍵刷新生效。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/msg ')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/msg &lt;玩家ID&gt; &lt;訊息&gt;</div>
+                        <div class="cmd-effect">發送只有彼此看得到的私密密語（亦可使用快捷指令：<code>/w</code>）。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/r ')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/r &lt;訊息&gt;</div>
+                        <div class="cmd-effect">快速回覆上一則收到的私訊。</div>
+                    </div>
+                    
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/nick ')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/nick &lt;玩家ID&gt; &lt;新名字&gt;</div>
+                        <div class="cmd-effect">幫指定玩家在聊天室換上專屬暱稱（若要清除請輸入 <code>/nick &lt;玩家ID&gt; off</code>）。</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 麥塊原版內建指令 (Vanilla Gamerule) -->
+            <section class="cmd-card" data-category="vanilla">
+                <h2 class="card-title">⚙️ 4. 麥塊原版內建指令 (Vanilla Gamerule)</h2>
+                <p class="card-desc">控制世界最底層生存規則的通用原版指令，會直接儲存在世界存檔內。</p>
+                
+                <div class="cmd-list">
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/gamerule keepInventory true')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/gamerule keepInventory true</div>
+                        <div class="cmd-effect">開啟<strong>死亡不掉落（防噴）</strong>功能，死後保留所有裝備與經驗值。</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- 查無資料提示 -->
+        <div id="no-results" class="no-results-box" style="display: none;">
+            <i class="fa-solid fa-ghost"></i> 找不到任何符合關鍵字的指令！
+        </div>
+
+        <!-- 頁尾 -->
         <footer class="footer">
-            <p>&copy; 2026 Lazy Sheep Minecraft Server. 持續更新中。</p>
+            <p>&copy; 2026 Lazy Sheep Minecraft Server. 指令手冊系統持續更新中。</p>
         </footer>
+
     </div>
+
+    <!-- JavaScript 搜尋過濾與複製控制 -->
+    <script>
+        let currentCategory = 'all';
+
+        function copyCommand(text) {
+            let cleanText = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+            navigator.clipboard.writeText(cleanText).then(() => {
+                showToast();
+            }).catch(err => {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = cleanText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('cmd-toast');
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2500);
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            filterCommands();
+        }
+
+        function filterCommands() {
+            const searchKeyword = document.getElementById('cmd-search').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.cmd-card');
+            let totalVisibleItems = 0;
+
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                const items = card.querySelectorAll('.cmd-item');
+                let cardHasVisibleItem = false;
+
+                if (currentCategory !== 'all' && cardCategory !== currentCategory) {
+                    card.style.display = 'none';
+                    return;
+                }
+
+                items.forEach(item => {
+                    const cmdText = item.querySelector('.cmd-code').innerText.toLowerCase();
+                    const effectText = item.querySelector('.cmd-effect').innerText.toLowerCase();
+                    
+                    if (cmdText.includes(searchKeyword) || effectText.includes(searchKeyword)) {
+                        item.style.display = 'flex';
+                        cardHasVisibleItem = true;
+                        totalVisibleItems++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                if (cardHasVisibleItem) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const noResults = document.getElementById('no-results');
+            if (totalVisibleItems === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
