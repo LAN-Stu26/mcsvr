@@ -36,6 +36,7 @@
                 <button class="filter-btn" onclick="filterCategory('bolt')">🛡️ 防盜鎖定</button>
                 <button class="filter-btn" onclick="filterCategory('lp')">🎨 身份組與顏色</button>
                 <button class="filter-btn" onclick="filterCategory('ess')">💬 基礎與私訊</button>
+                <button class="filter-btn" onclick="filterCategory('eco')">💰 經濟商店</button>
                 <button class="filter-btn" onclick="filterCategory('vanilla')">⚙️ 原版規則</button>
             </div>
         </div>
@@ -129,6 +130,24 @@
                         <div class="cmd-code">/ess reload</div>
                         <div class="cmd-effect">修改 config.yml 或 motd.txt 歡迎訊息後，一鍵刷新生效。</div>
                     </div>
+
+                    <div class="cmd-item" onclick="copyCommand('/shop')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/shop</div>
+                        <div class="cmd-effect">開啟圖形化商店介面，快速購買與出售物品。</div>
+                    </div>
+
+                    <div class="cmd-item" onclick="copyCommand('/sellhand')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/sellhand</div>
+                        <div class="cmd-effect">賣出目前手上拿著的單一堆疊物品，適合快速變現。</div>
+                    </div>
+
+                    <div class="cmd-item" onclick="copyCommand('/sellall')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/sellall</div>
+                        <div class="cmd-effect">賣出背包中與手上拿著的物品完全相同的所有堆疊。</div>
+                    </div>
                     
                     <div class="cmd-item" onclick="copyCommand('/msg ')">
                         <div class="cmd-badge badge-player">全玩家</div>
@@ -141,6 +160,18 @@
                         <div class="cmd-code">/r &lt;訊息&gt;</div>
                         <div class="cmd-effect">快速回覆上一則收到的私訊。</div>
                     </div>
+
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/eshop reload')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/eshop reload</div>
+                        <div class="cmd-effect">修改商店設定後，立即重載外掛配置檔。</div>
+                    </div>
+
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/eco give ')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/eco give &lt;玩家ID&gt; &lt;金額&gt;</div>
+                        <div class="cmd-effect">直接發放遊戲貨幣給指定玩家，適合舉辦活動或發放獎勵金。</div>
+                    </div>
                     
                     <div class="cmd-item admin-cmd" onclick="copyCommand('/nick ')">
                         <div class="cmd-badge badge-admin">管理員</div>
@@ -151,6 +182,43 @@
             </section>
 
             <!-- 4. 麥塊原版內建指令 (Vanilla Gamerule) -->
+            <!-- 4. 經濟與商店 (Econ / Eshop) -->
+            <section class="cmd-card" data-category="eco">
+                <h2 class="card-title">💰 經濟與商店 (Econ / Eshop)</h2>
+                <p class="card-desc">伺服器的交易與商店指令；包含圖形化商店與販售物品的快速指令。</p>
+                
+                <div class="cmd-list">
+                    <div class="cmd-item" onclick="copyCommand('/shop')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/shop</div>
+                        <div class="cmd-effect">開啟圖形化商店介面（所有玩家皆可使用）。</div>
+                    </div>
+
+                    <div class="cmd-item" onclick="copyCommand('/sellhand')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/sellhand</div>
+                        <div class="cmd-effect">賣出你目前手上正拿著的那一個物品堆疊（快捷販售）。</div>
+                    </div>
+
+                    <div class="cmd-item" onclick="copyCommand('/sellall')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/sellall</div>
+                        <div class="cmd-effect">將背包中與手上物品完全相同的所有物品全部賣出。</div>
+                    </div>
+
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/eshop reload')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/eshop reload</div>
+                        <div class="cmd-effect">管理員專用：修改外掛後重新載入圖形化商店設定檔。</div>
+                    </div>
+
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/eco give &lt;玩家ID&gt; &lt;金額&gt;')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/eco give &lt;玩家ID&gt; &lt;金額&gt;</div>
+                        <div class="cmd-effect">管理員專用：直接在後台發放遊戲幣給指定玩家（活動獎勵）。</div>
+                    </div>
+                </div>
+            </section>
             <section class="cmd-card" data-category="vanilla">
                 <h2 class="card-title">⚙️ 4. 麥塊原版內建指令 (Vanilla Gamerule)</h2>
                 <p class="card-desc">控制世界最底層生存規則的通用原版指令，會直接儲存在世界存檔內。</p>
