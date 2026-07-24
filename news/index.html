@@ -18,7 +18,7 @@
 
         <!-- 頁面頂部標題區 -->
         <header class="page-header">
-            <h1 class="page-title"><i class="fa-solid fa-newspaper"></i> 新聞與公告</h1>
+            <h1 class="page-title"><i class="fa-solid fa-newspaper"></i> Server News</h1>
             <p class="page-subtitle">掌握 Lazy Sheep 伺服器的最新動態、更新日誌與重要宣布！</p>
         </header>
 
@@ -42,32 +42,32 @@
         <!-- 新聞列表區域 -->
         <main class="news-list" id="news-container">
 
-            <!-- 新聞 #1：新增商店模組 -->
-            <article class="news-card" id="news-1" data-id="1">
+            <!-- 新聞 #2：公告轉移 -->
+            <article class="news-card" id="2" data-id="2">
                 <div class="news-header">
                     <div class="news-meta">
-                        <span class="news-badge badge-update"><i class="fa-solid fa-sparkles"></i> 更新公告</span>
-                        <span class="news-date"><i class="fa-regular fa-clock"></i> 2026-07-20</span>
+                        <span class="news-badge badge-important"><i class="fa-solid fa-triangle-exclamation"></i> 重要公告</span>
+                        <span class="news-date"><i class="fa-regular fa-clock"></i> 2026-07-24</span>
                     </div>
-                    <h2 class="news-title">本伺服器新增商店模組!</h2>
+                    <h2 class="news-title">伺服器之後不再顯示公告</h2>
                 </div>
 
                 <div class="news-body">
                     <p>
-                        本伺服器已經新增了商店模組，玩家可以在遊戲中使用 <code class="cmd-code">/shop</code> 指令來購買各種物品，並且可以透過交易系統與其他玩家進行物品交換。
+                        伺服器的所有公告將在 <strong>此</strong> 公告。
                     </p>
                 </div>
 
                 <div class="news-footer">
-                    <button class="mc-btn mc-btn-share" onclick="copyShareLink('1')">
+                    <button class="mc-btn mc-btn-share" onclick="copyShareLink('2')">
                         <i class="fa-solid fa-share-nodes"></i> 分享此新聞
                     </button>
-                    <div class="toast" id="toast-news-1">✔ 已複製連結：mcsvr.sld.tw/news/#1</div>
+                    <div class="toast" id="toast-news-2">✔ 已複製連結：mcsvr.sld.tw/news/#2</div>
                 </div>
             </article>
-
-            <!-- 新聞 #2：關閉生物破壞 -->
-            <article class="news-card" id="news-2" data-id="2">
+            
+            <!-- 新聞 #1：關閉生物破壞 -->
+            <article class="news-card" id="1" data-id="1">
                 <div class="news-header">
                     <div class="news-meta">
                         <span class="news-badge badge-important"><i class="fa-solid fa-triangle-exclamation"></i> 重要公告</span>
@@ -83,10 +83,10 @@
                 </div>
 
                 <div class="news-footer">
-                    <button class="mc-btn mc-btn-share" onclick="copyShareLink('2')">
+                    <button class="mc-btn mc-btn-share" onclick="copyShareLink('1')">
                         <i class="fa-solid fa-share-nodes"></i> 分享此新聞
                     </button>
-                    <div class="toast" id="toast-news-2">✔ 已複製連結：mcsvr.sld.tw/news/#2</div>
+                    <div class="toast" id="toast-news-1">✔ 已複製連結：mcsvr.sld.tw/news/#1</div>
                 </div>
             </article>
 
