@@ -1,187 +1,303 @@
+/* --- 全局基礎設定 --- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Noto Sans TC', sans-serif;
     background-color: #1a1a1a;
-    background-image:
-        radial-gradient(circle, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.9) 100%),
-        linear-gradient(rgba(20, 20, 20, 0.82), rgba(20, 20, 20, 0.82)),
-        url('/bg.png');
+    background-image: 
+        radial-gradient(circle, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%),
+        url('/bg.png'); 
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     color: #f0f0f0;
-    line-height: 1.7;
-    padding-top: 110px;
-    padding-bottom: 40px;
+    line-height: 1.6;
+    padding: 0 20px 40px 20px;
+    padding-top: 100px; /* 留出導覽列空間 */
 }
 
 .container {
-    max-width: 860px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 0 20px;
 }
 
+/* --- 頁面標題區 --- */
 .page-header {
     text-align: center;
-    margin-bottom: 32px;
-}
-
-.page-kicker {
-    color: #ffaa00;
-    font-weight: 700;
-    margin-bottom: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    margin-bottom: 30px;
 }
 
 .page-title {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: #ffff55;
-    text-shadow: 3px 3px 0px #555500;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
+    text-shadow: 3px 3px 0px #3f3f00;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 .page-subtitle {
-    color: #d0d0d0;
-    font-size: 0.98rem;
+    color: #aaaaaa;
+    font-size: 1rem;
 }
 
+/* --- 搜尋框區域 (Minecraft 輸入框質感) --- */
+.search-section {
+    margin-bottom: 30px;
+}
+
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #151515;
+    border: 3px solid #000;
+    box-shadow: inset 3px 3px 0px #000, 0px 4px 10px rgba(0,0,0,0.5);
+    padding: 5px 15px;
+}
+
+.search-icon {
+    color: #ffff55;
+    font-size: 1.2rem;
+    margin-right: 12px;
+}
+
+.search-box input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    padding: 10px 0;
+}
+
+.search-box input::placeholder {
+    color: #777777;
+}
+
+.clear-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+}
+
+.clear-btn:hover {
+    color: #ff5555;
+}
+
+.no-results-box {
+    background-color: #2e2e2e;
+    border: 3px dashed #ff5555;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #ccc;
+}
+
+/* --- 新聞卡片主要樣式 --- */
 .news-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
 }
 
 .news-card {
     background-color: #2e2e2e;
     border: 4px solid #000;
-    box-shadow: inset -4px -4px 0px #1a1a1a, inset 4px 4px 0px #5c5c5c, 0px 8px 16px rgba(0, 0, 0, 0.45);
-    padding: 24px;
-    image-rendering: pixelated;
+    box-shadow: 
+        inset -4px -4px 0px #1a1a1a, 
+        inset 4px 4px 0px #5c5c5c,
+        0px 8px 16px rgba(0,0,0,0.6);
+    padding: 25px;
     position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.news-card.featured {
-    border-color: #ffaa00;
+/* 分享錨點點擊後的黃光閃爍高亮效果 */
+.news-card-highlight {
+    animation: gold-pulse 1s infinite alternate;
 }
 
-.news-card + .news-card {
-    margin-top: 16px;
-    border-top: 4px dashed #5c5c5c;
-    padding-top: 28px;
+@keyframes gold-pulse {
+    from {
+        border-color: #ffff55;
+        box-shadow: 0px 0px 20px rgba(255, 255, 85, 0.8), inset -4px -4px 0px #1a1a1a, inset 4px 4px 0px #5c5c5c;
+    }
+    to {
+        border-color: #ffaa00;
+        box-shadow: 0px 0px 30px rgba(255, 170, 0, 1), inset -4px -4px 0px #1a1a1a, inset 4px 4px 0px #5c5c5c;
+    }
 }
 
-.news-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.share-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: #151515;
-    color: #55ffff;
-    text-decoration: none;
-    font-weight: 700;
-    padding: 6px 10px;
-    border: 2px solid #000;
-    box-shadow: inset -2px -2px 0px #2e2e2e, inset 2px 2px 0px #5c5c5c;
-    white-space: nowrap;
-}
-
-.share-link:hover {
-    color: #ffff55;
-    background-color: #222222;
-}
-
-.new-badge {
-    display: inline-block;
-    background-color: #ff5555;
-    color: #fff;
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border: 1px solid #000;
-    margin-left: 4px;
+/* 新聞頂部 Meta 資訊 */
+.news-header {
+    margin-bottom: 15px;
+    border-bottom: 2px dashed #444444;
+    padding-bottom: 12px;
 }
 
 .news-meta {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
+    justify-content: space-between;
     flex-wrap: wrap;
-}
-
-.news-tag {
-    display: inline-block;
-    background-color: #ffaa00;
-    color: #000;
-    padding: 4px 10px;
-    font-weight: 700;
-    border: 2px solid #000;
-    box-shadow: 2px 2px 0px #3f2a00;
-}
-
-.news-date {
-    color: #aaaaaa;
-    font-size: 0.9rem;
-    font-weight: 700;
-}
-
-.news-title {
-    font-size: 1.35rem;
-    color: #ffff55;
-    margin-bottom: 12px;
-    line-height: 1.4;
-}
-
-.news-content {
-    color: #e8e8e8;
+    gap: 10px;
     margin-bottom: 10px;
 }
 
-.news-content code {
-    background-color: #151515;
-    color: #55ffff;
-    padding: 2px 6px;
-    border: 1px solid #000;
-    font-family: Consolas, monospace;
+.news-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-radius: 3px;
+    box-shadow: 2px 2px 0px #000;
 }
 
+/* 標籤分類顏色 */
+.badge-update {
+    background-color: #55ff55;
+    color: #000000;
+}
+
+.badge-important {
+    background-color: #ff5555;
+    color: #ffffff;
+}
+
+.news-date {
+    font-size: 0.85rem;
+    color: #aaaaaa;
+}
+
+.news-title {
+    font-size: 1.4rem;
+    color: #ffffff;
+    line-height: 1.4;
+}
+
+/* 新聞內文與程式碼指令呈現 */
+.news-body {
+    color: #dddddd;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.cmd-code {
+    background-color: #151515;
+    border: 1px solid #55ffff;
+    color: #55ffff;
+    padding: 2px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85rem;
+    margin: 0 4px;
+    display: inline-block;
+}
+
+/* 新聞底部按鈕區 */
+.news-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* --- Minecraft 3D 經典按鈕 (分享專用) --- */
+.mc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: #ffffff;
+    background-color: #4a4a4a;
+    border: 3px solid #000;
+    box-shadow: 
+        inset -3px -3px 0px #2e2e2e, 
+        inset 3px 3px 0px #8b8b8b;
+    padding: 8px 18px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.1s ease;
+    text-decoration: none;
+}
+
+.mc-btn-share:hover {
+    background-color: #ffaa00;
+    color: #000;
+    box-shadow: 
+        inset -3px -3px 0px #9f6f00, 
+        inset 3px 3px 0px #ffcf40;
+}
+
+.mc-btn:active {
+    box-shadow: 
+        inset 3px 3px 0px #1a1a1a, 
+        inset -3px -3px 0px #5c5c5c;
+    transform: translateY(2px);
+}
+
+.toast {
+    display: none;
+    background-color: #55ff55;
+    color: #000000;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: 2px solid #000;
+    margin-top: 10px;
+    box-shadow: 3px 3px 0px #00aa00;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* 頁尾 */
 .footer {
     text-align: center;
-    color: #888888;
-    margin-top: 30px;
     font-size: 0.85rem;
+    color: #777777;
+    margin-top: 50px;
+    border-top: 1px solid #2e2e2e;
+    padding-top: 20px;
 }
 
-@media (max-width: 768px) {
+/* 響應式調整 */
+@media (max-width: 600px) {
     body {
         padding-top: 130px;
     }
-
     .page-title {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
     }
-
+    .news-title {
+        font-size: 1.2rem;
+    }
     .news-card {
-        padding: 20px;
+        padding: 18px;
     }
-
-    .news-title-row {
-        flex-direction: column;
-        align-items: flex-start;
+    .news-footer {
+        align-items: stretch;
+    }
+    .mc-btn {
+        width: 100%;
     }
 }
