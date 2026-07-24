@@ -36,15 +36,16 @@ body {
 }
 
 .page-title {
-    font-family: 'font-family';
-    font-size: 2rem;
-    color: #ffff55;
-    text-shadow: 3px 3px 0px #3f3f00;
+    font-family: 'Press Start 2P', monospace; /* 套用 Minecraft 點陣字體 */
+    font-size: 2.2rem;
+    color: #ffaa00; /* 改為圖片中的橘黃色 */
+    text-shadow: 4px 4px 0px #3E2723; /* 加上深咖啡色的 3D 陰影效果 */
     margin-bottom: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
+    line-height: 1.4;
 }
 
 .page-subtitle {
@@ -287,7 +288,7 @@ body {
         padding-top: 130px;
     }
     .page-title {
-        font-size: 1.5rem;
+        font-size: 1.2rem; /* 點陣字體較寬，手機版稍微縮小一點 */
     }
     .news-title {
         font-size: 1.2rem;
