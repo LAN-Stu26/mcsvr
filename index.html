@@ -17,119 +17,130 @@
 
     <div class="container">
 
-        <!-- 網頁標頭 -->
-        <header class="header">
-            <!-- 伺服器圖示 icon.png（含備用載入錯誤機制，防斷圖） -->
-            <img class="server-icon" src="icon.png" alt="Lazy Sheep Server Icon" onerror="this.onerror=null; this.src='https://placehold.co/128x128/2e2e2e/ffff55?text=🐏';">
-            <h1 class="server-logo">Lazy Sheep</h1>
-            <p style="color: #aaaaaa; font-weight: bold;">Lazy Sheep 創的專屬伺服器</p>
+        <!-- 頁面頂部 Header / Hero 區域 -->
+        <header class="header hero-header">
+            <div class="header-brand">
+                <img class="server-icon" src="icon.png" alt="Lazy Sheep Server Icon" onerror="this.onerror=null; this.src='https://placehold.co/128x128/2e2e2e/ffff55?text=🐏';">
+                <div class="header-text">
+                    <h1 class="server-logo">Lazy Sheep</h1>
+                    <p class="server-subtitle" style="color: #aaaaaa; font-weight: bold;">Lazy Sheep 創的專屬伺服器</p>
+                </div>
+            </div>
             <span class="server-version">Java 26.2</span>
         </header>
 
-        <!-- Aternos 伺服器狀態提醒 -->
-        <div class="aternos-warning">
-            <div class="aternos-header">
-                <i class="fa-solid fa-triangle-exclamation"></i> 伺服器狀態重要提醒
-            </div>
-            
-            <!-- 即時狀態面板 -->
-            <div class="status-panel">
-                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                    <span class="server-status-badge" id="api-status-badge">
-                        <span class="status-dot"></span>
-                        <span id="api-status-text">正在偵測狀態...</span>
-                    </span>
-                    <span class="last-checked" id="last-checked-time">最後檢查時間: --:--:--</span>
+        <!-- 主要內容區域 -->
+        <main class="main-content">
+
+            <!-- 連線資訊核心卡片 -->
+            <section class="card connection-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fa-solid fa-network-wired"></i> 伺服器連線資訊</h2>
                 </div>
-                <button class="mc-btn mc-btn-sm mc-btn-recheck" id="recheck-btn" onclick="checkServerStatus()">
-                    <i class="fa-solid fa-rotate"></i> 重新檢查
-                </button>
-            </div>
-
-            <p class="aternos-desc">
-                本伺服器為 <strong>Aternos 免費主機</strong>，若長時間無人遊玩，系統將會<strong>自動關機</strong>。
-                因此，若你發現伺服器目前處於離線狀態，請在開始遊玩前<strong>通知管理員幫你開服</strong>！
-            </p>
-            <div class="btn-group">
-                <!-- 寄信通知管理員：自動帶入 Lazy Sheep 伺服器主旨與預設罐頭文字 -->
-                <a class="mc-btn mc-btn-email" href="mailto:yangyang1005m@gmail.com?subject=【Lazy Sheep開服申請】請幫忙開啟%20Lazy%20Sheep%20伺服器！&body=你好！我想進去%20Lazy%20Sheep%20伺服器（java.mcsvr.sld.tw）遊玩，目前伺服器似乎是關閉狀態，能麻煩管理員幫忙開啟 Aternos 伺服器嗎？感謝！" target="_blank">
-                    <i class="fa-solid fa-envelope"></i> 寄信通知管理員開服
-                </a>
-                <!-- 備用：直接複製管理員的 Email 信箱 -->
-                <button class="mc-btn mc-btn-copy-mail" onclick="copyEmail()">
-                    <i class="fa-solid fa-copy"></i> 複製管理員信箱
-                </button>
-            </div>
-            <center>
-                <div class="toast" id="toast-email">✔ 管理員信箱複製成功！(yangyang1005m@gmail.com)</div>
-            </center>
-        </div>
-
-        <!-- 連線資訊卡片 -->
-        <section class="card">
-            <h2 class="card-title">伺服器連線資訊</h2>
-            <p>複製下方的伺服器專屬網域，即可透過 Minecraft Java 遊戲內直接連線！</p>
-            
-            <div class="ip-container">
-                <span class="ip-label">SERVER IP</span>
-                <span class="ip-text" id="server-ip">java.mcsvr.sld.tw</span>
+                <p class="card-desc">複製下方的伺服器專屬網域，即可透過 Minecraft Java 遊戲內直接連線！</p>
                 
+                <div class="ip-container">
+                    <span class="ip-label">SERVER IP</span>
+                    <span class="ip-text" id="server-ip">java.mcsvr.sld.tw</span>
+                    
+                    <div class="btn-group">
+                        <button class="mc-btn mc-btn-copy" onclick="copyIp()">
+                            <i class="fa-solid fa-paste"></i> 複製網域位址
+                        </button>
+                        <button class="mc-btn mc-btn-help" onclick="openHelpModal()">
+                            <i class="fa-solid fa-circle-question"></i> 無法加入？
+                        </button>
+                    </div>
+                    
+                    <div class="toast" id="toast-ip">✔ IP 複製成功！快去遊戲裡貼上吧！</div>
+                </div>
+            </section>
+
+            <!-- Aternos 伺服器狀態與通知面板 -->
+            <section class="card aternos-warning">
+                <div class="aternos-header">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 伺服器狀態重要提醒
+                </div>
+                
+                <!-- 即時狀態面板 -->
+                <div class="status-panel">
+                    <div class="status-info-group" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <span class="server-status-badge" id="api-status-badge">
+                            <span class="status-dot"></span>
+                            <span id="api-status-text">正在偵測狀態...</span>
+                        </span>
+                        <span class="last-checked" id="last-checked-time">最後檢查時間: --:--:--</span>
+                    </div>
+                    <button class="mc-btn mc-btn-sm mc-btn-recheck" id="recheck-btn" onclick="checkServerStatus()">
+                        <i class="fa-solid fa-rotate"></i> 重新檢查
+                    </button>
+                </div>
+
+                <p class="aternos-desc">
+                    本伺服器為 <strong>Aternos 免費主機</strong>，若長時間無人遊玩，系統將會<strong>自動關機</strong>。<br>
+                    因此，若你發現伺服器目前處於離線狀態，請在開始遊玩前<strong>通知管理員幫你開服</strong>！
+                </p>
+
                 <div class="btn-group">
-                    <button class="mc-btn mc-btn-copy" onclick="copyIp()">
-                        <i class="fa-solid fa-paste"></i> 複製網域位址
-                    </button>
-                    <!-- 新增「無法加入？」按鈕 -->
-                    <button class="mc-btn mc-btn-help" onclick="openHelpModal()">
-                        <i class="fa-solid fa-circle-question"></i> 無法加入？
+                    <!-- 寄信通知管理員：自動帶入 Lazy Sheep 伺服器主旨與預設罐頭文字 -->
+                    <a class="mc-btn mc-btn-email" href="mailto:yangyang1005m@gmail.com?subject=【Lazy Sheep開服申請】請幫忙開啟%20Lazy%20Sheep%20伺服器！&body=你好！我想進去%20Lazy%20Sheep%20伺服器（java.mcsvr.sld.tw）遊玩，目前伺服器似乎是關閉狀態，能麻煩管理員幫忙開啟 Aternos 伺服器嗎？感謝！" target="_blank">
+                        <i class="fa-solid fa-envelope"></i> 寄信通知管理員開服
+                    </a>
+                    <!-- 備用：直接複製管理員的 Email 信箱 -->
+                    <button class="mc-btn mc-btn-copy-mail" onclick="copyEmail()">
+                        <i class="fa-solid fa-copy"></i> 複製管理員信箱
                     </button>
                 </div>
                 
-                <div class="toast" id="toast-ip">✔ IP 複製成功！快去遊戲裡貼上吧！</div>
-            </div>
-        </section>
+                <div class="toast-container" style="text-align: center;">
+                    <div class="toast" id="toast-email">✔ 管理員信箱複製成功！(yangyang1005m@gmail.com)</div>
+                </div>
+            </section>
 
-        <!-- 遊戲玩法與特色 -->
-        <section class="card">
-            <h2 class="card-title">伺服器特色</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-title"><span>✦</span> 經典生存</div>
-                    <p style="color: #ccc; font-size: 0.95rem;">最純粹的麥塊合作生存，與好友們一同開拓領地、建造夢想家園。</p>
+            <!-- 遊戲玩法與特色 -->
+            <section class="card features-card">
+                <h2 class="card-title"><i class="fa-solid fa-star"></i> 伺服器特色</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-title"><span>✦</span> 經典生存</div>
+                        <p style="color: #ccc; font-size: 0.95rem;">最純粹的麥塊合作生存，與好友們一同開拓領地、建造夢想家園。</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-title"><span>✦</span> 隨開隨玩</div>
+                        <p style="color: #ccc; font-size: 0.95rem;">自由度極高！只要聯絡管理員，隨時都能開啟世界與朋友同樂。</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-title"><span>✦</span> 友善社群</div>
+                        <p style="color: #ccc; font-size: 0.95rem;">自己人當然要瘋狂罵人阿！</p>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-title"><span>✦</span> 隨開隨玩</div>
-                    <p style="color: #ccc; font-size: 0.95rem;">自由度極高！只要聯絡管理員，隨時都能開啟世界與朋友同樂。</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-title"><span>✦</span> 友善社群</div>
-                    <p style="color: #ccc; font-size: 0.95rem;">自己人當然要瘋狂罵人阿！</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- 簡易加入教學 -->
-        <section class="card">
-            <h2 class="card-title">如何開始遊戲？</h2>
-            <ul class="steps">
-                <li data-step="1">
-                    <strong>確認伺服器是否開啟：</strong><br>
-                    若發現伺服器未連線，請點選上方按鈕聯絡管理員開服。
-                </li>
-                <li data-step="2">
-                    <strong>選擇多人遊戲：</strong><br>
-                    注意！是Java版。點選 <strong>「多人遊戲 (Multiplayer)」</strong>。
-                </li>
-                <li data-step="3">
-                    <strong>新增伺服器：</strong><br>
-                    點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器「位址」輸入欄貼上複製的網址：<br>
-                    <code style="background: #151515; padding: 2px 6px; border: 1px solid #5c5c5c; color: #55ffff;">java.mcsvr.sld.tw</code>
-                </li>
-                <li data-step="4">
-                    <strong>連線冒險：</strong><br>
-                    點擊 <strong>「完成 (Done)」</strong>，雙擊伺服器即可直接進入世界！ 若顯示連線錯誤，可能是伺服器尚未開啟，請在進入一次
-                </li>
-            </ul>
-        </section>
+            <!-- 簡易加入教學 -->
+            <section class="card tutorial-card">
+                <h2 class="card-title"><i class="fa-solid fa-gamepad"></i> 如何開始遊戲？</h2>
+                <ol class="steps">
+                    <li data-step="1">
+                        <strong>確認伺服器是否開啟：</strong><br>
+                        若發現伺服器未連線，請點選上方按鈕聯絡管理員開服。
+                    </li>
+                    <li data-step="2">
+                        <strong>選擇多人遊戲：</strong><br>
+                        注意！是Java版。點選 <strong>「多人遊戲 (Multiplayer)」</strong>。
+                    </li>
+                    <li data-step="3">
+                        <strong>新增伺服器：</strong><br>
+                        點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器「位址」輸入欄貼上複製的網址：<br>
+                        <code style="background: #151515; padding: 2px 6px; border: 1px solid #5c5c5c; color: #55ffff;">java.mcsvr.sld.tw</code>
+                    </li>
+                    <li data-step="4">
+                        <strong>連線冒險：</strong><br>
+                        點擊 <strong>「完成 (Done)」</strong>，雙擊伺服器即可直接進入世界！若顯示連線錯誤，可能是伺服器尚未開啟，請再進入一次。
+                    </li>
+                </ol>
+            </section>
+
+        </main>
 
         <!-- 頁尾 -->
         <footer class="footer">
@@ -160,15 +171,15 @@
                     關閉
                 </button>
             </div>
-            <center>
+            <div class="toast-container" style="text-align: center;">
                 <div class="toast" id="toast-backup-ip" style="margin-top: 15px;">✔ 備用網域複製成功！</div>
-            </center>
+            </div>
         </div>
     </div>
 
     <script src="/nav.js"></script>
     
-    <!-- 複製功能與 API 偵測 JavaScript 邏輯 -->
+    <!-- 複製功能與 API 偵測 JavaScript 邏輯 (保持原樣不作任何調整) -->
     <script>
         // 伺服器狀態自動偵測功能（雙重 API 安全回退防護）
         function checkServerStatus() {
