@@ -5,40 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lazy Sheep 伺服器 - 最新消息</title>
     <link rel="icon" href="/icon.png" type="image/png">
+    <!-- 引入 Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 共用導覽列與最新消息頁面樣式 -->
     <link rel="stylesheet" href="/nav.css">
     <link rel="stylesheet" href="news.css">
 </head>
 <body>
-    <script src="/nav.js"></script>
 
     <div class="container">
+        <!-- 頁面頂部標題區 -->
         <header class="page-header">
             <p class="page-kicker"><i class="fa-solid fa-bullhorn"></i> 最新公告</p>
             <h1 class="page-title">NEWS</h1>
             <p class="page-subtitle">查看伺服器最新更新與公告內容</p>
         </header>
 
+        <!-- 最新消息卡片列表 -->
+        <main class="news-list">
+            
+            <!-- 公告 #3 (最新公告) -->
             <article class="news-card" id="3">
                 <div class="news-meta">
-                    <span class="news-tag">更新公告</span>
-                    <span class="news-date">2026/07/23</span>
+                    <span class="news-tag tag-update">更新公告</span>
+                    <span class="news-date"><i class="fa-regular fa-calendar"></i> 2026/07/23</span>
                 </div>
                 <div class="news-title-row">
                     <h2 class="news-title">本伺服器新增商店模組!</h2>
                     <a href="#3" class="share-link" title="分享最新公告">#3 <span class="new-badge">NEW</span></a>
                 </div>
                 <p class="news-content">
-                    本伺服器已經新增了商店模組，玩家可以在遊戲中使用 /shop 指令來購買各種物品，並且可以透過交易系統與其他玩家進行物品交換。
+                    本伺服器已經新增了商店模組，玩家可以在遊戲中使用 <code class="code-badge">/shop</code> 指令來購買各種物品，並且可以透過交易系統與其他玩家進行物品交換。
                 </p>
             </article>
 
-        <main class="news-list">
+            <!-- 公告 #2 (重要公告) -->
             <article class="news-card featured" id="2">
                 <div class="news-meta">
-                    <span class="news-tag">重要公告</span>
-                    <span class="news-date">2026/07/22</span>
+                    <span class="news-tag tag-important">重要公告</span>
+                    <span class="news-date"><i class="fa-regular fa-calendar"></i> 2026/07/22</span>
                 </div>
                 <div class="news-title-row">
                     <h2 class="news-title">伺服器即將在 8/1 關閉生物破壞</h2>
@@ -49,24 +56,30 @@
                 </p>
             </article>
 
+            <!-- 公告 #1 -->
             <article class="news-card" id="1">
                 <div class="news-meta">
-                    <span class="news-tag">更新公告</span>
-                    <span class="news-date">2026/07/22</span>
+                    <span class="news-tag tag-update">更新公告</span>
+                    <span class="news-date"><i class="fa-regular fa-calendar"></i> 2026/07/22</span>
                 </div>
                 <div class="news-title-row">
                     <h2 class="news-title">本站最新消息在這!</h2>
-                    <a href="#1" class="share-link" title="分享最新公告">#1 </a>
+                    <a href="#1" class="share-link" title="分享最新公告">#1</a>
                 </div>
                 <p class="news-content">
                     這裡將會同步伺服器內建的歡迎公告!
                 </p>
             </article>
+
         </main>
 
+        <!-- 頁尾 -->
         <footer class="footer">
             <p>&copy; 2026 Lazy Sheep Minecraft Server. 持續更新中。</p>
         </footer>
     </div>
+
+    <!-- 載入導覽列腳本 -->
+    <script src="/nav.js"></script>
 </body>
 </html>
