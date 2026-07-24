@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <!-- 導覽連結 -->
                 <div class="nav-links" id="navLinks">
                     <a href="/" class="nav-item ${currentPath === '/' || currentPath.endsWith('/index.html') ? 'active' : ''}">
-                        🏠 返回首頁
+                        首頁
                     </a>
                     <a href="/news/" class="nav-item ${currentPath.includes('/news') ? 'active' : ''}">
                         📰 最新消息
