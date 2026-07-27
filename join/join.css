@@ -1,0 +1,224 @@
+/* --- 全局基礎設定 --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: #1a1a1a;
+    background-image: 
+        radial-gradient(circle, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%),
+        url('/bg.png'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #f0f0f0;
+    line-height: 1.6;
+    padding: 0 20px 40px 20px;
+    padding-top: 100px; /* 留出導覽列空間 */
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* --- 頁面標題區 --- */
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-family: 'Press Start 2P', monospace; /* 套用 Minecraft 點陣字體 */
+    font-size: 2.2rem;
+    color: #ffaa00; /* 圖片橘黃色 */
+    text-shadow: 4px 4px 0px #3E2723; /* 深咖啡色 3D 陰影 */
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    line-height: 1.4;
+}
+
+.page-subtitle {
+    color: #aaaaaa;
+    font-size: 1rem;
+}
+
+/* --- 加入與條款主要卡片區域 --- */
+.join-card {
+    background-color: #2e2e2e;
+    border: 4px solid #000;
+    box-shadow: 
+        inset -4px -4px 0px #1a1a1a, 
+        inset 4px 4px 0px #5c5c5c,
+        0px 8px 16px rgba(0,0,0,0.6);
+    padding: 30px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+/* 白名單提示框 */
+.whitelist-notice {
+    background-color: #151515;
+    border: 2px dashed #ffff55;
+    padding: 16px 20px;
+    margin-bottom: 25px;
+    color: #ffff55;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: inset 2px 2px 0px #000;
+}
+
+.whitelist-notice i {
+    font-size: 1.5rem;
+    color: #ffff55;
+}
+
+/* 條款標題與清單 */
+.terms-title {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #444444;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.terms-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.terms-list li {
+    position: relative;
+    padding-left: 36px;
+    margin-bottom: 18px;
+    font-size: 1.05rem;
+    color: #dddddd;
+    line-height: 1.7;
+}
+
+/* 條款數字圖示標籤 */
+.terms-list li::before {
+    content: attr(data-step);
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 24px;
+    height: 24px;
+    background-color: #ffaa00;
+    color: #000000;
+    font-weight: bold;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0px #000;
+}
+
+/* 內部超連結樣式 */
+.rules-link {
+    color: #55ffff;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 1px dashed #55ffff;
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.rules-link:hover {
+    color: #ffff55;
+    border-color: #ffff55;
+}
+
+/* --- Minecraft 3D 經典按鈕與動作區 --- */
+.join-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    border-top: 2px dashed #444444;
+    padding-top: 25px;
+}
+
+.mc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #4a4a4a;
+    border: 3px solid #000;
+    box-shadow: 
+        inset -3px -3px 0px #2e2e2e, 
+        inset 3px 3px 0px #8b8b8b;
+    padding: 10px 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.1s ease;
+    text-decoration: none;
+}
+
+.mc-btn-primary {
+    background-color: #ffaa00;
+    color: #000000;
+    box-shadow: 
+        inset -3px -3px 0px #9f6f00, 
+        inset 3px 3px 0px #ffcf40;
+}
+
+.mc-btn-primary:hover {
+    background-color: #ffbb22;
+}
+
+.mc-btn:active {
+    box-shadow: 
+        inset 3px 3px 0px #1a1a1a, 
+        inset -3px -3px 0px #5c5c5c;
+    transform: translateY(2px);
+}
+
+/* 頁尾 */
+.footer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #777777;
+    margin-top: 50px;
+    border-top: 1px solid #2e2e2e;
+    padding-top: 20px;
+}
+
+/* 響應式調整 */
+@media (max-width: 600px) {
+    body {
+        padding-top: 130px;
+    }
+    .page-title {
+        font-size: 1.2rem;
+    }
+    .join-card {
+        padding: 20px;
+    }
+    .mc-btn {
+        width: 100%;
+    }
+}
