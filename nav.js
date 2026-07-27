@@ -2,9 +2,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // 1. 自動判斷當前網址以高亮顯示 Active 標籤
     const currentPath = window.location.pathname;
 
-    // 3. 生成導覽列 HTML 結構
+    // 3. 生成導覽列 HTML 結構（含頂部橫幅公告）
     const navHTML = `
         <nav class="mc-nav">
+            <!-- 頂部橫幅公告區 -->
+            <div class="nav-banner">
+                <span>📢 本伺服器為白名單伺服器，詳細請看</span>
+                <a href="/news/#4" class="banner-btn">公告</a>
+            </div>
+
             <div class="nav-container">
                 <a href="/" class="nav-brand">
                     <img src="/logo.png" alt="Logo" style="width:24px; height:24px; vertical-align:middle; margin-right:8px; image-rendering:pixelated;" onerror="this.style.display='none'">
