@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/rules/" class="nav-item ${currentPath.includes('/rules') ? 'active' : ''}">
                         📖 伺服器規範
                     </a>
+                    <a href="/join/" class="nav-item ${currentPath.includes('/join') ? 'active' : ''}">
+                        申請白名單
+                    </a>
                 </div>
             </div>
         </nav>
