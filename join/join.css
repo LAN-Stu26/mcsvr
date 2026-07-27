@@ -146,13 +146,29 @@ body {
     border-color: #ffff55;
 }
 
+/* --- 內嵌 Google 表單容器 --- */
+.form-wrapper {
+    margin-top: 25px;
+    border: 3px solid #000;
+    box-shadow: inset 3px 3px 0px #000, 0px 4px 10px rgba(0,0,0,0.5);
+    background-color: #151515;
+    overflow: hidden;
+}
+
+.form-iframe {
+    width: 100%;
+    height: 750px;
+    border: none;
+    display: block;
+}
+
 /* --- Minecraft 3D 經典按鈕與動作區 --- */
 .join-actions {
     display: flex;
     justify-content: center;
     gap: 15px;
     flex-wrap: wrap;
-    margin-top: 20px;
+    margin-top: 25px;
     border-top: 2px dashed #444444;
     padding-top: 25px;
 }
@@ -164,14 +180,14 @@ body {
     gap: 8px;
     font-family: 'Noto Sans TC', sans-serif;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #ffffff;
     background-color: #4a4a4a;
     border: 3px solid #000;
     box-shadow: 
         inset -3px -3px 0px #2e2e2e, 
         inset 3px 3px 0px #8b8b8b;
-    padding: 10px 24px;
+    padding: 10px 20px;
     cursor: pointer;
     user-select: none;
     transition: all 0.1s ease;
@@ -217,6 +233,9 @@ body {
     }
     .join-card {
         padding: 20px;
+    }
+    .form-iframe {
+        height: 600px;
     }
     .mc-btn {
         width: 100%;
