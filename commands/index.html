@@ -29,15 +29,14 @@
         <div class="search-box">
             <div class="search-input-wrapper">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="cmd-search" placeholder="輸入關鍵字搜尋指令... (例如: lock, 私訊, admin)" oninput="filterCommands()">
+                <input type="text" id="cmd-search" placeholder="輸入關鍵字搜尋指令... (例如: home, lock, 私訊, admin)" oninput="filterCommands()">
             </div>
             <div class="filter-tags">
                 <button class="filter-btn active" onclick="filterCategory('all')">全部顯示</button>
-                <button class="filter-btn" onclick="filterCategory('bolt')">🛡️ 防盜鎖定</button>
-                <button class="filter-btn" onclick="filterCategory('lp')">🎨 身份組與顏色</button>
-                <button class="filter-btn" onclick="filterCategory('ess')">💬 基礎與私訊</button>
-                <button class="filter-btn" onclick="filterCategory('eco')">💰 經濟商店</button>
-                <button class="filter-btn" onclick="filterCategory('vanilla')">⚙️ 原版規則</button>
+                <button class="filter-btn" onclick="filterCategory('basic')">🏡 玩家實用</button>
+                <button class="filter-btn" onclick="filterCategory('bolt')">🔐 防盜鎖定</button>
+                <button class="filter-btn" onclick="filterCategory('lp')">👑 身份組與顏色</button>
+                <button class="filter-btn" onclick="filterCategory('sys')">⚙️ 伺服器維護</button>
             </div>
         </div>
 
@@ -49,141 +48,136 @@
         <!-- 指令卡片區域 -->
         <div class="commands-grid">
 
-            <!-- 1. 方塊安全防盜系統 (Bolt) -->
+            <!-- 1. 玩家高頻率實用指令 -->
+            <section class="cmd-card" data-category="basic">
+                <h2 class="card-title">🏡 1. 玩家高頻率實用指令</h2>
+                <p class="card-desc">日常生存冒險中最常用到的傳送與私人通訊功能。</p>
+                
+                <div class="cmd-list">
+                    <div class="cmd-item" onclick="copyCommand('/home')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/home</div>
+                        <div class="cmd-effect">一秒傳送回家（直接回到當初設定家的座標）。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/sethome')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/sethome</div>
+                        <div class="cmd-effect">在目前站立的方塊上設定「家」的位置。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/msg <玩家ID> <訊息>')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/msg &lt;玩家ID&gt; &lt;訊息&gt;</div>
+                        <div class="cmd-effect">發送只有彼此看得到的私密悄悄話（可用簡寫 <code>/w</code>）。</div>
+                    </div>
+                    
+                    <div class="cmd-item" onclick="copyCommand('/r <訊息>')">
+                        <div class="cmd-badge badge-player">全玩家</div>
+                        <div class="cmd-code">/r &lt;訊息&gt;</div>
+                        <div class="cmd-effect">快速回覆上一則收到的私訊。</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 方塊私人安全鎖 (Bolt) -->
             <section class="cmd-card" data-category="bolt">
-                <h2 class="card-title">🛡️ 1. 方塊安全防盜系統 (Bolt)</h2>
-                <p class="card-desc">這款外掛負責保護世界中的箱子與門，防範偷竊。所有玩家皆可免費使用基礎鎖定。</p>
+                <h2 class="card-title">🔐 2. 方塊私人安全鎖 (Bolt)</h2>
+                <p class="card-desc">保護箱子與門不被偷竊的防線，預設對所有人開放使用。</p>
                 
                 <div class="cmd-list">
                     <div class="cmd-item" onclick="copyCommand('/bolt lock')">
                         <div class="cmd-badge badge-player">全玩家</div>
                         <div class="cmd-code">/bolt lock</div>
-                        <div class="cmd-effect">對著箱子/門按<strong>右鍵</strong>，直接進行私人鎖定（所有玩家預設可用）。</div>
+                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊箱子或門，直接進行私人鎖定。</div>
                     </div>
                     
                     <div class="cmd-item" onclick="copyCommand('/bolt unlock')">
                         <div class="cmd-badge badge-player">全玩家</div>
                         <div class="cmd-code">/bolt unlock</div>
-                        <div class="cmd-effect">對著自己的箱子按<strong>右鍵</strong>，解除鎖定。</div>
+                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊自己的箱子，解除鎖定。</div>
                     </div>
                     
-                    <div class="cmd-item" onclick="copyCommand('/bolt trust ')">
+                    <div class="cmd-item" onclick="copyCommand('/bolt trust <玩家ID>')">
                         <div class="cmd-badge badge-player">全玩家</div>
                         <div class="cmd-code">/bolt trust &lt;玩家ID&gt;</div>
-                        <div class="cmd-effect">對著箱子按<strong>右鍵</strong>，將箱子使用權限共享給朋友。</div>
+                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊箱子，將使用權限共享給朋友。</div>
                     </div>
                     
                     <div class="cmd-item" onclick="copyCommand('/bolt info')">
                         <div class="cmd-badge badge-player">全玩家</div>
                         <div class="cmd-code">/bolt info</div>
-                        <div class="cmd-effect">對著任意方塊按<strong>右鍵</strong>，查詢該方塊是誰鎖定的。</div>
-                    </div>
-                    
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/bolt admin')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/bolt admin</div>
-                        <div class="cmd-effect">管理員專用，開啟最高管理模式（可強制拆除他人鎖定的箱子）。</div>
+                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊任意方塊，查詢該方塊是被誰鎖定的。</div>
                     </div>
                 </div>
             </section>
 
-            <!-- 2. 身份組與聊天顏色 (LuckPerms) -->
+            <!-- 3. 身份組與聊天室顏色設定 (LuckPerms) -->
             <section class="cmd-card" data-category="lp">
-                <h2 class="card-title">🎨 2. 身份組與聊天顏色 (LuckPerms)</h2>
-                <p class="card-desc">這款外掛控制玩家名字前方的標籤（Prefix）與名字顏色，用來劃分權限等級。</p>
+                <h2 class="card-title">👑 3. 身份組與聊天室顏色設定 (LuckPerms)</h2>
+                <p class="card-desc">管理員用來指派玩家階級與設定聊天標籤的權限工具。</p>
                 
                 <div class="cmd-list">
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user <玩家ID> parent set admin')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set admin</div>
+                        <div class="cmd-effect">將某人（或自己）提升為管理員組（聊天室呈現：綠標 [管理員] + 黃色名字）。</div>
+                    </div>
+
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user <玩家ID> parent set verified')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set verified</div>
+                        <div class="cmd-effect">將某人升級為已認證玩家組（聊天室呈現：藍標 [☑已認證] + 白色名字）。</div>
+                    </div>
+
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user <玩家ID> parent set default')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set default</div>
+                        <div class="cmd-effect">將玩家降回普通玩家組（聊天室呈現：灰標 [玩家] + 白色名字）。</div>
+                    </div>
+                    
                     <div class="cmd-item admin-cmd" onclick="copyCommand('/lp editor')">
                         <div class="cmd-badge badge-admin">管理員</div>
                         <div class="cmd-code">/lp editor</div>
-                        <div class="cmd-effect">產生安全網址，開啟網頁版的視覺化設定面板。</div>
-                    </div>
-                    
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user xxx parent set xxx')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set admin</div>
-                        <div class="cmd-effect">將某人（或自己）提升為管理員組（變更為綠標、黃名）。</div>
-                    </div>
-                    
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp group default meta setprefix &quot;&amp;7[玩家]&amp;f &quot;')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/lp group default meta setprefix "&amp;7[玩家]&amp;f "</div>
-                        <div class="cmd-effect">一鍵設定新進玩家的格式（灰色 [玩家] 標籤 + 白色名字）。</div>
-                    </div>
-                    
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp group admin meta setprefix &quot;&amp;a[管理員]&amp;e &quot;')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/lp group admin meta setprefix "&amp;a[管理員]&amp;e "</div>
-                        <div class="cmd-effect">一鍵設定管理員的格式（鮮綠 [管理員] 標籤 + 黃色名字）。</div>
+                        <div class="cmd-effect">產生安全網址，開啟網頁版的視覺化權限調整面板。</div>
                     </div>
                 </div>
             </section>
 
-            <!-- 3. 基礎指令與私訊系統 (EssentialsX) -->
-            <section class="cmd-card" data-category="ess">
-                <h2 class="card-title">💬 3. 基礎指令與私訊系統 (EssentialsX)</h2>
-                <p class="card-desc">這款外掛負責伺服器基礎運作、私密對話、暱稱系統以及後台設定重載。</p>
+            <!-- 4. 伺服器核心維護與系統管理 -->
+            <section class="cmd-card" data-category="sys">
+                <h2 class="card-title">⚙️ 4. 伺服器核心維護與系統管理</h2>
+                <p class="card-desc">維護世界規則與熱刷新外掛配置檔案的最高權限指令。</p>
                 
                 <div class="cmd-list">
                     <div class="cmd-item admin-cmd" onclick="copyCommand('/ess reload')">
                         <div class="cmd-badge badge-admin">管理員</div>
                         <div class="cmd-code">/ess reload</div>
-                        <div class="cmd-effect">修改 config.yml 或 motd.txt 歡迎訊息後，一鍵刷新生效。</div>
+                        <div class="cmd-effect">修改 config.yml 或 motd.txt 歡迎訊息後，一鍵重載刷新生效。</div>
                     </div>
 
-                    <div class="cmd-item" onclick="copyCommand('/shop')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/shop</div>
-                        <div class="cmd-effect">開啟圖形化商店介面，快速購買與出售物品。</div>
-                    </div>
-
-                    <div class="cmd-item" onclick="copyCommand('/sellhand')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/sellhand</div>
-                        <div class="cmd-effect">賣出目前手上拿著的單一堆疊物品，適合快速變現。</div>
-                    </div>
-
-                    <div class="cmd-item" onclick="copyCommand('/sellall')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/sellall</div>
-                        <div class="cmd-effect">賣出背包中與手上拿著的物品完全相同的所有堆疊。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/msg ')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/msg &lt;玩家ID&gt; &lt;訊息&gt;</div>
-                        <div class="cmd-effect">發送只有彼此看得到的私密密語（亦可使用快捷指令：<code>/w</code>）。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/r ')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/r &lt;訊息&gt;</div>
-                        <div class="cmd-effect">快速回覆上一則收到的私訊。</div>
-                    </div>
-
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/eshop reload')">
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/bolt reload')">
                         <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/eshop reload</div>
-                        <div class="cmd-effect">修改商店設定後，立即重載外掛配置檔。</div>
+                        <div class="cmd-code">/bolt reload</div>
+                        <div class="cmd-effect">修改 Bolt 的方塊防護清單（例如新增基岩鎖定權限）後，一鍵刷新生效。</div>
                     </div>
 
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/nick ')">
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/bolt admin')">
                         <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/nick &lt;玩家ID&gt; &lt;新名字&gt;</div>
-                        <div class="cmd-effect">幫指定玩家在聊天室換上專屬暱稱（若要清除請輸入 <code>/nick &lt;玩家ID&gt; off</code>）。</div>
+                        <div class="cmd-code">/bolt admin</div>
+                        <div class="cmd-effect">進入 Bolt 最高管理模式，可以直接強制拆除或檢查任何人鎖定的箱子。</div>
                     </div>
-                </div>
-            </section>
 
-            <section class="cmd-card" data-category="vanilla">
-                <h2 class="card-title">⚙️ 4. 麥塊原版內建指令 (Vanilla Gamerule)</h2>
-                <p class="card-desc">控制世界最底層生存規則的通用原版指令，會直接儲存在世界存檔內。</p>
-                
-                <div class="cmd-list">
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/gamerule keepInventory true')">
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/nick <玩家ID> <新暱稱>')">
                         <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/gamerule keepInventory true</div>
-                        <div class="cmd-effect">開啟<strong>死亡不掉落（防噴）</strong>功能，死後保留所有裝備與經驗值。</div>
+                        <div class="cmd-code">/nick &lt;玩家ID&gt; &lt;新暱稱&gt;</div>
+                        <div class="cmd-effect">幫指定玩家換上聊天室的專屬暱稱（清除輸入 <code>/nick &lt;玩家ID&gt; off</code>）。</div>
+                    </div>
+
+                    <div class="cmd-item admin-cmd" onclick="copyCommand('/gamerule keep_inventory true')">
+                        <div class="cmd-badge badge-admin">管理員</div>
+                        <div class="cmd-code">/gamerule keep_inventory true</div>
+                        <div class="cmd-effect">開啟麥塊原版死亡不掉落（防噴）功能。</div>
                     </div>
                 </div>
             </section>
