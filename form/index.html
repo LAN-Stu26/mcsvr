@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伺服器投票 - Lazy Sheep Server</title>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <!-- 引入 Google Fonts 與 FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 引入共用導覽列樣式與加入頁面專用樣式 -->
+    <link rel="stylesheet" href="/nav.css">
+    <link rel="stylesheet" href="form.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- 頁面頂部標題區 -->
+        <header class="page-header">
+            <h1 class="page-title"><i class="fa-solid fa-user-plus"></i> Server Vote</h1>
+            <p class="page-subtitle">本伺服器正在決議是否開放外掛:「X-Ray」</p>
+        </header>
+
+        <!-- 主要加入條款內容區塊 -->
+        <main class="join-card">
+
+            <!-- 白名單申請提示框 -->
+            <div class="whitelist-notice">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>請瀏覽完整內容以保護您的權益</span>
+            </div>
+
+            <h2 class="terms-title"><i class="fa-solid fa-scroll"></i> X-Ray 帶來的影響</h2>
+
+            <!-- 條款清單 -->
+            <ol class="terms-list">
+                <li data-step="1">
+                    破壞伺服器公平性。
+                </li>
+                <li data-step="2">
+                    影響原味身存理念。
+                </li>
+                <li data-step="3">
+                    豐富的礦物資源。
+                </li>
+            </ol>
+
+            <h2 class="terms-title"><i class="fa-solid fa-pen-to-square"></i> 投票表單</h2>
+
+            <!-- 內嵌 Google 表單 -->
+            <div class="form-wrapper">
+                <iframe class="form-iframe" src="https://forms.gle/MRPTpAdAVZGzrj5Y9" loading="lazy">載入中…</iframe>
+            </div>
+
+            <!-- 備用按鈕區 -->
+            <div class="join-actions">
+                <a href="https://forms.gle/MRPTpAdAVZGzrj5Y9" target="_blank" rel="noopener noreferrer" class="mc-btn mc-btn-primary">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> 在新分頁開啟表單
+                </a>
+            </div>
+
+        </main>
+
+        <!-- 頁尾 -->
+        <footer class="footer">
+            <p>&copy; 2026 Lazy Sheep Minecraft Server. 本伺服器與 Mojang Studios / Microsoft 無關。</p>
+        </footer>
+
+    </div>
+
+    <script src="/nav.js"></script>
+</body>
+</html>
