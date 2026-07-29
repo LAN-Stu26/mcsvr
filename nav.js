@@ -14,7 +14,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // 1. 自動判斷當前網址以高亮顯示 Active 標籤
     const currentPath = window.location.pathname;
 
-    // 2. 生成導覽列 HTML 結構（含頂部橫幅公告與全站搜尋框）
+    // 自製像素風格放大鏡 SVG
+    const pixelSearchSVG = `
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated; display: block;">
+            <path d="M6 2H10V4H6V2ZM10 4H12V6H10V4ZM12 6H14V10H12V6ZM10 10H12V12H10V10ZM6 12H10V14H6V12ZM4 10H6V12H4V10ZM3 6H4V10H3V6ZM4 4H6V6H4V4ZM11 11H13V13H11V11ZM13 13H15V15H13V13ZM15 15H17V17H15V15Z" fill="#FFAA00"/>
+        </svg>
+    `;
+
+    // 2. 生成導覽列 HTML 結構（含頂部橫幅公告與全螢幕搜尋觸發按鈕）
     const navHTML = `
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
@@ -31,16 +38,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     Lazy Sheep
                 </a>
                 
-                <!-- 全站搜尋區塊 -->
-                <div class="nav-search-box">
-                    <input type="text" id="navSearchInput" placeholder="🔍 搜尋網頁..." autocomplete="off">
-                    <div id="navSearchResults" class="nav-search-dropdown" style="display: none;"></div>
-                </div>
+                <div class="nav-right-tools">
+                    <!-- 像素風放大鏡按鈕 -->
+                    <button class="nav-search-btn" id="navSearchTrigger" aria-label="開啟搜尋">
+                        ${pixelSearchSVG}
+                    </button>
 
-                <!-- 手機版漢堡選單按鈕 -->
-                <button class="nav-toggle" id="navToggle" aria-label="切換選單" style="display: none;">
-                    ☰
-                </button>
+                    <!-- 手機版漢堡選單按鈕 -->
+                    <button class="nav-toggle" id="navToggle" aria-label="切換選單" style="display: none;">
+                        ☰
+                    </button>
+                </div>
 
                 <!-- 導覽連結 -->
                 <div class="nav-links" id="navLinks">
@@ -62,6 +70,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </div>
         </nav>
+
+        <!-- 全螢幕搜尋彈窗 -->
+        <div class="search-overlay" id="searchOverlay">
+            <div class="search-modal" id="searchModal">
+                <div class="search-modal-header">
+                    <div class="search-input-wrapper">
+                        <span class="search-input-icon">${pixelSearchSVG}</span>
+                        <input type="text" id="navSearchInput" placeholder="搜尋網頁、文章或指令..." autocomplete="off">
+                    </div>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="關閉搜尋">✕</button>
+                </div>
+                <div id="navSearchResults" class="search-results-list">
+                    <div class="search-no-result">輸入關鍵字開始搜尋...</div>
+                </div>
+            </div>
+        </div>
     `;
 
     // 3. 渲染導覽列 (優先填入 #nav-placeholder，沒有的話則插入在 <body> 最前方)
@@ -76,15 +100,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const navElement = document.querySelector('.mc-nav');
     if (navElement) {
         const updateBodyPadding = () => {
-            // 取得導覽列實際高度，並額外保留 20px 緩衝空間
             const navHeight = navElement.offsetHeight;
             document.body.style.paddingTop = (navHeight + 20) + 'px';
         };
 
-        // 初始化執行一次
         updateBodyPadding();
 
-        // 使用 ResizeObserver 動態監聽導覽列高度變化 (包含手機版選單開啟/關閉、視窗縮放等)
         if (window.ResizeObserver) {
             const resizeObserver = new ResizeObserver(updateBodyPadding);
             resizeObserver.observe(navElement);
@@ -98,13 +119,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const navLinks = document.getElementById('navLinks');
 
     if (toggleBtn && navLinks) {
-        // 點擊漢堡按鈕切換開關
         toggleBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             navLinks.classList.toggle('active');
         });
 
-        // 點擊選單內的項目後自動收起選單
         const links = navLinks.querySelectorAll('.nav-item');
         links.forEach(link => {
             link.addEventListener('click', () => {
@@ -112,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // 點擊頁面其他空白區域自動收起選單
         document.addEventListener('click', function (e) {
             if (!toggleBtn.contains(e.target) && !navLinks.contains(e.target)) {
                 navLinks.classList.remove('active');
@@ -120,13 +138,47 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 6. 全站搜尋功能 (讀取 /sites.json)
+    // 6. 全螢幕搜尋彈窗控制與讀取 /sites.json 搜尋邏輯
+    const searchTrigger = document.getElementById('navSearchTrigger');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchModal = document.getElementById('searchModal');
+    const searchCloseBtn = document.getElementById('searchCloseBtn');
     const searchInput = document.getElementById('navSearchInput');
     const searchResults = document.getElementById('navSearchResults');
     let siteData = [];
 
-    if (searchInput && searchResults) {
-        // 從 /sites.json 取得網頁清單
+    // 開啟彈窗
+    function openSearch() {
+        searchOverlay.classList.add('active');
+        setTimeout(() => searchInput.focus(), 100);
+    }
+
+    // 關閉彈窗
+    function closeSearch() {
+        searchOverlay.classList.remove('active');
+        searchInput.value = '';
+        searchResults.innerHTML = '<div class="search-no-result">輸入關鍵字開始搜尋...</div>';
+    }
+
+    if (searchTrigger && searchOverlay && searchCloseBtn) {
+        searchTrigger.addEventListener('click', openSearch);
+        searchCloseBtn.addEventListener('click', closeSearch);
+
+        // 點擊彈窗外面空白區域時關閉
+        searchOverlay.addEventListener('click', function (e) {
+            if (!searchModal.contains(e.target)) {
+                closeSearch();
+            }
+        });
+
+        // 按下 Esc 鍵關閉搜尋
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
+                closeSearch();
+            }
+        });
+
+        // 讀取 /sites.json
         fetch('/sites.json')
             .then(res => res.json())
             .then(data => {
@@ -134,16 +186,14 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(err => console.error('無法讀取 sites.json:', err));
 
-        // 監聽輸入事件
+        // 搜尋比對 logic
         searchInput.addEventListener('input', function () {
             const keyword = this.value.trim().toLowerCase();
             if (!keyword) {
-                searchResults.style.display = 'none';
-                searchResults.innerHTML = '';
+                searchResults.innerHTML = '<div class="search-no-result">輸入關鍵字開始搜尋...</div>';
                 return;
             }
 
-            // 過濾符合名稱、描述或網址的項目
             const matched = siteData.filter(site => {
                 const title = (site.title || site.name || '').toLowerCase();
                 const desc = (site.description || site.desc || '').toLowerCase();
@@ -160,14 +210,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 `).join('');
             } else {
                 searchResults.innerHTML = `<div class="search-no-result">查無相關頁面</div>`;
-            }
-            searchResults.style.display = 'block';
-        });
-
-        // 點擊搜尋框以外的區域關閉結果下拉選單
-        document.addEventListener('click', function (e) {
-            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                searchResults.style.display = 'none';
             }
         });
     }
