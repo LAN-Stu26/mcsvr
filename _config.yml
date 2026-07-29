@@ -1,12 +1,1 @@
-# 停用內建的舊版舊主題
-# theme: minima
-
-# 啟用遠端新版支援深色模式的主題
-remote_theme: jekyll/minima
-plugins:
-  - jekyll-remote-theme
-
-# 設定主題外觀（skin）
-minima:
-  skin: auto   # auto 代表跟隨使用者的系統自動切換亮/深色；若寫 dark 則為固定深色
-
+remote_theme: pages-themes/cayman
