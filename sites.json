@@ -28,5 +28,10 @@
     "title": "外掛投票表單",
     "url": "/form/",
     "description": "伺服器外掛表單"
+  },
+  {
+    "title": "投票紀錄",
+    "url": "/form/history",
+    "description": "紀錄資料"
   }
 ]
