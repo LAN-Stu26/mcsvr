@@ -9,3 +9,4 @@ plugins:
 # 設定主題外觀（skin）
 minima:
   skin: auto   # auto 代表跟隨使用者的系統自動切換亮/深色；若寫 dark 則為固定深色
+
