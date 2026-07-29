@@ -1,0 +1,32 @@
+[
+  {
+    "title": "首頁",
+    "url": "/",
+    "description": "Lazy Sheep 伺服器首頁與最新動態"
+  },
+  {
+    "title": "最新消息",
+    "url": "/news/",
+    "description": "伺服器公告與活動資訊"
+  },
+  {
+    "title": "指令大全",
+    "url": "/commands/",
+    "description": "玩家常用指令與 Bolt 鎖定說明"
+  },
+  {
+    "title": "伺服器規範",
+    "url": "/rules/",
+    "description": "玩家守則與違規懲處說明"
+  },
+  {
+    "title": "申請白名單",
+    "url": "/join/",
+    "description": "加入伺服器白名單申請表單"
+  },
+  {
+    "title": "外掛投票表單",
+    "url": "/form/",
+    "description": "伺服器外掛表單"
+  }
+]

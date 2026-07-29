@@ -1,8 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // 0. 自動去除網址副檔名 (例如 /form/index.html -> /form/ ，或 /about.html -> /about)
+    (function cleanURL() {
+        const path = window.location.pathname;
+        if (path.endsWith('/index.html')) {
+            const cleanPath = path.slice(0, -10) || '/';
+            window.history.replaceState({}, '', cleanPath + window.location.search + window.location.hash);
+        } else if (path.endsWith('.html')) {
+            const cleanPath = path.slice(0, -5);
+            window.history.replaceState({}, '', cleanPath + window.location.search + window.location.hash);
+        }
+    })();
+
     // 1. 自動判斷當前網址以高亮顯示 Active 標籤
     const currentPath = window.location.pathname;
 
-    // 2. 生成導覽列 HTML 結構（含頂部橫幅公告）
+    // 2. 生成導覽列 HTML 結構（含頂部橫幅公告與全站搜尋框）
     const navHTML = `
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
@@ -19,6 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     Lazy Sheep
                 </a>
                 
+                <!-- 全站搜尋區塊 -->
+                <div class="nav-search-box">
+                    <input type="text" id="navSearchInput" placeholder="🔍 搜尋網頁..." autocomplete="off">
+                    <div id="navSearchResults" class="nav-search-dropdown" style="display: none;"></div>
+                </div>
+
                 <!-- 手機版漢堡選單按鈕 -->
                 <button class="nav-toggle" id="navToggle" aria-label="切換選單" style="display: none;">
                     ☰
@@ -98,6 +116,58 @@ document.addEventListener('DOMContentLoaded', function () {
         document.addEventListener('click', function (e) {
             if (!toggleBtn.contains(e.target) && !navLinks.contains(e.target)) {
                 navLinks.classList.remove('active');
+            }
+        });
+    }
+
+    // 6. 全站搜尋功能 (讀取 /sites.json)
+    const searchInput = document.getElementById('navSearchInput');
+    const searchResults = document.getElementById('navSearchResults');
+    let siteData = [];
+
+    if (searchInput && searchResults) {
+        // 從 /sites.json 取得網頁清單
+        fetch('/sites.json')
+            .then(res => res.json())
+            .then(data => {
+                siteData = data;
+            })
+            .catch(err => console.error('無法讀取 sites.json:', err));
+
+        // 監聽輸入事件
+        searchInput.addEventListener('input', function () {
+            const keyword = this.value.trim().toLowerCase();
+            if (!keyword) {
+                searchResults.style.display = 'none';
+                searchResults.innerHTML = '';
+                return;
+            }
+
+            // 過濾符合名稱、描述或網址的項目
+            const matched = siteData.filter(site => {
+                const title = (site.title || site.name || '').toLowerCase();
+                const desc = (site.description || site.desc || '').toLowerCase();
+                const url = (site.url || site.path || '').toLowerCase();
+                return title.includes(keyword) || desc.includes(keyword) || url.includes(keyword);
+            });
+
+            if (matched.length > 0) {
+                searchResults.innerHTML = matched.map(site => `
+                    <a href="${site.url || site.path}" class="search-item">
+                        <div class="search-item-title">${site.title || site.name}</div>
+                        ${(site.description || site.desc) ? `<div class="search-item-desc">${site.description || site.desc}</div>` : ''}
+                    </a>
+                `).join('');
+            } else {
+                searchResults.innerHTML = `<div class="search-no-result">查無相關頁面</div>`;
+            }
+            searchResults.style.display = 'block';
+        });
+
+        // 點擊搜尋框以外的區域關閉結果下拉選單
+        document.addEventListener('click', function (e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
             }
         });
     }
