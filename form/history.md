@@ -38,10 +38,10 @@ layout: null
         }
 
         /* === Markdown 元素像素樣式美化 === */
-        .markdown-body h1 {
+        .markdown-body h1, .markdown-body h2 {
             font-family: 'Press Start 2P', cursive, sans-serif;
             color: #ffaa00;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             border-bottom: 3px dashed #ffaa00;
             padding-bottom: 12px;
             margin-top: 0;
@@ -49,18 +49,12 @@ layout: null
             line-height: 1.4;
         }
 
-        .markdown-body h2 {
+        .markdown-body h3 {
             color: #ffff55;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             border-bottom: 2px solid #000;
             padding-bottom: 6px;
-            margin-top: 28px;
-        }
-
-        .markdown-body h3 {
-            color: #ffaa00;
-            font-size: 1.1rem;
-            margin-top: 20px;
+            margin-top: 24px;
         }
 
         .markdown-body p {
@@ -77,41 +71,6 @@ layout: null
 
         .markdown-body a:hover {
             color: #ffff55;
-        }
-
-        /* 像素清單項目 */
-        .markdown-body ul, .markdown-body ol {
-            padding-left: 24px;
-            margin: 14px 0;
-        }
-
-        .markdown-body li {
-            margin-bottom: 6px;
-        }
-
-        /* 程式碼 / 指令方框 */
-        .markdown-body code {
-            background-color: #101010;
-            color: #ffff55;
-            padding: 3px 8px;
-            border: 2px solid #000000;
-            font-family: monospace;
-            font-size: 0.9rem;
-            box-shadow: inset 1px 1px 0px #000, inset -1px -1px 0px #333;
-        }
-
-        .markdown-body pre {
-            background-color: #101010;
-            border: 3px solid #000;
-            padding: 14px;
-            overflow-x: auto;
-            box-shadow: inset 2px 2px 0px #000, inset -2px -2px 0px #333;
-        }
-
-        .markdown-body pre code {
-            border: none;
-            box-shadow: none;
-            padding: 0;
         }
 
         /* 引用區塊 (Blockquote) */
@@ -133,6 +92,8 @@ layout: null
             margin: 20px 0;
             background-color: #1e1e1e;
             border: 3px solid #000;
+            display: block;
+            overflow-x: auto; /* 手機端自動滾動表格 */
         }
 
         .markdown-body th {
@@ -141,11 +102,13 @@ layout: null
             border: 2px solid #000;
             padding: 10px;
             text-align: left;
+            white-space: nowrap;
         }
 
         .markdown-body td {
             border: 2px solid #000;
             padding: 10px;
+            white-space: nowrap;
         }
 
         .markdown-body tr:nth-child(even) {
@@ -159,31 +122,29 @@ layout: null
                 margin: 0 10px 20px 10px;
             }
 
-            .markdown-body h1 {
-                font-size: 1.1rem;
+            .markdown-body h1, .markdown-body h2 {
+                font-size: 1rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- 主內容區塊：下面的語法會直接被 GitHub Pages 解析成 Markdown 渲染 -->
-    <main class="page-container markdown-body">
+    <!-- 關鍵亮點：必須加上 markdown="1" -->
+    <main class="page-container markdown-body" markdown="1">
 
 ## Lazy Sheep 伺服器 表單歷史資料與統計
 
-> 表單代碼: 00001 | 日期: 2026/07/29 - 8/1
+> **表單代碼：** 00001  
+> **日期：** 2026/07/29 - 8/1  
+> **投票議題：** 外掛 X-Ray 是否允許  
+> **連結：** https://forms.gle/MRPTpAdAVZgzrj5Y9  
+> **結束統計日期：** 8/1  
 
-> 投票議題: 外掛 X-Ray 是否允許
+### 統計結果
 
-> 連結: https://forms.gle/MRPTpAdAVZGzrj5Y9
-
-> 結束統計日期: 8/1
-
-### 統計解果
-
-| 時間 | 電子郵件 | Minecraft ID | 是否允許外掛"X-Ray" (透視模組) 在本伺服器上合法運用? | 還有什麼外掛你想要? (可選填) |
-| --- | --- | --- | --- | --- |
+| 時間 | 電子郵件 | Minecraft ID | 是否允許外掛 "X-Ray" (透視模組) 在本伺服器上合法運用？ | 還有什麼外掛你想要？ (可選填) |
+| :--- | :--- | :--- | :--- | :--- |
 | 2026/7/29 12:11 | yang******@gmail.com | Lazy***p_x | 是 | |
 | 2026/7/29 12:26 | ray2******@gmail.com | rayc***805 | 是 | |
 
