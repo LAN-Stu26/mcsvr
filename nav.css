@@ -83,41 +83,13 @@
     image-rendering: pixelated;
 }
 
-.nav-right-tools {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* 像素風搜尋放大鏡按鈕 */
-.nav-search-btn {
-    background-color: #151515;
-    color: #ffaa00;
-    border: 2px solid #000;
-    padding: 6px 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: inset -2px -2px 0px #000000, inset 2px 2px 0px #5c5c5c;
-    transition: all 0.1s ease;
-    user-select: none;
-}
-
-.nav-search-btn:hover {
-    background-color: #222222;
-}
-
-.nav-search-btn:active {
-    box-shadow: inset 2px 2px 0px #000000, inset -2px -2px 0px #5c5c5c;
-    transform: translateY(1px);
-}
-
+/* 導覽連結 (電腦版自動靠右，靠在工具列左邊) */
 .nav-links {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+    margin-left: auto;
 }
 
 .nav-item {
@@ -148,6 +120,37 @@
     background-color: #151515;
     border-color: #000;
     box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.55);
+}
+
+/* 右側工具區塊（含最右側的搜尋按鈕與手機漢堡鈕） */
+.nav-right-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 像素風搜尋放大鏡按鈕 */
+.nav-search-btn {
+    background-color: #151515;
+    color: #ffaa00;
+    border: 2px solid #000;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: inset -2px -2px 0px #000000, inset 2px 2px 0px #5c5c5c;
+    transition: all 0.1s ease;
+    user-select: none;
+}
+
+.nav-search-btn:hover {
+    background-color: #222222;
+}
+
+.nav-search-btn:active {
+    box-shadow: inset 2px 2px 0px #000000, inset -2px -2px 0px #5c5c5c;
+    transform: translateY(1px);
 }
 
 .nav-toggle {
@@ -339,7 +342,12 @@
     }
 
     .nav-container {
-        align-items: flex-start;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .nav-right-tools {
+        order: 2;
     }
 
     .nav-toggle {
@@ -354,8 +362,10 @@
         border: 3px solid #000;
         padding: 10px;
         margin-top: 10px;
+        margin-left: 0;
         box-shadow: inset -2px -2px 0px #151515, inset 2px 2px 0px #444;
         gap: 8px;
+        order: 3;
     }
 
     .nav-links.active {
@@ -387,7 +397,7 @@
     }
 
     .search-input-wrapper input {
-        font-size: 16px; /* 防止 iOS 手機輸入時頁面放大 */
+        font-size: 16px;
     }
 }
 

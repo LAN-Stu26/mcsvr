@@ -38,18 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     Lazy Sheep
                 </a>
                 
-                <div class="nav-right-tools">
-                    <!-- 像素風放大鏡按鈕 -->
-                    <button class="nav-search-btn" id="navSearchTrigger" aria-label="開啟搜尋">
-                        ${pixelSearchSVG}
-                    </button>
-
-                    <!-- 手機版漢堡選單按鈕 -->
-                    <button class="nav-toggle" id="navToggle" aria-label="切換選單" style="display: none;">
-                        ☰
-                    </button>
-                </div>
-
                 <!-- 導覽連結 -->
                 <div class="nav-links" id="navLinks">
                     <a href="/" class="nav-item ${currentPath === '/' || currentPath.endsWith('/index.html') ? 'active' : ''}">
@@ -67,6 +55,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/join/" class="nav-item ${currentPath.includes('/join') ? 'active' : ''}">
                         申請白名單
                     </a>
+                </div>
+
+                <div class="nav-right-tools">
+                    <!-- 像素風放大鏡按鈕 (位於最右側) -->
+                    <button class="nav-search-btn" id="navSearchTrigger" aria-label="開啟搜尋">
+                        ${pixelSearchSVG}
+                    </button>
+
+                    <!-- 手機版漢堡選單按鈕 -->
+                    <button class="nav-toggle" id="navToggle" aria-label="切換選單" style="display: none;">
+                        ☰
+                    </button>
                 </div>
             </div>
         </nav>
