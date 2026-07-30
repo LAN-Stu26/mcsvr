@@ -5,7 +5,6 @@ title: "Lazy Sheep 伺服器"
 description: "伺服器紀錄"
 url: "https://mcsvr.sld.tw"
 baseurl: "" 
-logo: "/icon.png"
 
 # ==========================================
 # 主題與外掛設定 (Theme & Plugins)
