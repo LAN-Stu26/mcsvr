@@ -3,7 +3,7 @@
 > **表單代碼：** 00001  
 > **日期：** 2026/07/29 - 8/1  
 > **投票議題：** 外掛 X-Ray 是否允許  
-> **連結：** https://forms.gle/MRPTpAdAVZGzrj5Y9
+> **連結：** https://forms.gle/MRPTpAdAVZGzrj5Y9  
 > **結束統計日期：** 8/1  
 
 ### 統計結果
