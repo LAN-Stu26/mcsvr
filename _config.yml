@@ -1,0 +1,37 @@
+# ==========================================
+# 網站基本設定 (Site Settings)
+# ==========================================
+title: "mcsvr"
+description: "Lazy Sheep 伺服器 表單歷史資料與統計"
+url: "https://mcsvr.sld.tw"
+baseurl: "" 
+
+# ==========================================
+# 主題與外掛設定 (Theme & Plugins)
+# ==========================================
+# 使用 GitHub 官方核心的 Minimal 主題，搭配 CSS 來百分之百複製 GitHub 暗黑模式
+theme: jekyll-theme-minimal
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# ==========================================
+# 標記語言與閱讀器設定 (Markdown Reader)
+# ==========================================
+markdown: kramdown
+kramdown:
+  input: GFM # 確保表格與 GitHub 語法完全相容
+  syntax_highlighter: rouge
+
+# ==========================================
+# 檔案排除設定 (Exclusions)
+# ==========================================
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - .bundle/
+  - .git/
+  - .sass-cache/
