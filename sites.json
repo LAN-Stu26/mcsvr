@@ -33,5 +33,10 @@
     "title": "投票紀錄",
     "url": "/form/history",
     "description": "紀錄資料"
+  },
+  {
+    "title": "外掛使用辦法",
+    "url": "/docs/pluy-in/xray",
+    "description": "教學開啟關閉"
   }
 ]
