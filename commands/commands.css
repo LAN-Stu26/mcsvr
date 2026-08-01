@@ -10,7 +10,6 @@ body {
     background-color: #1a1a1a;
     background-image: 
         radial-gradient(circle, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%),
-        linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9)),
         url('/bg.png'); 
     background-size: cover;
     background-position: center;
