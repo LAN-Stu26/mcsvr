@@ -1,0 +1,149 @@
+[
+  {
+    "id": "basic",
+    "title": "🏡 1. 玩家高頻率實用指令",
+    "desc": "日常生存冒險中最常用到的傳送與私人通訊功能。",
+    "commands": [
+      {
+        "code": "/home",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "一秒傳送回家（直接回到當初設定家的座標）。"
+      },
+      {
+        "code": "/sethome",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "在目前站立的方塊上設定「家」的位置。"
+      },
+      {
+        "code": "/msg <玩家ID> <訊息>",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "發送只有彼此看得到的私密悄悄話（可用簡寫 <code>/w</code>）。"
+      },
+      {
+        "code": "/r <訊息>",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "快速回覆上一則收到的私訊。"
+      }
+    ]
+  },
+  {
+    "id": "bolt",
+    "title": "🔐 2. 方塊私人安全鎖 (Bolt)",
+    "desc": "保護箱子與門不被偷竊的防線，預設對所有人開放使用。",
+    "commands": [
+      {
+        "code": "/bolt lock",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "輸入後按<strong>右鍵</strong>點擊箱子或門，直接進行私人鎖定。"
+      },
+      {
+        "code": "/bolt unlock",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "輸入後按<strong>右鍵</strong>點擊自己的箱子，解除鎖定。"
+      },
+      {
+        "code": "/bolt trust <玩家ID>",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "輸入後按<strong>右鍵</strong>點擊箱子，將使用權限共享給朋友。"
+      },
+      {
+        "code": "/bolt info",
+        "badge": "全玩家",
+        "badgeClass": "badge-player",
+        "isAdmin": false,
+        "effect": "輸入後按<strong>右鍵</strong>點擊任意方塊，查詢該方塊是被誰鎖定的。"
+      }
+    ]
+  },
+  {
+    "id": "lp",
+    "title": "👑 3. 身份組與聊天室顏色設定 (LuckPerms)",
+    "desc": "管理員用來指派玩家階級與設定聊天標籤的權限工具。",
+    "commands": [
+      {
+        "code": "/lp user <玩家ID> parent set admin",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "將某人（或自己）提升為管理員組（聊天室呈現：綠標 [管理員] + 黃色名字）。"
+      },
+      {
+        "code": "/lp user <玩家ID> parent set verified",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "將某人升級為已認證玩家組（聊天室呈現：藍標 [☑已認證] + 白色名字）。"
+      },
+      {
+        "code": "/lp user <玩家ID> parent set default",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "將玩家降回普通玩家組（聊天室呈現：灰標 [玩家] + 白色名字）。"
+      },
+      {
+        "code": "/lp editor",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "產生安全網址，開啟網頁版的視覺化權限調整面板。"
+      }
+    ]
+  },
+  {
+    "id": "sys",
+    "title": "⚙️ 4. 伺服器核心維護與系統管理",
+    "desc": "維護世界規則與熱刷新外掛配置檔案的最高權限指令。",
+    "commands": [
+      {
+        "code": "/ess reload",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "修改 config.yml 或 motd.txt 歡迎訊息後，一鍵重載刷新生效。"
+      },
+      {
+        "code": "/bolt reload",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "修改 Bolt 的方塊防護清單（例如新增基岩鎖定權限）後，一鍵刷新生效。"
+      },
+      {
+        "code": "/bolt admin",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "進入 Bolt 最高管理模式，可以直接強制拆除或檢查任何人鎖定的箱子。"
+      },
+      {
+        "code": "/nick <玩家ID> <新暱稱>",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "幫指定玩家換上聊天室的專屬暱稱（清除輸入 <code>/nick &lt;玩家ID&gt; off</code>）。"
+      },
+      {
+        "code": "/gamerule keep_inventory true",
+        "badge": "管理員",
+        "badgeClass": "badge-admin",
+        "isAdmin": true,
+        "effect": "開啟麥塊原版死亡不掉落（防噴）功能。"
+      }
+    ]
+  }
+]

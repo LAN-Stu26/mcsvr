@@ -32,11 +32,11 @@
                 <input type="text" id="cmd-search" placeholder="輸入關鍵字搜尋指令... (例如: home, lock, 私訊, admin)" oninput="filterCommands()">
             </div>
             <div class="filter-tags">
-                <button class="filter-btn active" onclick="filterCategory('all')">全部顯示</button>
-                <button class="filter-btn" onclick="filterCategory('basic')">🏡 玩家實用</button>
-                <button class="filter-btn" onclick="filterCategory('bolt')">🔐 防盜鎖定</button>
-                <button class="filter-btn" onclick="filterCategory('lp')">👑 身份組與顏色</button>
-                <button class="filter-btn" onclick="filterCategory('sys')">⚙️ 伺服器維護</button>
+                <button class="filter-btn active" onclick="filterCategory('all', this)">全部顯示</button>
+                <button class="filter-btn" onclick="filterCategory('basic', this)">🏡 玩家實用</button>
+                <button class="filter-btn" onclick="filterCategory('bolt', this)">🔐 防盜鎖定</button>
+                <button class="filter-btn" onclick="filterCategory('lp', this)">👑 身份組與顏色</button>
+                <button class="filter-btn" onclick="filterCategory('sys', this)">⚙️ 伺服器維護</button>
             </div>
         </div>
 
@@ -45,143 +45,9 @@
             <div class="toast" id="cmd-toast">✔ 指令已成功複製到剪貼簿！</div>
         </center>
 
-        <!-- 指令卡片區域 -->
-        <div class="commands-grid">
-
-            <!-- 1. 玩家高頻率實用指令 -->
-            <section class="cmd-card" data-category="basic">
-                <h2 class="card-title">🏡 1. 玩家高頻率實用指令</h2>
-                <p class="card-desc">日常生存冒險中最常用到的傳送與私人通訊功能。</p>
-                
-                <div class="cmd-list">
-                    <div class="cmd-item" onclick="copyCommand('/home')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/home</div>
-                        <div class="cmd-effect">一秒傳送回家（直接回到當初設定家的座標）。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/sethome')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/sethome</div>
-                        <div class="cmd-effect">在目前站立的方塊上設定「家」的位置。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/msg <玩家ID> <訊息>')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/msg &lt;玩家ID&gt; &lt;訊息&gt;</div>
-                        <div class="cmd-effect">發送只有彼此看得到的私密悄悄話（可用簡寫 <code>/w</code>）。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/r <訊息>')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/r &lt;訊息&gt;</div>
-                        <div class="cmd-effect">快速回覆上一則收到的私訊。</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 2. 方塊私人安全鎖 (Bolt) -->
-            <section class="cmd-card" data-category="bolt">
-                <h2 class="card-title">🔐 2. 方塊私人安全鎖 (Bolt)</h2>
-                <p class="card-desc">保護箱子與門不被偷竊的防線，預設對所有人開放使用。</p>
-                
-                <div class="cmd-list">
-                    <div class="cmd-item" onclick="copyCommand('/bolt lock')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/bolt lock</div>
-                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊箱子或門，直接進行私人鎖定。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/bolt unlock')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/bolt unlock</div>
-                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊自己的箱子，解除鎖定。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/bolt trust <玩家ID>')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/bolt trust &lt;玩家ID&gt;</div>
-                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊箱子，將使用權限共享給朋友。</div>
-                    </div>
-                    
-                    <div class="cmd-item" onclick="copyCommand('/bolt info')">
-                        <div class="cmd-badge badge-player">全玩家</div>
-                        <div class="cmd-code">/bolt info</div>
-                        <div class="cmd-effect">輸入後按<strong>右鍵</strong>點擊任意方塊，查詢該方塊是被誰鎖定的。</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 3. 身份組與聊天室顏色設定 (LuckPerms) -->
-            <section class="cmd-card" data-category="lp">
-                <h2 class="card-title">👑 3. 身份組與聊天室顏色設定 (LuckPerms)</h2>
-                <p class="card-desc">管理員用來指派玩家階級與設定聊天標籤的權限工具。</p>
-                
-                <div class="cmd-list">
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user <玩家ID> parent set admin')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set admin</div>
-                        <div class="cmd-effect">將某人（或自己）提升為管理員組（聊天室呈現：綠標 [管理員] + 黃色名字）。</div>
-                    </div>
-
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user <玩家ID> parent set verified')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set verified</div>
-                        <div class="cmd-effect">將某人升級為已認證玩家組（聊天室呈現：藍標 [☑已認證] + 白色名字）。</div>
-                    </div>
-
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp user <玩家ID> parent set default')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/lp user &lt;玩家ID&gt; parent set default</div>
-                        <div class="cmd-effect">將玩家降回普通玩家組（聊天室呈現：灰標 [玩家] + 白色名字）。</div>
-                    </div>
-                    
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/lp editor')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/lp editor</div>
-                        <div class="cmd-effect">產生安全網址，開啟網頁版的視覺化權限調整面板。</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4. 伺服器核心維護與系統管理 -->
-            <section class="cmd-card" data-category="sys">
-                <h2 class="card-title">⚙️ 4. 伺服器核心維護與系統管理</h2>
-                <p class="card-desc">維護世界規則與熱刷新外掛配置檔案的最高權限指令。</p>
-                
-                <div class="cmd-list">
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/ess reload')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/ess reload</div>
-                        <div class="cmd-effect">修改 config.yml 或 motd.txt 歡迎訊息後，一鍵重載刷新生效。</div>
-                    </div>
-
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/bolt reload')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/bolt reload</div>
-                        <div class="cmd-effect">修改 Bolt 的方塊防護清單（例如新增基岩鎖定權限）後，一鍵刷新生效。</div>
-                    </div>
-
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/bolt admin')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/bolt admin</div>
-                        <div class="cmd-effect">進入 Bolt 最高管理模式，可以直接強制拆除或檢查任何人鎖定的箱子。</div>
-                    </div>
-
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/nick <玩家ID> <新暱稱>')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/nick &lt;玩家ID&gt; &lt;新暱稱&gt;</div>
-                        <div class="cmd-effect">幫指定玩家換上聊天室的專屬暱稱（清除輸入 <code>/nick &lt;玩家ID&gt; off</code>）。</div>
-                    </div>
-
-                    <div class="cmd-item admin-cmd" onclick="copyCommand('/gamerule keep_inventory true')">
-                        <div class="cmd-badge badge-admin">管理員</div>
-                        <div class="cmd-code">/gamerule keep_inventory true</div>
-                        <div class="cmd-effect">開啟麥塊原版死亡不掉落（防噴）功能。</div>
-                    </div>
-                </div>
-            </section>
-
+        <!-- 指令卡片動態渲染區域 -->
+        <div class="commands-grid" id="commands-grid">
+            <p style="color: #aaaaaa; text-align: center; grid-column: 1 / -1;">指令資料載入中...</p>
         </div>
 
         <!-- 查無資料提示 -->
@@ -196,12 +62,86 @@
 
     </div>
 
-    <!-- JavaScript 搜尋過濾與複製控制 -->
+    <!-- JavaScript 動態載入 JSON 檔案與搜尋過濾 logic -->
     <script>
         let currentCategory = 'all';
 
-        function copyCommand(text) {
-            let cleanText = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        // 頁面載入後自動讀取同資料夾下的 cmd.json
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('cmd.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('無法讀取 cmd.json 檔案');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    renderCommands(data);
+                })
+                .catch(error => {
+                    console.error('載入指令資料失敗:', error);
+                    document.getElementById('commands-grid').innerHTML = '<p style="color:#ff5555; text-align:center; grid-column: 1 / -1;">⚠️ 指令資料讀取失敗，請確認同資料夾下是否存在 cmd.json。</p>';
+                });
+        });
+
+        // HTML 轉義公用函式
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 動態產生指令卡片 DOM
+        function renderCommands(categories) {
+            const grid = document.getElementById('commands-grid');
+            grid.innerHTML = '';
+
+            categories.forEach(cat => {
+                const card = document.createElement('section');
+                card.className = 'cmd-card';
+                card.setAttribute('data-category', cat.id);
+
+                let cardHtml = `
+                    <h2 class="card-title">${cat.title}</h2>
+                    <p class="card-desc">${cat.desc}</p>
+                    <div class="cmd-list">
+                `;
+
+                cat.commands.forEach(cmd => {
+                    const adminClass = cmd.isAdmin ? ' admin-cmd' : '';
+                    const displayCode = escapeHtml(cmd.code);
+
+                    cardHtml += `
+                        <div class="cmd-item${adminClass}" data-code="${escapeHtml(cmd.code)}">
+                            <div class="cmd-badge ${cmd.badgeClass}">${cmd.badge}</div>
+                            <div class="cmd-code">${displayCode}</div>
+                            <div class="cmd-effect">${cmd.effect}</div>
+                        </div>
+                    `;
+                });
+
+                cardHtml += `</div>`;
+                card.innerHTML = cardHtml;
+
+                // 為每個指令區塊點擊事件綁定複製功能
+                card.querySelectorAll('.cmd-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const codeToCopy = item.getAttribute('data-code');
+                        copyCommand(codeToCopy);
+                    });
+                });
+
+                grid.appendChild(card);
+            });
+
+            // 初始化時進行一次過濾確認
+            filterCommands();
+        }
+
+        function copyCommand(cleanText) {
             navigator.clipboard.writeText(cleanText).then(() => {
                 showToast();
             }).catch(err => {
@@ -223,11 +163,13 @@
             }, 2500);
         }
 
-        function filterCategory(cat) {
+        function filterCategory(cat, element) {
             currentCategory = cat;
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (element) {
+                element.classList.add('active');
+            }
             filterCommands();
         }
 
