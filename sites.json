@@ -43,5 +43,10 @@
     "title": "投票紀錄",
     "url": "/form/history",
     "description": "紀錄資料。 "
+  },
+  {
+    "title": "獎勵紀錄",
+    "url": "/reward/history",
+    "description": "紀錄獎勵。 "
   }
 ]
