@@ -180,6 +180,11 @@ body {
     color: #000000;
 }
 
+.badge-milestone {
+    background-color: #ffaa00;
+    color: #000000;
+}
+
 .badge-important {
     background-color: #ff5555;
     color: #ffffff;

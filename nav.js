@@ -26,10 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
-                <span>📢 本伺服器有關於外掛的投票，詳細請看</span>
-                <a href="/news/#5" class="banner-btn">公告</a>
-                <span> 或 </span>
-                <a href="/form/" class="banner-btn">直接投票</a>
+                <span>📢 本伺服器滿月啦!!!</span>
+                <a href="/news/#6" class="banner-btn">慶祝一下</a>
             </div>
 
             <div class="nav-container">
