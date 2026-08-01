@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>補償與獎勵領取中心 - Lazy Sheep</title>
+    
+    <!-- Google 像素字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- 引入導覽列與市場專屬樣式 -->
+    <link rel="stylesheet" href="/nav.css">
+    <link rel="stylesheet" href="/market/market.css">
+    
+    <!-- 引入導覽列腳本 -->
+    <script src="/nav.js" defer></script>
+
+    <!-- 引入 Firebase SDK (Compat 版本，適用於 HTML 內建腳本) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+    <div class="market-container">
+        <!-- 頁面標頭 -->
+        <header class="market-header">
+            <h1 class="market-title">FREE REWARDS</h1>
+            <p class="market-subtitle">伺服器免費補償與活動獎勵領取中心（輸入玩家 ID 與 Email 即可發送）</p>
+        </header>
+
+        <!-- 分類過濾列 -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterMarket('all', this)">全部商品</button>
+            <button class="filter-btn" onclick="filterMarket('compensation', this)">🎁 伺服器補償</button>
+            <button class="filter-btn" onclick="filterMarket('reward', this)">⭐ 活動與簽到獎勵</button>
+        </div>
+
+        <!-- 商品網格區域 -->
+        <div class="products-grid" id="products-grid">
+            <p style="color: #aaa; text-align: center; grid-column: 1 / -1;">正在載入商品清單...</p>
+        </div>
+    </div>
+
+    <!-- 領取資料填寫彈出視窗 (Modal) -->
+    <div class="modal-overlay" id="claim-modal">
+        <div class="modal-box">
+            <h3 class="modal-title">CLAIM ITEM</h3>
+            <div class="modal-subtitle" id="modal-product-title">商品名稱</div>
+            
+            <form id="claim-form">
+                <input type="hidden" id="form-item-id">
+                <input type="hidden" id="form-item-name">
+
+                <div class="form-group">
+                    <label for="mc-id">Minecraft ID (遊戲名稱)：</label>
+                    <input type="text" id="mc-id" class="form-input" placeholder="例如: LazySheep_x" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-email">電子郵件 (用於確認與通知)：</label>
+                    <input type="email" id="user-email" class="form-input" placeholder="例如: player@gmail.com" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-submit" id="btn-submit-claim">確認領取</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast 提示訊息 -->
+    <div class="toast-msg" id="toast"></div>
+
+    <script>
+        // ========================================================
+        // Firebase 專案設定 (已完成 lazy-sheep-server 資訊綁定)
+        // ========================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhQu5yJD1ojrWv9xZ6GTU2zhZwFH4e4KA",
+            authDomain: "lazy-sheep-server.firebaseapp.com",
+            projectId: "lazy-sheep-server",
+            storageBucket: "lazy-sheep-server.firebasestorage.app",
+            messagingSenderId: "665251951199",
+            appId: "1:665251951199:web:45c36cc44badd65681a1ea",
+            measurementId: "G-REH9JHGGJ8"
+        };
+
+        // 初始化 Firebase Firestore
+        let db = null;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.firestore();
+        } catch (e) {
+            console.warn("Firebase 未正確設定，將在無資料庫模式下進行前端預覽：", e);
+        }
+
+        let allProducts = [];
+        let currentFilter = 'all';
+
+        // 頁面載入後自動讀取 list.json
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/market/list.json')
+                .then(res => {
+                    if (!res.ok) throw new Error('無法讀取 list.json');
+                    return res.json();
+                })
+                .then(data => {
+                    allProducts = data;
+                    renderProducts();
+                })
+                .catch(err => {
+                    console.error('載入商品失敗:', err);
+                    document.getElementById('products-grid').innerHTML = 
+                        '<p style="color:#ff5555; text-align:center; grid-column: 1 / -1;">⚠️ 商品清單載入失敗，請確認 /market/list.json 是否存在。</p>';
+                });
+        });
+
+        // 渲染商品清單
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            const filtered = allProducts.filter(item => {
+                if (currentFilter === 'all') return true;
+                return item.category === currentFilter;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="color:#aaa; text-align:center; grid-column: 1 / -1;">目前沒有此分類的商品。</p>';
+                return;
+            }
+
+            const now = new Date();
+
+            filtered.forEach(product => {
+                const expireDate = new Date(product.expireDate);
+                const isExpired = now > expireDate;
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+
+                const priceText = product.price === 0 ? '免費' : `$${product.price}`;
+                const expireText = isExpired ? '🛑 領取期限已截止' : `⏰ 截止時間：${expireDate.toLocaleString('zh-TW', { hour12: false })}`;
+
+                card.innerHTML = `
+                    <div class="product-image-box">
+                        <span class="badge-category">${product.categoryName || '獎勵'}</span>
+                        <span class="badge-price">${priceText}</span>
+                        <img src="/market/${product.image}" alt="${product.name}" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="product-image-fallback" style="display:none;">🎁</div>
+                    </div>
+                    <div class="product-info">
+                        <h2 class="product-name">${product.name}</h2>
+                        <div class="product-meta">包含數量：<span>${product.quantity}</span></div>
+                        <div class="product-desc">${product.description}</div>
+                        <div class="expire-tag">${expireText}</div>
+                        <button class="claim-btn" ${isExpired ? 'disabled' : ''} onclick="openModal('${product.id}', '${product.name}')">
+                            ${isExpired ? '已截止' : '免費領取'}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 切換過濾分類
+        function filterMarket(category, btnElement) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+            renderProducts();
+        }
+
+        // 開啟領取 Modal
+        function openModal(id, name) {
+            document.getElementById('form-item-id').value = id;
+            document.getElementById('form-item-name').value = name;
+            document.getElementById('modal-product-title').innerText = `商品：${name}`;
+            document.getElementById('claim-modal').classList.add('active');
+        }
+
+        // 關閉領取 Modal
+        function closeModal() {
+            document.getElementById('claim-modal').classList.remove('active');
+            document.getElementById('claim-form').reset();
+        }
+
+        // 處理表單提交至 Firebase
+        document.getElementById('claim-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const itemId = document.getElementById('form-item-id').value;
+            const itemName = document.getElementById('form-item-name').value;
+            const mcId = document.getElementById('mc-id').value.trim();
+            const email = document.getElementById('user-email').value.trim();
+            const submitBtn = document.getElementById('btn-submit-claim');
+
+            if (!mcId || !email) {
+                showToast("⚠️ 請確實填寫所有欄位！");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "資料處理中...";
+
+            const claimData = {
+                itemId: itemId,
+                itemName: itemName,
+                minecraftId: mcId,
+                email: email,
+                price: 0,
+                status: "pending", // pending: 待發放, completed: 已發放
+                claimedAt: db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+            };
+
+            if (db) {
+                // 寫入 Firebase Firestore 資料庫 (集合名稱: market_claims)
+                db.collection('market_claims').add(claimData)
+                    .then(() => {
+                        showToast("✔ 領取請求已成功送出！工作人員將儘速發放獎勵。");
+                        closeModal();
+                    })
+                    .catch(error => {
+                        console.error("Firebase 寫入失敗:", error);
+                        showToast("❌ 領取失敗，請聯絡管理員或稍後重試。");
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "確認領取";
+                    });
+            } else {
+                // Firebase 未配置時的測試模擬
+                setTimeout(() => {
+                    console.log("模擬領取提交成功 (未連接 Firebase):", claimData);
+                    showToast("✔ [模擬成功] 領取請求已記錄 (請完成 Firebase 金鑰配置)。");
+                    closeModal();
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "確認領取";
+                }, 1000);
+            }
+        });
+
+        // 顯示浮動 Toast 提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

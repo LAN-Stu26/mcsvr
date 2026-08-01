@@ -1,0 +1,35 @@
+[
+  {
+    "id": "comp_001",
+    "name": "開服新手補償禮包",
+    "category": "compensation",
+    "categoryName": "🎁 開服補償",
+    "price": 0,
+    "image": "compensation_box.png",
+    "quantity": "界伏盒 x1, 鑽石 x64, 烤牛肉 x32",
+    "expireDate": "2026-08-31T23:59:59",
+    "description": "感謝各位玩家對 Lazy Sheep 伺服器的支持！內含生存初期必備資源與專屬界伏盒。"
+  },
+  {
+    "id": "reward_001",
+    "name": "每日簽到獎勵箱",
+    "category": "reward",
+    "categoryName": "⭐ 每日獎勵",
+    "price": 0,
+    "image": "daily_reward.png",
+    "quantity": "隨機終界水晶 / 鐵錠",
+    "expireDate": "2026-12-31T23:59:59",
+    "description": "登入伺服器後即可免費領取，獎勵將由系統派發至遊戲內郵箱。"
+  },
+  {
+    "id": "reward_002",
+    "name": "外掛檢舉投票參與獎",
+    "category": "reward",
+    "categoryName": "⭐ 投票獎勵",
+    "price": 0,
+    "image": "vote_reward.png",
+    "quantity": "經驗瓶 x32, 綠寶石 x16",
+    "expireDate": "2026-08-15T18:00:00",
+    "description": "完成社群投票並填寫表單的玩家專屬獎勵。"
+  }
+]
