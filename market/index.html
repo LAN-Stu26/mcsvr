@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>補償與獎勵領取中心 - Lazy Sheep</title>
     
+    <!-- 網站 Icon -->
+    <link rel="icon" href="/icon.png" type="image/png">
+
     <!-- Google 像素字型 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="icon" href="/icon.png" type="image/png">    
+    
     <!-- 引入導覽列與市場專屬樣式 -->
     <link rel="stylesheet" href="/nav.css">
     <link rel="stylesheet" href="/market/market.css">
@@ -17,7 +20,7 @@
     <!-- 引入導覽列腳本 -->
     <script src="/nav.js" defer></script>
 
-    <!-- 引入 Firebase SDK (Compat 版本，適用於 HTML 內建腳本) -->
+    <!-- 引入 Firebase SDK (Compat 版本) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
@@ -190,8 +193,8 @@
             document.getElementById('claim-form').reset();
         }
 
-        // 處理表單提交至 Firebase
-        document.getElementById('claim-form').addEventListener('submit', function(e) {
+        // 處理表單提交至 Firebase (含重複領取檢查)
+        document.getElementById('claim-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const itemId = document.getElementById('form-item-id').value;
@@ -206,38 +209,53 @@
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "資料處理中...";
-
-            const claimData = {
-                itemId: itemId,
-                itemName: itemName,
-                minecraftId: mcId,
-                email: email,
-                price: 0,
-                status: "pending", // pending: 待發放, completed: 已發放
-                claimedAt: db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
-            };
+            submitBtn.innerText = "驗證領取資格中...";
 
             if (db) {
-                // 寫入 Firebase Firestore 資料庫 (集合名稱: market_claims)
-                db.collection('market_claims').add(claimData)
-                    .then(() => {
-                        showToast("✔ 領取請求已成功送出！工作人員將儘速發放獎勵。");
-                        closeModal();
-                    })
-                    .catch(error => {
-                        console.error("Firebase 寫入失敗:", error);
-                        showToast("❌ 領取失敗，請聯絡管理員或稍後重試。");
-                    })
-                    .finally(() => {
+                try {
+                    // 1. 查詢該 Minecraft ID 是否已領取過此商品 (大小寫不敏感)
+                    const mcIdLower = mcId.toLowerCase();
+                    const existingDocs = await db.collection('market_claims')
+                        .where('minecraftIdLower', '==', mcIdLower)
+                        .get();
+
+                    const hasClaimed = existingDocs.docs.some(doc => doc.data().itemId === itemId);
+
+                    if (hasClaimed) {
+                        showToast("⚠️ 該 Minecraft 帳號已領取過此商品，無法重複領取！");
                         submitBtn.disabled = false;
                         submitBtn.innerText = "確認領取";
-                    });
+                        return;
+                    }
+
+                    submitBtn.innerText = "資料寫入中...";
+
+                    // 2. 寫入領取紀錄
+                    const claimData = {
+                        itemId: itemId,
+                        itemName: itemName,
+                        minecraftId: mcId,
+                        minecraftIdLower: mcIdLower,
+                        email: email,
+                        price: 0,
+                        status: "pending", // pending: 待發放, completed: 已發放
+                        claimedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    await db.collection('market_claims').add(claimData);
+                    showToast("✔ 領取請求已成功送出！工作人員將儘速發放獎勵。");
+                    closeModal();
+                } catch (error) {
+                    console.error("Firebase 處理失敗:", error);
+                    showToast("❌ 領取失敗，請確認網路連線或聯絡管理員。");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "確認領取";
+                }
             } else {
-                // Firebase 未配置時的測試模擬
+                // 模擬測試模式
                 setTimeout(() => {
-                    console.log("模擬領取提交成功 (未連接 Firebase):", claimData);
-                    showToast("✔ [模擬成功] 領取請求已記錄 (請完成 Firebase 金鑰配置)。");
+                    showToast("✔ [模擬成功] 領取請求已記錄 (請連接 Firebase)。");
                     closeModal();
                     submitBtn.disabled = false;
                     submitBtn.innerText = "確認領取";
