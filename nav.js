@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             <div class="nav-container">
                 <a href="/" class="nav-brand">
-                    <img src="/icon.png" alt="Logo" style="width:24px; height:24px; vertical-align:middle; margin-right:8px; image-rendering:pixelated;" onerror="this.style.display='none'">
                     Lazy Sheep
                 </a>
                 
