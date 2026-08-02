@@ -24,9 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // 2. 生成導覽列 HTML 結構（含頂部橫幅公告與全螢幕搜尋觸發按鈕）
     const navHTML = `
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=news" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=store" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=book_2" />
 
-
-        
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
@@ -43,22 +44,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 <!-- 導覽連結 -->
                 <div class="nav-links" id="navLinks">
                     <a href="/" class="nav-item ${currentPath === '/' || currentPath.endsWith('/index.html') ? 'active' : ''}">
-
-                    <span class="material-symbols-outlined">
-                        home
-                    </span>
+                        <span class="material-symbols-outlined"> home </span>
                         首頁
                     </a>
                     <a href="/news/" class="nav-item ${currentPath.includes('/news') ? 'active' : ''}">
+                        <span class="material-symbols-outlined"> news </span>
                         最新消息
                     </a>
                     <a href="/market/" class="nav-item ${currentPath.includes('/market') ? 'active' : ''}">
+                        <span class="material-symbols-outlined"> store </span>
                         市集
                     </a>
                     <a href="/commands/" class="nav-item ${currentPath.includes('/commands') ? 'active' : ''}">
                         >_ 指令大全
                     </a>
                     <a href="/rules/" class="nav-item ${currentPath.includes('/rules') ? 'active' : ''}">
+                        <span class="material-symbols-outlined"> book_2 </span>
                         伺服器規範
                     </a>
                     <a href="/join/" class="nav-item ${currentPath.includes('/join') ? 'active' : ''}">
