@@ -156,7 +156,12 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
 
-                const priceText = product.price === 0 ? '免費' : `$${product.price}`;
+                // 彈性價格顯示邏輯：支援數字、字串 (例如："5 顆鐵錠" 或 "免費")
+                let priceText = '免費';
+                if (product.price !== undefined && product.price !== null && product.price !== 0 && product.price !== '0' && product.price !== '免費') {
+                    priceText = typeof product.price === 'number' ? `$${product.price}` : product.price;
+                }
+
                 const expireText = isExpired ? '🛑 領取期限已截止' : `⏰ 截止時間：${expireDate.toLocaleString('zh-TW', { hour12: false })}`;
 
                 card.innerHTML = `
@@ -268,7 +273,11 @@
 
                     submitBtn.innerText = "資料寫入中...";
 
-                    // 4. 寫入領取紀錄 (包含玩家名稱與 Minecraft ID)
+                    // 抓取當前商品的價格設定
+                    const targetProduct = allProducts.find(p => p.id === itemId);
+                    const productPrice = targetProduct ? targetProduct.price : 0;
+
+                    // 4. 寫入領取紀錄 (包含玩家名稱、Minecraft ID 與商品價格)
                     const claimData = {
                         itemId: itemId,
                         itemName: itemName,
@@ -276,7 +285,7 @@
                         minecraftIdLower: mcIdLower,
                         userName: registeredName,
                         email: email,
-                        price: 0,
+                        price: productPrice,
                         status: "pending", // pending: 待發放, completed: 已發放
                         claimedAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
