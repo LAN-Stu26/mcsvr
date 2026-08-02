@@ -1,5 +1,17 @@
 /* === Lazy Sheep 伺服器補償與獎勵商店樣式 === */
 
+/* 修正導覽列圖層層級 (防止手機版漢堡選單被 market-header 的 backdrop-filter 遮擋) */
+#nav-placeholder, 
+nav, 
+.navbar, 
+.nav-bar, 
+.nav-menu, 
+.mobile-menu,
+.nav-dropdown {
+    position: relative;
+    z-index: 9990 !important;
+}
+
 body {
     background-color: #141414;
     background-position: center;
@@ -18,6 +30,8 @@ body {
     margin: 0 auto 50px auto;
     padding: 0 20px;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
 
 /* 頁面標頭區塊 */
@@ -29,6 +43,8 @@ body {
     border: 4px solid #000000;
     box-shadow: inset -4px -4px 0px #151515, inset 4px 4px 0px #444444, 0 8px 20px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
+    position: relative;
+    z-index: 2;
 }
 
 .market-title {
