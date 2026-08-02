@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>補償與獎勵領取中心 - Lazy Sheep</title>
+    <title>Market - Lazy Sheep</title>
     
     <!-- 網站 Icon -->
     <link rel="icon" href="/icon.png" type="image/png">
@@ -32,7 +32,7 @@
     <div class="market-container">
         <!-- 頁面標頭 -->
         <header class="market-header">
-            <h1 class="market-title">FREE REWARDS</h1>
+            <h1 class="market-title">Market</h1>
             <p class="market-subtitle">伺服器免費補償與活動獎勵領取中心（輸入玩家 ID 與 Email 即可發送）</p>
         </header>
 
@@ -61,12 +61,12 @@
 
                 <div class="form-group">
                     <label for="mc-id">Minecraft ID (遊戲名稱)：</label>
-                    <input type="text" id="mc-id" class="form-input" placeholder="例如: LazySheep_x" required>
+                    <input type="text" id="mc-id" class="form-input" placeholder="例如: steve" required>
                 </div>
 
                 <div class="form-group">
                     <label for="user-email">電子郵件 (用於確認與通知)：</label>
-                    <input type="email" id="user-email" class="form-input" placeholder="例如: player@gmail.com" required>
+                    <input type="email" id="user-email" class="form-input" placeholder="例如: steve@gmail.com" required>
                 </div>
 
                 <div class="modal-actions">
@@ -202,7 +202,7 @@
             document.getElementById('claim-form').reset();
         }
 
-        // 處理表單提交至 Firebase (含重複領取檢查)
+        // 處理表單提交至 Firebase (含用戶資格驗證 + 重複領取檢查)
         document.getElementById('claim-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -218,12 +218,31 @@
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "驗證領取資格中...";
+            submitBtn.innerText = "驗證玩家資格中...";
 
             if (db) {
                 try {
-                    // 1. 查詢該 Minecraft ID 是否已領取過此商品 (大小寫不敏感)
                     const mcIdLower = mcId.toLowerCase();
+
+                    // 1. 驗證 users 集合中是否存在該 Minecraft ID
+                    const userDocs = await db.collection('users')
+                        .where('minecraftIdLower', '==', mcIdLower)
+                        .get();
+
+                    if (userDocs.empty) {
+                        showToast("⚠️ 查無此 Minecraft 帳號的使用者資訊，不符合領取資格！");
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "確認領取";
+                        return;
+                    }
+
+                    // 取得玩家於 users 集合登記的名稱
+                    const userData = userDocs.docs[0].data();
+                    const registeredName = userData.name || "未填寫";
+
+                    submitBtn.innerText = "檢查重複領取...";
+
+                    // 2. 查詢該 Minecraft ID 是否已領取過此商品
                     const existingDocs = await db.collection('market_claims')
                         .where('minecraftIdLower', '==', mcIdLower)
                         .get();
@@ -239,12 +258,13 @@
 
                     submitBtn.innerText = "資料寫入中...";
 
-                    // 2. 寫入領取紀錄
+                    // 3. 寫入領取紀錄 (包含玩家名稱與 Minecraft ID)
                     const claimData = {
                         itemId: itemId,
                         itemName: itemName,
                         minecraftId: mcId,
                         minecraftIdLower: mcIdLower,
+                        userName: registeredName,
                         email: email,
                         price: 0,
                         status: "pending", // pending: 待發放, completed: 已發放
@@ -252,7 +272,7 @@
                     };
 
                     await db.collection('market_claims').add(claimData);
-                    showToast("✔ 領取請求已成功送出！工作人員將儘速發放獎勵。");
+                    showToast(`✔ 領取成功！玩家：${registeredName} (${mcId})，工作人員將儘速發放。`);
                     closeModal();
                 } catch (error) {
                     console.error("Firebase 處理失敗:", error);
@@ -264,7 +284,7 @@
             } else {
                 // 模擬測試模式
                 setTimeout(() => {
-                    showToast("✔ [模擬成功] 領取請求已記錄 (請連接 Firebase)。");
+                    showToast("✔ 領取請求已記錄 (請連接 Firebase)。");
                     closeModal();
                     submitBtn.disabled = false;
                     submitBtn.innerText = "確認領取";
