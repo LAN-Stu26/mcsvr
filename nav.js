@@ -23,6 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 2. 生成導覽列 HTML 結構（含頂部橫幅公告與全螢幕搜尋觸發按鈕）
     const navHTML = `
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home" />
+
+
+        
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
@@ -32,14 +36,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
             <div class="nav-container">
                 <a href="/" class="nav-brand">
-                    <img src="/logo.png" alt="Logo" style="width:24px; height:24px; vertical-align:middle; margin-right:8px; image-rendering:pixelated;" onerror="this.style.display='none'">
+                    <img src="/icon.png" alt="Logo" style="width:24px; height:24px; vertical-align:middle; margin-right:8px; image-rendering:pixelated;" onerror="this.style.display='none'">
                     Lazy Sheep
                 </a>
                 
                 <!-- 導覽連結 -->
                 <div class="nav-links" id="navLinks">
                     <a href="/" class="nav-item ${currentPath === '/' || currentPath.endsWith('/index.html') ? 'active' : ''}">
-                        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home" />首頁
+
+                    <span class="material-symbols-outlined">
+                        home
+                    </span>
+                        首頁
                     </a>
                     <a href="/news/" class="nav-item ${currentPath.includes('/news') ? 'active' : ''}">
                         最新消息
