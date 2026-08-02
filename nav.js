@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <!-- 導覽連結 -->
                 <div class="nav-links" id="navLinks">
                     <a href="/" class="nav-item ${currentPath === '/' || currentPath.endsWith('/index.html') ? 'active' : ''}">
-                        首頁
+                        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home" />首頁
                     </a>
                     <a href="/news/" class="nav-item ${currentPath.includes('/news') ? 'active' : ''}">
                         最新消息
