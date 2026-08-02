@@ -230,7 +230,7 @@
                         .get();
 
                     if (userDocs.empty) {
-                        showToast("⚠️ 查無此 Minecraft 帳號的使用者資訊，不符合領取資格！");
+                        showToast("⚠️ 此人可能未取的伺服器認證，不符合領取資格！");
                         submitBtn.disabled = false;
                         submitBtn.innerText = "確認領取";
                         return;
