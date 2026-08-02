@@ -42,16 +42,19 @@ document.addEventListener('DOMContentLoaded', function () {
                         首頁
                     </a>
                     <a href="/news/" class="nav-item ${currentPath.includes('/news') ? 'active' : ''}">
-                        📰 最新消息
+                        最新消息
+                    </a>
+                    <a href="/market/" class="nav-item ${currentPath.includes('/market') ? 'active' : ''}">
+                        市集
                     </a>
                     <a href="/commands/" class="nav-item ${currentPath.includes('/commands') ? 'active' : ''}">
                         >_ 指令大全
                     </a>
                     <a href="/rules/" class="nav-item ${currentPath.includes('/rules') ? 'active' : ''}">
-                        📖 伺服器規範
+                        伺服器規範
                     </a>
                     <a href="/join/" class="nav-item ${currentPath.includes('/join') ? 'active' : ''}">
-                        申請白名單
+                        加入伺服器
                     </a>
                 </div>
 

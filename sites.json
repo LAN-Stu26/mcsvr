@@ -6,7 +6,7 @@
   },
   {
     "title": "獎勵",
-    "url": "/reward/",
+    "url": "/market/",
     "description": "免費慶祝鑽石與補償。 "
   },
   {
@@ -46,7 +46,7 @@
   },
   {
     "title": "獎勵紀錄",
-    "url": "/reward/history",
+    "url": "/market/history",
     "description": "紀錄獎勵。 "
   }
 ]
