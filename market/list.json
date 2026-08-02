@@ -1,16 +1,5 @@
 [
 {
-    "id": "test_reward",
-    "name": "測試用商品",
-    "category": "compensation",
-    "categoryName": "🎁 伺服器補償",
-    "price": "1 顆鑽石",
-    "quantity": "鑽石 x1、空氣 x1",
-    "description": "此為測試用商品，你無法購買",
-    "image": "diamond.png",
-    "expireDate": "2026-08-01T23:59:59"
-  },
-  {
     "id": "august_reward_2026",
     "name": "8 月獎勵",
     "category": "reward",
@@ -20,5 +9,16 @@
     "quantity": "鑽石 x1",
     "expireDate": "2026-08-08T23:59:59",
     "description": "8 月份限定免費補償與獎勵，每個 Minecraft 帳號限領取一次！"
+  },
+  {
+    "id": "test_reward",
+    "name": "測試用商品",
+    "category": "compensation",
+    "categoryName": "🎁 伺服器補償",
+    "price": "1 顆鑽石",
+    "quantity": "鑽石 x1、空氣 x1",
+    "description": "此為測試用商品，你無法購買",
+    "image": "diamond.png",
+    "expireDate": "2026-08-01T23:59:59"
   }
 ]
