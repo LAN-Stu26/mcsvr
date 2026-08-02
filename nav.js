@@ -21,12 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
         </svg>
     `;
 
-    // 2. 生成導覽列 HTML 結構（含頂部橫幅公告與全螢幕搜尋觸發按鈕）
+    // 2. 生成導覽列 HTML 結構（修正：統一引入完整的 Material Symbols 樣式表）
     const navHTML = `
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=news" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=store" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&icon_names=book_2" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
