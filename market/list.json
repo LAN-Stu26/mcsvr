@@ -11,13 +11,24 @@
     "description": "8 月份限定免費補償與獎勵，每個 Minecraft 帳號限領取一次！"
   },
   {
+    "id": "birthday_reward_2026",
+    "name": "生日蛋糕",
+    "category": "reward",
+    "categoryName": "🎁 生日獎勵",
+    "price": 0,
+    "quantity": "1 顆蛋糕加神秘禮物",
+    "description": "只要你生日未過，版主會親自送上生日蛋糕!",
+    "image": "cake.png",
+    "expireDate": "2026-12-31T23:59:59"
+  },
+  {
     "id": "test_reward",
     "name": "測試用商品",
     "category": "compensation",
     "categoryName": "🎁 伺服器補償",
     "price": "1 顆鑽石",
     "quantity": "鑽石 x1、空氣 x1",
-    "description": "此為測試用商品，你無法購買",
+    "description": "此為測試用商品，你無法購買。",
     "image": "dm.png",
     "expireDate": "2026-08-01T23:59:59"
   }
