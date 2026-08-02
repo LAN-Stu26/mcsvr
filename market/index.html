@@ -202,7 +202,7 @@
             document.getElementById('claim-form').reset();
         }
 
-        // 處理表單提交至 Firebase (含用戶資格驗證 + 重複領取檢查)
+        // 處理表單提交至 Firebase (含用戶資格驗證 + 電子郵件比對 + 重複領取檢查)
         document.getElementById('claim-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -223,6 +223,7 @@
             if (db) {
                 try {
                     const mcIdLower = mcId.toLowerCase();
+                    const emailLower = email.toLowerCase();
 
                     // 1. 驗證 users 集合中是否存在該 Minecraft ID
                     const userDocs = await db.collection('users')
@@ -230,19 +231,28 @@
                         .get();
 
                     if (userDocs.empty) {
-                        showToast("⚠️ 此人可能未取的伺服器認證，不符合領取資格！");
+                        showToast("⚠️ 此 Minecraft 帳號未取得伺服器認證，不符合領取資格！");
                         submitBtn.disabled = false;
                         submitBtn.innerText = "確認領取";
                         return;
                     }
 
-                    // 取得玩家於 users 集合登記的名稱
+                    // 2. 比對 Email 是否與資料庫登記相符
                     const userData = userDocs.docs[0].data();
+                    const registeredEmail = (userData.email || "").trim().toLowerCase();
+
+                    if (registeredEmail !== emailLower) {
+                        showToast("⚠️ 輸入的電子郵件與伺服器登記之資料不符！");
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "確認領取";
+                        return;
+                    }
+
                     const registeredName = userData.name || "未填寫";
 
                     submitBtn.innerText = "檢查重複領取...";
 
-                    // 2. 查詢該 Minecraft ID 是否已領取過此商品
+                    // 3. 查詢該 Minecraft ID 是否已領取過此商品
                     const existingDocs = await db.collection('market_claims')
                         .where('minecraftIdLower', '==', mcIdLower)
                         .get();
@@ -258,7 +268,7 @@
 
                     submitBtn.innerText = "資料寫入中...";
 
-                    // 3. 寫入領取紀錄 (包含玩家名稱與 Minecraft ID)
+                    // 4. 寫入領取紀錄 (包含玩家名稱與 Minecraft ID)
                     const claimData = {
                         itemId: itemId,
                         itemName: itemName,
