@@ -305,8 +305,8 @@
 
             if (isLoggedIn && currentUser) {
                 dot.className = "user-auth-status-dot online";
-                text.innerText = `🟢 已登入：${currentUser.name} (${currentUser.mcId})`;
-                btn.innerText = "🚪 登出";
+                text.innerText = ` 已登入：${currentUser.name} (${currentUser.mcId})`;
+                btn.innerText = " 登出";
                 btn.className = "btn-pixel-danger";
             } else {
                 dot.className = "user-auth-status-dot";
