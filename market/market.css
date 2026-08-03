@@ -1,17 +1,5 @@
 /* === Lazy Sheep 伺服器補償與獎勵商店樣式 === */
 
-/* 修正導覽列圖層層級 (防止手機版漢堡選單被 market-header 的 backdrop-filter 遮擋) */
-#nav-placeholder, 
-nav, 
-.navbar, 
-.nav-bar, 
-.nav-menu, 
-.mobile-menu,
-.nav-dropdown {
-    position: relative;
-    z-index: 9990 !important;
-}
-
 body {
     background-color: #141414;
     background-position: center;
