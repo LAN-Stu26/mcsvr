@@ -236,10 +236,11 @@
         let allProducts = [];
         let currentFilter = 'all';
         let currentUser = null; // 儲存已登入玩家 Session: { mcId, mcIdLower, name, email }
+        let userPurchasedItemIds = []; // 儲存已登入玩家已購買/領取的商品 ID 清單
 
         // 頁面載入後初始化 Session 與商品列表
-        document.addEventListener('DOMContentLoaded', () => {
-            checkUserSession();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkUserSession();
             
             fetch('/market/list.json')
                 .then(res => {
@@ -257,20 +258,42 @@
                 });
         });
 
-        // 檢查 Session 登入狀態
-        function checkUserSession() {
+        // 檢查 Session 登入狀態並加載購買歷史
+        async function checkUserSession() {
             const savedUser = sessionStorage.getItem('mcsvr_user');
             if (savedUser) {
                 try {
                     currentUser = JSON.parse(savedUser);
                     updateAuthUI(true);
+                    await loadUserPurchases();
                 } catch (e) {
                     sessionStorage.removeItem('mcsvr_user');
                     currentUser = null;
+                    userPurchasedItemIds = [];
                     updateAuthUI(false);
                 }
             } else {
+                currentUser = null;
+                userPurchasedItemIds = [];
                 updateAuthUI(false);
+            }
+        }
+
+        // 查詢已登入使用者的購買紀錄
+        async function loadUserPurchases() {
+            if (!currentUser || !db) {
+                userPurchasedItemIds = [];
+                return;
+            }
+            try {
+                const claimsQuery = await db.collection('market_claims')
+                    .where('minecraftIdLower', '==', currentUser.mcIdLower)
+                    .get();
+
+                userPurchasedItemIds = claimsQuery.docs.map(doc => doc.data().itemId);
+            } catch (e) {
+                console.error("讀取玩家購買歷史失敗:", e);
+                userPurchasedItemIds = [];
             }
         }
 
@@ -299,14 +322,16 @@
                 // 執行登出
                 sessionStorage.removeItem('mcsvr_user');
                 currentUser = null;
+                userPurchasedItemIds = [];
                 updateAuthUI(false);
+                renderProducts();
                 showToast("👋 已成功登出玩家帳號");
             } else {
                 openLoginModal();
             }
         }
 
-        // 渲染商品清單
+        // 渲染商品清單 (包含自動檢測 [已購買] 標記)
         function renderProducts() {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
@@ -326,6 +351,7 @@
             filtered.forEach(product => {
                 const expireDate = new Date(product.expireDate);
                 const isExpired = now > expireDate;
+                const isPurchased = userPurchasedItemIds.includes(product.id);
 
                 const card = document.createElement('div');
                 card.className = 'product-card';
@@ -335,7 +361,24 @@
                     priceText = typeof product.price === 'number' ? `$${product.price}` : product.price;
                 }
 
-                const expireText = isExpired ? '🛑 領取期限已截止' : `⏰ 截止時間：${expireDate.toLocaleString('zh-TW', { hour12: false })}`;
+                let expireText = isExpired ? '🛑 領取期限已截止' : `⏰ 截止時間：${expireDate.toLocaleString('zh-TW', { hour12: false })}`;
+                if (isPurchased) {
+                    expireText = '✔ 您已完成購買/領取';
+                }
+
+                // 判斷按鈕狀態與文字
+                let btnText = '免費領取';
+                let btnDisabled = false;
+                let btnStyle = '';
+
+                if (isPurchased) {
+                    btnText = '✔ 已購買';
+                    btnDisabled = true;
+                    btnStyle = 'style="background-color: #444; border-color: #222; color: #888; cursor: not-allowed;"';
+                } else if (isExpired) {
+                    btnText = '已截止';
+                    btnDisabled = true;
+                }
 
                 card.innerHTML = `
                     <div class="product-image-box">
@@ -345,12 +388,14 @@
                         <div class="product-image-fallback" style="display:none;">🎁</div>
                     </div>
                     <div class="product-info">
-                        <h2 class="product-name">${product.name}</h2>
+                        <h2 class="product-name">
+                            ${isPurchased ? '<span style="color:#55ff55; font-size:0.85em;">[已購買] </span>' : ''}${product.name}
+                        </h2>
                         <div class="product-meta">包含數量：<span>${product.quantity}</span></div>
                         <div class="product-desc">${product.description}</div>
                         <div class="expire-tag">${expireText}</div>
-                        <button class="claim-btn" ${isExpired ? 'disabled' : ''} onclick="openClaimModal('${product.id}', '${product.name}')">
-                            ${isExpired ? '已截止' : '免費領取'}
+                        <button class="claim-btn" ${btnDisabled ? 'disabled' : ''} ${btnStyle} onclick="openClaimModal('${product.id}', '${product.name}')">
+                            ${btnText}
                         </button>
                     </div>
                 `;
@@ -376,7 +421,7 @@
             document.getElementById('login-form').reset();
         }
 
-        // 處理玩家登入 (比對 users 集合中之 minecraftId, email, verificationCode)
+        // 處理玩家登入 (比對 users 集合，登入後加載購買歷史)
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const mcId = document.getElementById('login-mc-id').value.trim();
@@ -397,7 +442,7 @@
                     const mcIdLower = mcId.toLowerCase();
                     const emailLower = email.toLowerCase();
 
-                    // 查詢 users 集合，三重核驗：Minecraft ID + Email + 驗證碼
+                    // 查詢 users 集合，三重核驗
                     const userQuery = await db.collection('users')
                         .where('minecraftIdLower', '==', mcIdLower)
                         .where('email', '==', emailLower)
@@ -423,6 +468,11 @@
 
                     sessionStorage.setItem('mcsvr_user', JSON.stringify(currentUser));
                     updateAuthUI(true);
+                    
+                    // 登入後抓取買過的商品資料並重繪商品列表
+                    await loadUserPurchases();
+                    renderProducts();
+
                     showToast(`✔ 登入成功！歡迎回到伺服器，${currentUser.name}`);
                     closeLoginModal();
                 } catch (error) {
@@ -438,6 +488,7 @@
                     currentUser = { mcId: mcId, mcIdLower: mcId.toLowerCase(), name: mcId, email: email.toLowerCase() };
                     sessionStorage.setItem('mcsvr_user', JSON.stringify(currentUser));
                     updateAuthUI(true);
+                    renderProducts();
                     showToast(`✔ 測試模式：已登入為 ${mcId}`);
                     closeLoginModal();
                     submitBtn.disabled = false;
@@ -567,6 +618,13 @@
                     };
 
                     await db.collection('market_claims').add(claimData);
+
+                    // 寫入成功後，即時更新本地購買紀錄並重繪 UI
+                    if (!userPurchasedItemIds.includes(itemId)) {
+                        userPurchasedItemIds.push(itemId);
+                    }
+                    renderProducts();
+
                     showToast(`✔ 領取成功！玩家：${registeredName} (${mcId})，工作人員將儘速發放。`);
                     closeClaimModal();
                 } catch (error) {
@@ -579,6 +637,10 @@
             } else {
                 // 模擬測試模式
                 setTimeout(() => {
+                    if (!userPurchasedItemIds.includes(itemId)) {
+                        userPurchasedItemIds.push(itemId);
+                    }
+                    renderProducts();
                     showToast(`✔ 測試模式：已紀錄領取請求 (${mcId})。`);
                     closeClaimModal();
                     submitBtn.disabled = false;
