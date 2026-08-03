@@ -29,7 +29,7 @@
     "price": "1 顆鑽石",
     "quantity": "鑽石 x1、空氣 x1",
     "description": "此為測試用商品，你無法購買。",
-    "image": "dm.png",
+    "image": ,
     "expireDate": "2026-08-01T23:59:59"
   }
 ]
