@@ -97,7 +97,7 @@
         <!-- 頁面標頭 -->
         <header class="market-header">
             <h1 class="market-title">Market</h1>
-            <p class="market-subtitle">伺服器免費補償與活動獎勵領取中心（輸入玩家 ID 與驗證碼即可領取）</p>
+            <p class="market-subtitle">伺服器免費補償與活動獎勵領取中心（輸入玩家 ID、Email 與驗證碼即可領取）</p>
         </header>
 
         <!-- 玩家登入狀態列 -->
@@ -128,7 +128,7 @@
     <div class="modal-overlay" id="login-modal">
         <div class="modal-box">
             <h3 class="modal-title">PLAYER LOGIN</h3>
-            <div class="modal-subtitle">請輸入您的 Minecraft ID 與個人領取驗證碼</div>
+            <div class="modal-subtitle">請輸入您的 Minecraft ID、電子郵件與專屬驗證碼</div>
             
             <form id="login-form">
                 <div class="form-group">
@@ -137,8 +137,13 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="login-email">電子郵件：</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="例如: steve@gmail.com" required>
+                </div>
+
+                <div class="form-group">
                     <label for="login-verify-code">個人領取驗證碼：</label>
-                    <input type="password" id="login-verify-code" class="form-input" placeholder="請輸入您的個人驗證碼" required>
+                    <input type="password" id="login-verify-code" class="form-input" placeholder="請輸入您的驗證碼" required>
                 </div>
 
                 <div class="modal-actions">
@@ -149,7 +154,7 @@
         </div>
     </div>
 
-    <!-- 2. 領取資料確認彈出視窗 (Claim Modal) -->
+    <!-- 2. 領取資料填寫彈出視窗 (Claim Modal) -->
     <div class="modal-overlay" id="claim-modal">
         <div class="modal-box">
             <h3 class="modal-title">CLAIM ITEM</h3>
@@ -159,14 +164,31 @@
                 <input type="hidden" id="form-item-id">
                 <input type="hidden" id="form-item-name">
 
-                <div class="form-group">
-                    <label>當前登入玩家：</label>
-                    <input type="text" id="claim-display-mc-id" class="form-input" style="color: #ffaa00; font-weight: bold; background-color: #1a1a1a;" readonly>
+                <!-- 已登入狀態顯示區域 -->
+                <div id="claim-logged-in-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>當前登入帳號：</label>
+                        <input type="text" id="claim-display-info" class="form-input" style="color: #ffaa00; font-weight: bold; background-color: #1a1a1a;" readonly>
+                    </div>
                 </div>
 
+                <!-- 未登入狀態動態輸入區域 -->
+                <div id="claim-guest-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="claim-guest-mc-id">Minecraft ID (遊戲名稱)：</label>
+                        <input type="text" id="claim-guest-mc-id" class="form-input" placeholder="例如: steve">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="claim-guest-email">電子郵件：</label>
+                        <input type="email" id="claim-guest-email" class="form-input" placeholder="例如: steve@gmail.com">
+                    </div>
+                </div>
+
+                <!-- 驗證碼輸入 (無論是否登入皆需填寫) -->
                 <div class="form-group">
-                    <label for="claim-verify-code">二次確認領取驗證碼：</label>
-                    <input type="password" id="claim-verify-code" class="form-input" placeholder="請再次輸入驗證碼以授權領取" required>
+                    <label for="claim-verify-code">領取驗證碼：</label>
+                    <input type="password" id="claim-verify-code" class="form-input" placeholder="請輸入您的驗證碼" required>
                 </div>
 
                 <div class="modal-actions">
@@ -327,7 +349,7 @@
                         <div class="product-meta">包含數量：<span>${product.quantity}</span></div>
                         <div class="product-desc">${product.description}</div>
                         <div class="expire-tag">${expireText}</div>
-                        <button class="claim-btn" ${isExpired ? 'disabled' : ''} onclick="handleClaimClick('${product.id}', '${product.name}')">
+                        <button class="claim-btn" ${isExpired ? 'disabled' : ''} onclick="openClaimModal('${product.id}', '${product.name}')">
                             ${isExpired ? '已截止' : '免費領取'}
                         </button>
                     </div>
@@ -344,16 +366,6 @@
             renderProducts();
         }
 
-        // 點擊領取按鈕（檢查是否登入）
-        function handleClaimClick(id, name) {
-            if (!currentUser) {
-                showToast("⚠️ 請先登入玩家帳號再進行領取！");
-                openLoginModal();
-                return;
-            }
-            openClaimModal(id, name);
-        }
-
         // 登入 Modal 控制
         function openLoginModal() {
             document.getElementById('login-modal').classList.add('active');
@@ -364,15 +376,16 @@
             document.getElementById('login-form').reset();
         }
 
-        // 處理玩家登入 (比對 users 集合中之 verificationCode)
+        // 處理玩家登入 (比對 users 集合中之 minecraftId, email, verificationCode)
         document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const mcId = document.getElementById('login-mc-id').value.trim();
+            const email = document.getElementById('login-email').value.trim();
             const verifyCode = document.getElementById('login-verify-code').value.trim();
             const submitBtn = document.getElementById('btn-submit-login');
 
-            if (!mcId || !verifyCode) {
-                showToast("⚠️ 請確實輸入 ID 與驗證碼！");
+            if (!mcId || !email || !verifyCode) {
+                showToast("⚠️ 請確實填寫所有欄位！");
                 return;
             }
 
@@ -382,15 +395,17 @@
             if (db) {
                 try {
                     const mcIdLower = mcId.toLowerCase();
+                    const emailLower = email.toLowerCase();
 
-                    // 查詢 users 集合，精準比對 Minecraft ID 與驗證碼
+                    // 查詢 users 集合，三重核驗：Minecraft ID + Email + 驗證碼
                     const userQuery = await db.collection('users')
                         .where('minecraftIdLower', '==', mcIdLower)
+                        .where('email', '==', emailLower)
                         .where('verificationCode', '==', verifyCode)
                         .get();
 
                     if (userQuery.empty) {
-                        showToast("❌ 驗證失敗！Minecraft ID 或個人驗證碼不正確。");
+                        showToast("❌ 驗證失敗！Minecraft ID、電子郵件或驗證碼不正確。");
                         submitBtn.disabled = false;
                         submitBtn.innerText = "登入系統";
                         return;
@@ -403,7 +418,7 @@
                         mcId: userData.minecraftId || mcId,
                         mcIdLower: mcIdLower,
                         name: userData.name || userData.minecraftId || mcId,
-                        email: userData.email || ""
+                        email: emailLower
                     };
 
                     sessionStorage.setItem('mcsvr_user', JSON.stringify(currentUser));
@@ -420,7 +435,7 @@
             } else {
                 // 模擬測試模式
                 setTimeout(() => {
-                    currentUser = { mcId: mcId, mcIdLower: mcId.toLowerCase(), name: mcId, email: "test@example.com" };
+                    currentUser = { mcId: mcId, mcIdLower: mcId.toLowerCase(), name: mcId, email: email.toLowerCase() };
                     sessionStorage.setItem('mcsvr_user', JSON.stringify(currentUser));
                     updateAuthUI(true);
                     showToast(`✔ 測試模式：已登入為 ${mcId}`);
@@ -431,12 +446,32 @@
             }
         });
 
-        // 領取 Modal 控制
+        // 領取 Modal 控制 (依據登入狀態切換欄位)
         function openClaimModal(id, name) {
             document.getElementById('form-item-id').value = id;
             document.getElementById('form-item-name').value = name;
             document.getElementById('modal-product-title').innerText = `商品：${name}`;
-            document.getElementById('claim-display-mc-id').value = `${currentUser.name} (${currentUser.mcId})`;
+
+            const loggedInDiv = document.getElementById('claim-logged-in-fields');
+            const guestDiv = document.getElementById('claim-guest-fields');
+            const guestMcIdInput = document.getElementById('claim-guest-mc-id');
+            const guestEmailInput = document.getElementById('claim-guest-email');
+
+            if (currentUser) {
+                // 已登入：隱藏 ID/Email 輸入框，改為靜態顯示
+                loggedInDiv.style.display = 'block';
+                guestDiv.style.display = 'none';
+                guestMcIdInput.removeAttribute('required');
+                guestEmailInput.removeAttribute('required');
+                document.getElementById('claim-display-info').value = `${currentUser.name} (${currentUser.mcId}) | ${currentUser.email}`;
+            } else {
+                // 未登入：顯示 ID/Email 輸入框，並設置為必填
+                loggedInDiv.style.display = 'none';
+                guestDiv.style.display = 'block';
+                guestMcIdInput.setAttribute('required', 'required');
+                guestEmailInput.setAttribute('required', 'required');
+            }
+
             document.getElementById('claim-modal').classList.add('active');
         }
 
@@ -445,56 +480,69 @@
             document.getElementById('claim-form').reset();
         }
 
-        // 處理領取提交 (再次驗證個人驗證碼 + 檢查重複領取)
+        // 處理領取提交 (支援已登入/未登入雙模式驗證)
         document.getElementById('claim-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            if (!currentUser) {
-                showToast("⚠️ 登入狀態失效，請重新登入！");
-                closeClaimModal();
-                openLoginModal();
-                return;
-            }
 
             const itemId = document.getElementById('form-item-id').value;
             const itemName = document.getElementById('form-item-name').value;
             const verifyCode = document.getElementById('claim-verify-code').value.trim();
             const submitBtn = document.getElementById('btn-submit-claim');
 
-            if (!verifyCode) {
-                showToast("⚠️ 請輸入領取驗證碼！");
+            let mcId = "";
+            let email = "";
+
+            if (currentUser) {
+                // 已登入：直接提取 Session 中的資訊
+                mcId = currentUser.mcId;
+                email = currentUser.email;
+            } else {
+                // 未登入：自表單欄位讀取玩家輸入
+                mcId = document.getElementById('claim-guest-mc-id').value.trim();
+                email = document.getElementById('claim-guest-email').value.trim();
+            }
+
+            if (!mcId || !email || !verifyCode) {
+                showToast("⚠️ 請確實填寫所有必要欄位！");
                 return;
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "核驗認證碼中...";
+            submitBtn.innerText = "驗證玩家身分中...";
 
             if (db) {
                 try {
-                    // 1. 二次憑證驗證：核對輸入之驗證碼是否符合資料庫
+                    const mcIdLower = mcId.toLowerCase();
+                    const emailLower = email.toLowerCase();
+
+                    // 1. 查詢 users 集合，核驗 (mcIdLower + emailLower + verifyCode)
                     const userQuery = await db.collection('users')
-                        .where('minecraftIdLower', '==', currentUser.mcIdLower)
+                        .where('minecraftIdLower', '==', mcIdLower)
+                        .where('email', '==', emailLower)
                         .where('verificationCode', '==', verifyCode)
                         .get();
 
                     if (userQuery.empty) {
-                        showToast("❌ 驗證碼錯誤，無法授權領取！");
+                        showToast("❌ 驗證失敗！Minecraft ID、電子郵件或驗證碼不相符。");
                         submitBtn.disabled = false;
                         submitBtn.innerText = "確認領取";
                         return;
                     }
 
+                    const userData = userQuery.docs[0].data();
+                    const registeredName = userData.name || userData.minecraftId || mcId;
+
                     submitBtn.innerText = "檢查重複領取...";
 
                     // 2. 查詢該 Minecraft ID 是否已領取過此商品
                     const existingDocs = await db.collection('market_claims')
-                        .where('minecraftIdLower', '==', currentUser.mcIdLower)
+                        .where('minecraftIdLower', '==', mcIdLower)
                         .get();
 
                     const hasClaimed = existingDocs.docs.some(doc => doc.data().itemId === itemId);
 
                     if (hasClaimed) {
-                        showToast("⚠️ 您的帳號已領取過此商品，無法重複領取！");
+                        showToast("⚠️ 該 Minecraft 帳號已領取過此商品，無法重複領取！");
                         submitBtn.disabled = false;
                         submitBtn.innerText = "確認領取";
                         return;
@@ -509,17 +557,17 @@
                     const claimData = {
                         itemId: itemId,
                         itemName: itemName,
-                        minecraftId: currentUser.mcId,
-                        minecraftIdLower: currentUser.mcIdLower,
-                        userName: currentUser.name,
-                        email: currentUser.email,
+                        minecraftId: mcId,
+                        minecraftIdLower: mcIdLower,
+                        userName: registeredName,
+                        email: emailLower,
                         price: productPrice,
                         status: "pending",
                         claimedAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
 
                     await db.collection('market_claims').add(claimData);
-                    showToast(`✔ 領取成功！玩家：${currentUser.name}，工作人員將儘速發放。`);
+                    showToast(`✔ 領取成功！玩家：${registeredName} (${mcId})，工作人員將儘速發放。`);
                     closeClaimModal();
                 } catch (error) {
                     console.error("Firebase 處理失敗:", error);
@@ -531,7 +579,7 @@
             } else {
                 // 模擬測試模式
                 setTimeout(() => {
-                    showToast("✔ 測試模式：領取請求已記錄。");
+                    showToast(`✔ 測試模式：已紀錄領取請求 (${mcId})。`);
                     closeClaimModal();
                     submitBtn.disabled = false;
                     submitBtn.innerText = "確認領取";
