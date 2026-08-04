@@ -337,7 +337,7 @@
             }
         }
 
-        // 渲染商品清單 (自動排序：未上架 -> 即將截止 -> 已截止/已購買)
+        // 渲染商品清單 (排序邏輯：已經可以購買且即將超過截止日期 > 已經可以購買 > 無法購買但即將開始販賣 > 已經無法購買(截止了) > 已經無法購買(已購買))
         function renderProducts() {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
@@ -355,9 +355,10 @@
             const now = new Date();
 
             // 排序邏輯：
-            // 1. 上架前商品 (startDate > now) 排在最前面
-            // 2. 進行中商品 (即將截止) 排在中段，並按 expireDate 由近到遠排序
-            // 3. 已截止或已購買商品排在最後面
+            // 1 & 2. 已經可以購買且即將超過截止日期 > 已經可以購買（按截止時間由近到遠）
+            // 3. 無法購買但即將開始販賣（按開始時間由近到遠）
+            // 4. 已經無法購買(截止了)
+            // 5. 已經無法購買(已購買)
             filtered.sort((a, b) => {
                 const aStart = a.startDate ? new Date(a.startDate) : new Date(0);
                 const bStart = b.startDate ? new Date(b.startDate) : new Date(0);
@@ -367,16 +368,17 @@
                 const aIsPurchased = userPurchasedItemIds.includes(a.id);
                 const bIsPurchased = userPurchasedItemIds.includes(b.id);
 
-                const aIsUpcoming = now < aStart;
-                const bIsUpcoming = now < bStart;
+                const aIsUpcoming = a.startDate ? now < aStart : false;
+                const bIsUpcoming = b.startDate ? now < bStart : false;
 
                 const aIsExpired = now > aExpire;
                 const bIsExpired = now > bExpire;
 
                 const getRank = (isUpcoming, isExpired, isPurchased) => {
-                    if (isUpcoming) return 1;                   // 未上架最優先
-                    if (!isExpired && !isPurchased) return 2;   // 進行中（即將截止）次之
-                    return 3;                                   // 已截止/已購買最後
+                    if (!isPurchased && !isExpired && !isUpcoming) return 1; // 1 & 2. 已經可以購買 (按截止時間排序，即將截止者排最前)
+                    if (!isPurchased && !isExpired && isUpcoming) return 2;  // 3. 無法購買但即將開始販賣
+                    if (!isPurchased && isExpired) return 3;                 // 4. 已經無法購買(截止了)
+                    return 4;                                                // 5. 已經無法購買(已購買)
                 };
 
                 const rankA = getRank(aIsUpcoming, aIsExpired, aIsPurchased);
@@ -388,13 +390,16 @@
 
                 // 同等級內之細項排序：
                 if (rankA === 1) {
-                    // 未上架商品：按上架時間由近到遠排序
-                    return aStart - bStart;
+                    // 已經可以購買：按截止時間由近到遠排序 (即將超過截止日期排最前)
+                    return aExpire - bExpire;
                 } else if (rankA === 2) {
-                    // 進行中商品：按截止時間由近到遠排序 (即將截止排最前)
+                    // 無法購買但即將開始販賣：按開始時間由近到遠排序 (即將開始販賣排最前)
+                    return aStart - bStart;
+                } else if (rankA === 3) {
+                    // 已經無法購買(截止了)：按截止時間由近到遠排序
                     return aExpire - bExpire;
                 } else {
-                    // 已截止/已購買商品：按截止時間由近到遠排序
+                    // 已經無法購買(已購買)：按截止時間由近到遠排序
                     return aExpire - bExpire;
                 }
             });
