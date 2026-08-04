@@ -6,7 +6,7 @@
     "categoryName": "⭐ 月度獎勵",
     "price": 0,
     "image": "dm.png",
-    "quantity": "鑽石 x1",
+    "quantity": "鑽石 x8",
     "startDate": "2026-08-01T00:00:00",
     "expireDate": "2026-08-08T23:59:59",
     "description": "8 月份限定免費補償與獎勵，每個 Minecraft 帳號限領取一次！"
@@ -24,16 +24,15 @@
     "expireDate": "2026-12-31T23:59:59"
   },
   {
-    "id": "test_reward",
-    "name": "測試用商品",
-    "category": "compensation",
-    "categoryName": "🎁 伺服器補償",
-    "price": "1 顆鑽石",
-    "quantity": "鑽石 x1",
-    "description": "此為測試用商品，你無法購買。",
-    "image": "barrier.png",
-    "startDate": "2026-08-01T00:00:00",
-    "expireDate": "2026-08-01T23:59:59"
-
+    "id": "daily_reward_0804",
+    "name": "每日獎勵",
+    "category": "reward",
+    "categoryName": "🎁 每日",
+    "price": 0,
+    "quantity": "鑽石 x3",
+    "description": "順便慶祝陳柏生日?",
+    "image": "dm.png",
+    "startDate": "2026-08-05T00:00:00",
+    "expireDate": "2026-08-05T23:59:59"
   }
 ]
