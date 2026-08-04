@@ -29,10 +29,11 @@
     "category": "compensation",
     "categoryName": "🎁 伺服器補償",
     "price": "1 顆鑽石",
-    "quantity": "鑽石 x1、空氣 x1",
+    "quantity": "鑽石 x1",
     "description": "此為測試用商品，你無法購買。",
     "image": "barrier.png",
-    "startDate": "2026-08-10T00:00:00",
-    "expireDate": "2026-08-10T23:59:59"
+    "startDate": "2026-08-01T00:00:00",
+    "expireDate": "2026-08-01T23:59:59"
+    
   }
 ]
