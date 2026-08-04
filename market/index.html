@@ -185,10 +185,10 @@
                     </div>
                 </div>
 
-                <!-- 驗證碼輸入 (無論是否登入皆需填寫) -->
-                <div class="form-group">
+                <!-- 驗證碼輸入 (僅付費商品需要) -->
+                <div class="form-group" id="claim-verify-code-group">
                     <label for="claim-verify-code">領取驗證碼：</label>
-                    <input type="password" id="claim-verify-code" class="form-input" placeholder="請輸入您的驗證碼" required>
+                    <input type="password" id="claim-verify-code" class="form-input" placeholder="請輸入您的驗證碼">
                 </div>
 
                 <div class="modal-actions">
@@ -237,6 +237,12 @@
         let currentFilter = 'all';
         let currentUser = null; // 儲存已登入玩家 Session: { mcId, mcIdLower, name, email }
         let userPurchasedItemIds = []; // 儲存已登入玩家已購買/領取的商品 ID 清單
+
+        // 判斷商品是否為免費
+        function isProductFree(product) {
+            if (!product) return true;
+            return product.price === undefined || product.price === null || product.price === 0 || product.price === '0' || product.price === '免費';
+        }
 
         // 頁面載入後初始化 Session 與商品列表
         document.addEventListener('DOMContentLoaded', async () => {
@@ -497,16 +503,21 @@
             }
         });
 
-        // 領取 Modal 控制 (依據登入狀態切換欄位)
+        // 領取 Modal 控制 (依據登入狀態與商品是否免費切換欄位)
         function openClaimModal(id, name) {
             document.getElementById('form-item-id').value = id;
             document.getElementById('form-item-name').value = name;
             document.getElementById('modal-product-title').innerText = `商品：${name}`;
 
+            const targetProduct = allProducts.find(p => p.id === id);
+            const isFree = isProductFree(targetProduct);
+
             const loggedInDiv = document.getElementById('claim-logged-in-fields');
             const guestDiv = document.getElementById('claim-guest-fields');
             const guestMcIdInput = document.getElementById('claim-guest-mc-id');
             const guestEmailInput = document.getElementById('claim-guest-email');
+            const verifyGroup = document.getElementById('claim-verify-code-group');
+            const verifyInput = document.getElementById('claim-verify-code');
 
             if (currentUser) {
                 // 已登入：隱藏 ID/Email 輸入框，改為靜態顯示
@@ -523,6 +534,16 @@
                 guestEmailInput.setAttribute('required', 'required');
             }
 
+            // 判斷是否需要驗證碼（免費商品不需要，付費商品需要）
+            if (isFree) {
+                verifyGroup.style.display = 'none';
+                verifyInput.removeAttribute('required');
+                verifyInput.value = '';
+            } else {
+                verifyGroup.style.display = 'block';
+                verifyInput.setAttribute('required', 'required');
+            }
+
             document.getElementById('claim-modal').classList.add('active');
         }
 
@@ -531,7 +552,7 @@
             document.getElementById('claim-form').reset();
         }
 
-        // 處理領取提交 (支援已登入/未登入雙模式驗證)
+        // 處理領取提交 (支援已登入/未登入雙模式驗證與免費/付費區分)
         document.getElementById('claim-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -539,6 +560,9 @@
             const itemName = document.getElementById('form-item-name').value;
             const verifyCode = document.getElementById('claim-verify-code').value.trim();
             const submitBtn = document.getElementById('btn-submit-claim');
+
+            const targetProduct = allProducts.find(p => p.id === itemId);
+            const isFree = isProductFree(targetProduct);
 
             let mcId = "";
             let email = "";
@@ -553,7 +577,8 @@
                 email = document.getElementById('claim-guest-email').value.trim();
             }
 
-            if (!mcId || !email || !verifyCode) {
+            // 身分欄位檢查 (付費商品才額外檢查驗證碼)
+            if (!mcId || !email || (!isFree && !verifyCode)) {
                 showToast("⚠️ 請確實填寫所有必要欄位！");
                 return;
             }
@@ -566,15 +591,24 @@
                     const mcIdLower = mcId.toLowerCase();
                     const emailLower = email.toLowerCase();
 
-                    // 1. 查詢 users 集合，核驗 (mcIdLower + emailLower + verifyCode)
-                    const userQuery = await db.collection('users')
+                    // 1. 查詢 users 集合核驗身分
+                    // 若為付費商品，連同 verificationCode 一併核驗；免費商品則核驗帳號與 Email
+                    let userQueryRef = db.collection('users')
                         .where('minecraftIdLower', '==', mcIdLower)
-                        .where('email', '==', emailLower)
-                        .where('verificationCode', '==', verifyCode)
-                        .get();
+                        .where('email', '==', emailLower);
+
+                    if (!isFree) {
+                        userQueryRef = userQueryRef.where('verificationCode', '==', verifyCode);
+                    }
+
+                    const userQuery = await userQueryRef.get();
 
                     if (userQuery.empty) {
-                        showToast("❌ 驗證失敗！Minecraft ID、電子郵件或驗證碼不相符。");
+                        if (isFree) {
+                            showToast("❌ 驗證失敗！Minecraft ID 或電子郵件不正確。");
+                        } else {
+                            showToast("❌ 驗證失敗！Minecraft ID、電子郵件或驗證碼不相符。");
+                        }
                         submitBtn.disabled = false;
                         submitBtn.innerText = "確認領取";
                         return;
@@ -601,7 +635,6 @@
 
                     submitBtn.innerText = "資料寫入中...";
 
-                    const targetProduct = allProducts.find(p => p.id === itemId);
                     const productPrice = targetProduct ? targetProduct.price : 0;
 
                     // 3. 寫入領取紀錄
