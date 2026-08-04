@@ -7,6 +7,7 @@
     "price": 0,
     "image": "dm.png",
     "quantity": "鑽石 x1",
+    "startDate": "2026-08-01T00:00:00",
     "expireDate": "2026-08-08T23:59:59",
     "description": "8 月份限定免費補償與獎勵，每個 Minecraft 帳號限領取一次！"
   },
@@ -19,6 +20,7 @@
     "quantity": "1 顆蛋糕加神秘禮物",
     "description": "只要你生日未過，版主會親自送上生日蛋糕!",
     "image": "cake.png",
+    "startDate": "2026-01-01T00:00:00",
     "expireDate": "2026-12-31T23:59:59"
   },
   {
@@ -30,6 +32,7 @@
     "quantity": "鑽石 x1、空氣 x1",
     "description": "此為測試用商品，你無法購買。",
     "image": "barrier.png",
-    "expireDate": "2026-08-01T23:59:59"
+    "startDate": "2026-08-10T00:00:00",
+    "expireDate": "2026-08-10T23:59:59"
   }
 ]

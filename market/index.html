@@ -337,12 +337,12 @@
             }
         }
 
-        // 渲染商品清單 (包含自動檢測 [已購買] 標記)
+        // 渲染商品清單 (自動排序：未上架 -> 即將截止 -> 已截止/已購買)
         function renderProducts() {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
 
-            const filtered = allProducts.filter(item => {
+            let filtered = allProducts.filter(item => {
                 if (currentFilter === 'all') return true;
                 return item.category === currentFilter;
             });
@@ -354,8 +354,56 @@
 
             const now = new Date();
 
+            // 排序邏輯：
+            // 1. 上架前商品 (startDate > now) 排在最前面
+            // 2. 進行中商品 (即將截止) 排在中段，並按 expireDate 由近到遠排序
+            // 3. 已截止或已購買商品排在最後面
+            filtered.sort((a, b) => {
+                const aStart = a.startDate ? new Date(a.startDate) : new Date(0);
+                const bStart = b.startDate ? new Date(b.startDate) : new Date(0);
+                const aExpire = new Date(a.expireDate);
+                const bExpire = new Date(b.expireDate);
+
+                const aIsPurchased = userPurchasedItemIds.includes(a.id);
+                const bIsPurchased = userPurchasedItemIds.includes(b.id);
+
+                const aIsUpcoming = now < aStart;
+                const bIsUpcoming = now < bStart;
+
+                const aIsExpired = now > aExpire;
+                const bIsExpired = now > bExpire;
+
+                const getRank = (isUpcoming, isExpired, isPurchased) => {
+                    if (isUpcoming) return 1;                   // 未上架最優先
+                    if (!isExpired && !isPurchased) return 2;   // 進行中（即將截止）次之
+                    return 3;                                   // 已截止/已購買最後
+                };
+
+                const rankA = getRank(aIsUpcoming, aIsExpired, aIsPurchased);
+                const rankB = getRank(bIsUpcoming, bIsExpired, bIsPurchased);
+
+                if (rankA !== rankB) {
+                    return rankA - rankB;
+                }
+
+                // 同等級內之細項排序：
+                if (rankA === 1) {
+                    // 未上架商品：按上架時間由近到遠排序
+                    return aStart - bStart;
+                } else if (rankA === 2) {
+                    // 進行中商品：按截止時間由近到遠排序 (即將截止排最前)
+                    return aExpire - bExpire;
+                } else {
+                    // 已截止/已購買商品：按截止時間由近到遠排序
+                    return aExpire - bExpire;
+                }
+            });
+
             filtered.forEach(product => {
+                const startDate = product.startDate ? new Date(product.startDate) : null;
                 const expireDate = new Date(product.expireDate);
+                
+                const isUpcoming = startDate && now < startDate;
                 const isExpired = now > expireDate;
                 const isPurchased = userPurchasedItemIds.includes(product.id);
 
@@ -367,23 +415,28 @@
                     priceText = typeof product.price === 'number' ? `$${product.price}` : product.price;
                 }
 
-                let expireText = isExpired ? '🛑 領取期限已截止' : `⏰ 截止時間：${expireDate.toLocaleString('zh-TW', { hour12: false })}`;
-                if (isPurchased) {
-                    expireText = '您已完成購買/領取';
-                }
-
-                // 判斷按鈕狀態與文字
+                // 時間標籤與按鈕邏輯判斷
+                let expireText = '';
                 let btnText = '免費領取';
                 let btnDisabled = false;
                 let btnStyle = '';
 
-                if (isPurchased) {
+                if (isUpcoming) {
+                    expireText = `🚀 上架時間：${startDate.toLocaleString('zh-TW', { hour12: false })}`;
+                    btnText = '尚未開放';
+                    btnDisabled = true;
+                    btnStyle = 'style="background-color: #555; border-color: #333; color: #aaa; cursor: not-allowed;"';
+                } else if (isPurchased) {
+                    expireText = '您已完成購買/領取';
                     btnText = '✔ 已購買';
                     btnDisabled = true;
                     btnStyle = 'style="background-color: #444; border-color: #222; color: #888; cursor: not-allowed;"';
                 } else if (isExpired) {
+                    expireText = '🛑 領取期限已截止';
                     btnText = '已截止';
                     btnDisabled = true;
+                } else {
+                    expireText = `⏰ 截止時間：${expireDate.toLocaleString('zh-TW', { hour12: false })}`;
                 }
 
                 card.innerHTML = `
