@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
-                <span>📢 伺服器維修，請勿開啟!!!</span>
+                <span>📢 伺服器...應該...修好了......</span>
 
                 <!-- a href="/news/#6" class="banner-btn">慶祝一下</a -->
                 
