@@ -24,7 +24,7 @@
     "expireDate": "2026-12-31T23:59:59"
   },
   {
-    "id": "daily_reward_0804",
+    "id": "daily_reward_0805",
     "name": "每日獎勵",
     "category": "reward",
     "categoryName": "🎁 每日",
@@ -34,5 +34,17 @@
     "image": "dm.png",
     "startDate": "2026-08-05T00:00:00",
     "expireDate": "2026-08-05T23:59:59"
+  },
+  {
+    "id": "daily_reward_0806",
+    "name": "每日獎勵",
+    "category": "reward",
+    "categoryName": "🎁 每日",
+    "price": 0,
+    "quantity": "金蘋果 x1",
+    "description": "昨天陳柏生日",
+    "image": "ga.png",
+    "startDate": "2026-08-06T00:00:00",
+    "expireDate": "2026-08-06T23:59:59"
   }
 ]
