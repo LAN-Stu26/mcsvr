@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
-                <span>📢 伺服器...應該...修好了......</span>
+                <span>📢 伺服器更換架構，新架構為 Purpur 26.2 (2618)</span>
 
-                <!-- a href="/news/#6" class="banner-btn">慶祝一下</a -->
+                <a href="/news/#7" class="banner-btn">研究一下</a>
                 
             </div>
 
