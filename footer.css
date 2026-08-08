@@ -1,15 +1,8 @@
 /* ==========================================
-   Lazy Sheep - Standardized Pixel Footer CSS
+   Lazy Sheep - Transparent & Split Pixel Footer CSS
    ========================================== */
 
-/* 1. 全局防溢出與預設重置，確保兩側無縫隙 */
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-
-/* 2. 頁尾占位點重置 */
+/* 1. 頁尾占位點容器 */
 #footer-placeholder {
     width: 100%;
     display: block;
@@ -17,42 +10,43 @@ html, body {
     padding: 0;
 }
 
-/* 3. 頁尾外層容器：採用 100vw 強制突破父級容器限制，達成 100% 滿版置底 */
+/* 2. 頁尾外層容器：完全透明背景 */
 .site-footer {
-    width: 100vw !important;
-    position: relative !important;
-    left: 50% !important;
-    right: 50% !important;
-    margin-left: -50vw !important;
-    margin-right: -50vw !important;
-    margin-top: 60px !important;
-    margin-bottom: 0 !important;
-    
-    background-color: #121212;
-    border-top: 4px solid #000;
-    box-shadow: inset 0 2px 0 #333, 0 -6px 16px rgba(0, 0, 0, 0.6);
-    color: #aaa;
-    padding: 36px 20px 28px 20px;
-    box-sizing: border-box;
+    width: 100%;
+    background: transparent;
+    border-top: none;
+    box-shadow: none;
+    color: #ccc;
+    padding: 40px 24px 30px 24px;
+    margin-top: 60px;
+    position: relative;
     z-index: 100;
+    box-sizing: border-box;
 }
 
-/* 4. 內容中央卡片與版面 */
+/* 3. 內容中央容器 */
 .site-footer-inner {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    text-align: center;
+    gap: 18px;
 }
 
-/* 品牌 Logo 與名稱 */
+/* 4. 上半部橫列：左右兩端對齊 */
+.footer-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* 上半部左側：品牌 Logo 與名稱 */
 .footer-brand {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 12px;
 }
 
@@ -61,23 +55,23 @@ html, body {
     height: 32px;
     image-rendering: pixelated;
     object-fit: contain;
+    filter: drop-shadow(2px 2px 0px #000);
 }
 
 .footer-title {
     color: #ffff55;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: bold;
     letter-spacing: 1px;
-    text-shadow: 2px 2px 0px #000;
+    text-shadow: 2px 2px 0px #000, 0 0 8px rgba(0, 0, 0, 0.9);
 }
 
-/* 網站快速連結區塊 */
+/* 上半部右側：按鈕連結區塊 */
 .footer-links {
     display: flex;
+    align-items: center;
+    gap: 12px;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-    margin: 6px 0;
 }
 
 .footer-link {
@@ -86,58 +80,68 @@ html, body {
     font-size: 0.85rem;
     font-weight: bold;
     padding: 8px 16px;
-    background-color: #1a1a1a;
+    background-color: rgba(26, 26, 26, 0.85);
     border: 2px solid #000;
-    box-shadow: inset -2px -2px 0px #000, inset 2px 2px 0px #333;
+    box-shadow: inset -2px -2px 0px #000, inset 2px 2px 0px #444, 0 4px 10px rgba(0, 0, 0, 0.5);
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    backdrop-filter: blur(4px);
 }
 
 .footer-link:hover {
     color: #ffffff;
-    background-color: #2a2a2a;
+    background-color: rgba(42, 42, 42, 0.95);
     border-color: #ffaa00;
-    box-shadow: inset -2px -2px 0px #553300, inset 2px 2px 0px #ffcf40;
+    box-shadow: inset -2px -2px 0px #553300, inset 2px 2px 0px #ffcf40, 0 6px 14px rgba(0, 0, 0, 0.7);
     transform: translateY(-2px);
 }
 
-/* 版權宣告與免責聲明 */
+/* 5. 下半部橫列：靠左對齊版權與免責聲明 */
+.footer-bottom-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
 .footer-copyright-box {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    text-align: left;
+    align-items: flex-start;
 }
 
 .footer-copyright {
     font-size: 0.85rem;
-    color: #888;
+    color: #ddd;
     margin: 0;
+    text-shadow: 1px 1px 3px #000, 0 0 6px rgba(0, 0, 0, 0.9);
 }
 
 .footer-disclaimer {
     font-size: 0.75rem;
-    color: #666;
+    color: #aaa;
     margin: 0;
     line-height: 1.5;
     max-width: 800px;
+    text-shadow: 1px 1px 3px #000, 0 0 6px rgba(0, 0, 0, 0.9);
 }
 
-/* RWD 手機版切換 */
+/* 6. RWD 手機版支援 */
 @media (max-width: 768px) {
     .site-footer {
-        padding: 28px 15px 20px 15px;
-        margin-top: 40px !important;
+        padding: 30px 16px 20px 16px;
+        margin-top: 40px;
+    }
+    .footer-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
     }
     .footer-links {
-        flex-direction: column;
         width: 100%;
-        max-width: 280px;
-    }
-    .footer-link {
-        justify-content: center;
-        width: 100%;
-        box-sizing: border-box;
+        justify-content: flex-start;
     }
 }
