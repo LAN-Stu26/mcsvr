@@ -15,7 +15,6 @@ function renderFooter() {
                 <div class="footer-top-row">
                     <!-- 左側：伺服器 Icon 與名稱 -->
                     <div class="footer-brand">
-                        <img src="/icon.png" alt="Lazy Sheep Logo" class="footer-logo" onerror="this.style.display='none';">
                         <span class="footer-title">Lazy Sheep Server</span>
                     </div>
 

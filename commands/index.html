@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- 引入共用導覽列樣式與頁面樣式 -->
     <link rel="stylesheet" href="/nav.css">
+    <link rel="stylesheet" href="/footer.css">
     <link rel="stylesheet" href="commands.css">
 </head>
 <body>
@@ -55,12 +56,11 @@
             <i class="fa-solid fa-ghost"></i> 找不到任何符合關鍵字的指令！
         </div>
 
-        <!-- 頁尾 -->
-        <footer class="footer">
-            <p>&copy; 2026 Lazy Sheep Minecraft Server. 指令手冊系統持續更新中。</p>
-        </footer>
-
     </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/footer.js" defer></script>
 
     <!-- JavaScript 動態載入 JSON 檔案與搜尋過濾 logic -->
     <script>
