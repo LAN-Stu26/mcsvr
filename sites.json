@@ -30,6 +30,11 @@
     "description": "加入伺服器白名單申請表單。 "
   },
   {
+    "title": "文件",
+    "url": "/docs/",
+    "description": "docs | 技術文件 | 架構。 "
+  },
+  {
     "title": "外掛使用辦法",
     "url": "/docs/pluy-in/xray",
     "description": "教學開啟關閉。 "
