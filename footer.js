@@ -19,8 +19,8 @@ function renderFooter() {
 
                 <!-- 網站連結區域 -->
                 <nav class="footer-links">
-                    <a href="/docs/" class="footer-link">文件與目錄</a>
-                    <a href="/rules/" class="footer-link">伺服器規範</a>
+                    <a href="/docs/" class="footer-link">📄 文件與目錄</a>
+                    <a href="/rules/" class="footer-link">📜 伺服器規範</a>
                 </nav>
 
                 <!-- 版權與官方免責聲明 -->

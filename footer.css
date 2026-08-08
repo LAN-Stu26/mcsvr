@@ -2,8 +2,17 @@
    Lazy Sheep - Standardized Pixel Footer CSS
    ========================================== */
 
-/* 頁尾外層容器 */
+/* 確保占位點與頁尾滿版 100% 延伸，修復兩側露出背景與不對齊問題 */
+#footer-placeholder {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+/* 頁尾外層容器：滿版置底 100% 寬度 */
 .site-footer {
+    width: 100%;
     background-color: #121212;
     border-top: 4px solid #000;
     box-shadow: inset 0 2px 0 #333, 0 -6px 16px rgba(0, 0, 0, 0.6);
@@ -12,6 +21,7 @@
     margin-top: 60px;
     position: relative;
     z-index: 100;
+    box-sizing: border-box;
 }
 
 /* 內容中央卡片與版面 */
