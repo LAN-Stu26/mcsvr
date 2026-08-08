@@ -12,30 +12,6 @@
     "description": "8 月份限定免費補償與獎勵，每個 Minecraft 帳號限領取一次！"
   },
   {
-    "id": "birthday_reward_2026",
-    "name": "生日蛋糕",
-    "category": "reward",
-    "categoryName": "🎁 生日獎勵",
-    "price": 0,
-    "quantity": "1 顆蛋糕加神秘禮物",
-    "description": "只要你生日未過，版主會親自送上生日蛋糕!",
-    "image": "cake.png",
-    "startDate": "2026-01-01T00:00:00",
-    "expireDate": "2026-12-31T23:59:59"
-  },
-  {
-    "id": "daily_reward_0806",
-    "name": "每日獎勵",
-    "category": "reward",
-    "categoryName": "🎁 每日",
-    "price": 0,
-    "quantity": "金蘋果 x1",
-    "description": "昨天陳柏生日",
-    "image": "ga.png",
-    "startDate": "2026-08-06T00:00:00",
-    "expireDate": "2026-08-06T23:59:59"
-  },
-  {
     "id": "daily_reward_0807",
     "name": "每日獎勵",
     "category": "reward",
@@ -46,5 +22,17 @@
     "image": "bread.png",
     "startDate": "2026-08-07T00:00:00",
     "expireDate": "2026-08-07T23:59:59"
+  },
+  {
+    "id": "daily_reward_0809",
+    "name": "每日獎勵",
+    "category": "reward",
+    "categoryName": "🎁 每日",
+    "price": 0,
+    "quantity": "麵包 x64",
+    "description": "昨天不小心忘記更新商品，所以今天上傳:)",
+    "image": "bread.png",
+    "startDate": "2026-08-09T00:00:00",
+    "expireDate": "2026-08-09T23:59:59"
   }
 ]
