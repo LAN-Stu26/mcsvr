@@ -1,65 +1,90 @@
-/* 網站通用頁尾像素風格樣式 */
+/* ==========================================
+   Lazy Sheep - Standardized Pixel Footer CSS
+   ========================================== */
+
+/* 頁尾外層容器 */
 .site-footer {
-    background-color: rgba(26, 26, 26, 0.95);
+    background-color: #121212;
     border-top: 4px solid #000;
-    box-shadow: inset 0 2px 0 #444;
-    color: #ccc;
-    padding: 30px 15px;
-    margin-top: 50px;
-    font-family: inherit;
+    box-shadow: inset 0 2px 0 #333, 0 -6px 16px rgba(0, 0, 0, 0.6);
+    color: #aaa;
+    padding: 36px 20px 28px 20px;
+    margin-top: 60px;
+    position: relative;
+    z-index: 100;
 }
 
-.footer-container {
+/* 內容中央卡片與版面 */
+.site-footer-inner {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    gap: 20px;
     align-items: center;
-    gap: 16px;
     text-align: center;
 }
 
+/* 品牌 Logo 與名稱 */
 .footer-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 12px;
 }
 
 .footer-logo {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     image-rendering: pixelated;
     object-fit: contain;
 }
 
 .footer-title {
-    color: #fff;
-    font-size: 1rem;
+    color: #ffff55;
+    font-size: 1.1rem;
     font-weight: bold;
     letter-spacing: 1px;
+    text-shadow: 2px 2px 0px #000;
 }
 
+/* 網站快速連結區塊 */
 .footer-links {
     display: flex;
-    gap: 16px;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 4px 0;
+    gap: 16px;
+    margin: 6px 0;
 }
 
 .footer-link {
     color: #ffaa00;
     text-decoration: none;
     font-size: 0.85rem;
-    padding: 4px 10px;
-    border: 2px solid transparent;
-    transition: all 0.1s ease;
+    font-weight: bold;
+    padding: 8px 16px;
+    background-color: #1a1a1a;
+    border: 2px solid #000;
+    box-shadow: inset -2px -2px 0px #000, inset 2px 2px 0px #333;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .footer-link:hover {
-    color: #fff;
-    background-color: #333;
-    border-color: #000;
+    color: #ffffff;
+    background-color: #2a2a2a;
+    border-color: #ffaa00;
+    box-shadow: inset -2px -2px 0px #553300, inset 2px 2px 0px #ffcf40;
+    transform: translateY(-2px);
+}
+
+/* 版權宣告與免責聲明 */
+.footer-copyright-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .footer-copyright {
@@ -72,6 +97,24 @@
     font-size: 0.75rem;
     color: #666;
     margin: 0;
-    max-width: 800px;
     line-height: 1.5;
+    max-width: 800px;
+}
+
+/* RWD 手機版切換 */
+@media (max-width: 768px) {
+    .site-footer {
+        padding: 28px 15px 20px 15px;
+        margin-top: 40px;
+    }
+    .footer-links {
+        flex-direction: column;
+        width: 100%;
+        max-width: 280px;
+    }
+    .footer-link {
+        justify-content: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
