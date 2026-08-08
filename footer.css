@@ -1,0 +1,77 @@
+/* 網站通用頁尾像素風格樣式 */
+.site-footer {
+    background-color: rgba(26, 26, 26, 0.95);
+    border-top: 4px solid #000;
+    box-shadow: inset 0 2px 0 #444;
+    color: #ccc;
+    padding: 30px 15px;
+    margin-top: 50px;
+    font-family: inherit;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-logo {
+    width: 28px;
+    height: 28px;
+    image-rendering: pixelated;
+    object-fit: contain;
+}
+
+.footer-title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 4px 0;
+}
+
+.footer-link {
+    color: #ffaa00;
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border: 2px solid transparent;
+    transition: all 0.1s ease;
+}
+
+.footer-link:hover {
+    color: #fff;
+    background-color: #333;
+    border-color: #000;
+}
+
+.footer-copyright {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0;
+}
+
+.footer-disclaimer {
+    font-size: 0.75rem;
+    color: #666;
+    margin: 0;
+    max-width: 800px;
+    line-height: 1.5;
+}
