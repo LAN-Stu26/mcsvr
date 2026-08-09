@@ -12,16 +12,16 @@
     "description": "8 月份限定免費補償與獎勵，每個 Minecraft 帳號限領取一次！"
   },
   {
-    "id": "daily_reward_0807",
+    "id": "daily_reward_0810",
     "name": "每日獎勵",
     "category": "reward",
     "categoryName": "🎁 每日",
     "price": 0,
-    "quantity": "麵包 x64",
+    "quantity": "隨機物品 x3",
     "description": "冷知識: 你正在使用 3C。",
-    "image": "bread.png",
-    "startDate": "2026-08-07T00:00:00",
-    "expireDate": "2026-08-07T23:59:59"
+    "image": "unknow.png",
+    "startDate": "2026-08-10T00:00:00",
+    "expireDate": "2026-08-10T23:59:59"
   },
   {
     "id": "daily_reward_0809",
