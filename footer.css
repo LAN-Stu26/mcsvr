@@ -59,10 +59,10 @@
 }
 
 .footer-title {
+    font-family: 'Press Start 2P', cursive;
     color: #ffff55;
     font-size: 1.15rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     text-shadow: 2px 2px 0px #000, 0 0 8px rgba(0, 0, 0, 0.9);
 }
 
