@@ -22,6 +22,7 @@ function renderFooter() {
                     <nav class="footer-links">
                         <a href="/docs/" class="footer-link">文件與目錄</a>
                         <a href="/rules/" class="footer-link">伺服器規範</a>
+                        <a href="https://github.com/LAN-Stu26/mcsvr" class="footer-link" target="_blank">GitHub</a>
                     </nav>
                 </div>
 
