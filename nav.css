@@ -109,6 +109,13 @@
     box-sizing: border-box;
 }
 
+button.nav-item {
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    background: transparent;
+}
+
 .nav-item:hover,
 .nav-item:focus-visible {
     color: #ffff55;
@@ -123,6 +130,70 @@
     background-color: #151515;
     border-color: #000;
     box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.55);
+}
+
+/* 子選單 Dropdown 樣式 */
+.nav-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-dropdown-toggle {
+    background: transparent;
+    cursor: pointer;
+}
+
+.dropdown-arrow {
+    font-size: 0.7rem;
+    margin-left: 6px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.nav-dropdown-toggle.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 140px;
+    background-color: #252525;
+    border: 2px solid #000;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), inset -2px -2px 0px #151515, inset 2px 2px 0px #444444;
+    padding: 6px 0;
+    margin-top: 4px;
+    z-index: 2005;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dropdown-menu.show {
+    display: flex;
+}
+
+.dropdown-item {
+    color: #cfcfcf;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    display: block;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus-visible {
+    color: #ffff55;
+    background-color: #1a1a1a;
+}
+
+.dropdown-item.active {
+    color: #ffaa00;
+    background-color: #101010;
 }
 
 /* 右側工具區塊（含最右側的搜尋按鈕與手機漢堡鈕） */
@@ -386,6 +457,25 @@
         text-align: center;
         padding: 10px;
         display: block;
+    }
+
+    .nav-dropdown {
+        width: 100%;
+    }
+
+    .nav-dropdown-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: 2px solid #000;
+        background-color: #1a1a1a;
+        margin-top: 4px;
+        box-sizing: border-box;
     }
 }
 

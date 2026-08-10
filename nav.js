@@ -52,12 +52,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/commands/" class="nav-item ${currentPath.includes('/commands') ? 'active' : ''}">
                         >_ 指令大全
                     </a>
-                    <a href="/rules/" class="nav-item ${currentPath.includes('/rules') ? 'active' : ''}">
-                        伺服器規範
-                    </a>
-                    <a href="/join/" class="nav-item ${currentPath.includes('/join') ? 'active' : ''}">
-                        加入伺服器
-                    </a>
+                    <!-- 加入伺服器 (子選單：含規範與立即加入) -->
+                    <div class="nav-dropdown">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') ? 'active' : ''}" id="joinDropdownToggle" aria-label="加入伺服器選單">
+                            加入伺服器 <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="joinDropdownMenu">
+                            <a href="/rules/" class="dropdown-item ${currentPath.includes('/rules') ? 'active' : ''}">
+                                規範
+                            </a>
+                            <a href="/join/" class="dropdown-item ${currentPath.includes('/join') ? 'active' : ''}">
+                                立即加入
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="nav-right-tools">
@@ -127,8 +135,9 @@ document.addEventListener('DOMContentLoaded', function () {
             navLinks.classList.toggle('active');
         });
 
-        const links = navLinks.querySelectorAll('.nav-item');
+        const links = navLinks.querySelectorAll('.nav-item, .dropdown-item');
         links.forEach(link => {
+            if (link.id === 'joinDropdownToggle') return;
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
             });
@@ -137,6 +146,25 @@ document.addEventListener('DOMContentLoaded', function () {
         document.addEventListener('click', function (e) {
             if (!toggleBtn.contains(e.target) && !navLinks.contains(e.target)) {
                 navLinks.classList.remove('active');
+            }
+        });
+    }
+
+    // 5.5 綁定「加入伺服器」子選單點擊展開/收起與點擊外部關閉邏輯
+    const joinDropdownToggle = document.getElementById('joinDropdownToggle');
+    const joinDropdownMenu = document.getElementById('joinDropdownMenu');
+
+    if (joinDropdownToggle && joinDropdownMenu) {
+        joinDropdownToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            joinDropdownMenu.classList.toggle('show');
+            joinDropdownToggle.classList.toggle('open');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!joinDropdownToggle.contains(e.target) && !joinDropdownMenu.contains(e.target)) {
+                joinDropdownMenu.classList.remove('show');
+                joinDropdownToggle.classList.remove('open');
             }
         });
     }
