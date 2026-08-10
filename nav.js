@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/commands/" class="nav-item ${currentPath.includes('/commands') ? 'active' : ''}">
                         >_ 指令大全
                     </a>
+                    <a href="/featured/" class="nav-item ${currentPath.includes('/featured') ? 'active' : ''}">
+                        伺服器精選
+                    </a>
                     <!-- 加入伺服器 (子選單：含規範與立即加入) -->
                     <div class="nav-dropdown">
                         <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') ? 'active' : ''}" id="joinDropdownToggle" aria-label="加入伺服器選單">
