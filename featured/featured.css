@@ -182,6 +182,26 @@ body {
     color: #000;
 }
 
+.share-btn {
+    background-color: #3b5998;
+    border: 2px solid #000;
+    color: #fff;
+    padding: 6px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: inset -2px -2px 0px #1a2a4a, inset 2px 2px 0px #5b79b8;
+    transition: background-color 0.15s ease;
+}
+
+.share-btn:hover {
+    background-color: #4c70ba;
+}
+
+.share-btn.copied {
+    background-color: #55ff55;
+    color: #000;
+}
+
 /* --- 圖片區域與 Badge --- */
 .card-image-wrapper {
     position: relative;

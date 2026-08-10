@@ -38,7 +38,7 @@
         <div class="featured-grid">
 
             <!-- 卡片 3 -->
-            <article class="featured-card" data-category="special">
+            <article class="featured-card" id="3" data-category="special" style="scroll-margin-top: 150px;">
                 <div class="card-content">
                     <h2 class="card-title">某人家地下室</h2>
                     <div class="card-meta">
@@ -54,6 +54,9 @@
                         <!-- button class="copy-btn" onclick="copyCoordinates('X: 0, Y: 0, Z: 0', this)">
                             📋 複製座標
                         </button -->
+                        <button class="share-btn" onclick="shareCard('3', this)">
+                            🔗 分享
+                        </button>
                     </div>
                 </div>
                 <div class="card-image-wrapper">
@@ -63,7 +66,7 @@
             </article>
 
             <!-- 卡片 2 -->
-            <article class="featured-card" data-category="landmark">
+            <article class="featured-card" id="2" data-category="landmark" style="scroll-margin-top: 150px;">
                 <div class="card-content">
                     <h2 class="card-title">伺服器網站背景</h2>
                     <div class="card-meta">
@@ -79,6 +82,9 @@
                         <button class="copy-btn" onclick="copyCoordinates('X: 4, Y: 143, Z: 31', this)">
                             📋 複製座標
                         </button>
+                        <button class="share-btn" onclick="shareCard('2', this)">
+                            🔗 分享
+                        </button>
                     </div>
                 </div>
                 <div class="card-image-wrapper">
@@ -88,7 +94,7 @@
             </article>
 
             <!-- 卡片 1 -->
-            <article class="featured-card" data-category="noun">
+            <article class="featured-card" id="1" data-category="noun" style="scroll-margin-top: 150px;">
                 <div class="card-content">
                     <h2 class="card-title">伺服器icon</h2>
                     <div class="card-meta">
@@ -96,14 +102,11 @@
                         <span class="meta-item">🌍 世界：未知</span>
                     </div>
                     <p class="card-desc">理念: 舒服、友善、可以長期發展的 Minecraft 生存世界</p>
-                    <!-- div class="card-footer">
-                        <div class="coords-box">
-                            <span class="coords-text">X: 0, Y: 0, Z: 0</span>
-                        </div>
-                        <button class="copy-btn" onclick="copyCoordinates('X: 0, Y: 64, Z: 0', this)">
-                            📋 複製座標
+                    <div class="card-footer">
+                        <button class="share-btn" onclick="shareCard('1', this)">
+                            🔗 分享
                         </button>
-                    </div -->
+                    </div>
                 </div>
                 <div class="card-image-wrapper">
                     <img src="/featured/icon.png" alt="伺服器icon" class="card-image" loading="lazy">
@@ -112,10 +115,15 @@
             </article>
 
             <!-- 卡片 0 -->
-            <article class="featured-card" data-category="noun">
+            <article class="featured-card" id="0" data-category="noun" style="scroll-margin-top: 150px;">
                 <div class="card-content">
                     <h2 class="card-title">投稿您的創作</h2>
                     <p class="card-desc">歡迎投稿，只須前往 <a href="https://forms.gle/ipPx9sN2Yp8PZYxi7" style="color: #ffd966">https://forms.gle/ipPx9sN2Yp8PZYxi7</a> 即可申請!</p>
+                    <div class="card-footer">
+                        <button class="share-btn" onclick="shareCard('0', this)">
+                            🔗 分享
+                        </button>
+                    </div>
                 </div>
                 <div class="card-image-wrapper">
                     <img src="/featured/googleformicon.png" alt="Google Form 圖片" class="card-image" loading="lazy">
@@ -154,6 +162,22 @@
                 }, 2000);
             }).catch(err => {
                 console.error('複製失敗:', err);
+            });
+        }
+
+        // 一鍵複製分享連結
+        function shareCard(id, btnElement) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}#${id}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const originalText = btnElement.innerHTML;
+                btnElement.innerHTML = '✅ 已複製連結！';
+                btnElement.classList.add('copied');
+                setTimeout(() => {
+                    btnElement.innerHTML = originalText;
+                    btnElement.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('複製分享連結失敗:', err);
             });
         }
 
