@@ -65,20 +65,21 @@
     box-shadow: inset -2px -2px 0px #9f6f00, inset 2px 2px 0px #ffcf40;
 }
 
-/* 展示網格 layout */
+/* 展示列表 (單欄寬卡片排列) */
 .featured-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-/* 單張精選卡片 */
+/* 單張精選卡片 (橫向佈局：左介紹、右圖片) */
 .featured-card {
     background-color: #252525;
     border: 3px solid #000;
     box-shadow: inset -3px -3px 0px #151515, inset 3px 3px 0px #444444, 0 6px 12px rgba(0,0,0,0.4);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: stretch;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -88,72 +89,38 @@
     box-shadow: inset -3px -3px 0px #151515, inset 3px 3px 0px #555555, 0 10px 20px rgba(0,0,0,0.6);
 }
 
-/* 圖片容器與 Badge */
-.card-image-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background-color: #101010;
-    overflow: hidden;
-    cursor: pointer;
-    border-bottom: 3px solid #000;
-}
-
-.card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.card-image-wrapper:hover .card-image {
-    transform: scale(1.05);
-}
-
-.card-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background-color: rgba(0, 0, 0, 0.85);
-    color: #ffaa00;
-    border: 1px solid #ffaa00;
-    font-size: 0.75rem;
-    font-weight: bold;
-    padding: 3px 8px;
-    box-shadow: 2px 2px 0px #000;
-}
-
-/* 卡片內文 */
+/* 左側卡片內文 */
 .card-content {
-    padding: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     flex: 1;
+    justify-content: space-between;
 }
 
 .card-title {
     color: #ffff55;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     margin: 0 0 10px 0;
     font-weight: bold;
 }
 
 .card-meta {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 0.85rem;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.88rem;
     color: #bbbbbb;
     margin-bottom: 12px;
     background-color: #1a1a1a;
-    padding: 8px;
+    padding: 8px 12px;
     border: 1px solid #000;
 }
 
 .card-desc {
-    font-size: 0.88rem;
+    font-size: 0.92rem;
     color: #dddddd;
-    line-height: 1.5;
+    line-height: 1.6;
     margin: 0 0 16px 0;
     flex: 1;
 }
@@ -208,6 +175,45 @@
 .copy-btn.copied {
     background-color: #2e7d32;
     color: #ffffff;
+}
+
+/* 右側圖片容器與 Badge */
+.card-image-wrapper {
+    position: relative;
+    width: 360px;
+    max-width: 40%;
+    flex-shrink: 0;
+    background-color: #101010;
+    overflow: hidden;
+    cursor: pointer;
+    border-left: 3px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card-image-wrapper:hover .card-image {
+    transform: scale(1.05);
+}
+
+.card-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #ffaa00;
+    border: 1px solid #ffaa00;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    box-shadow: 2px 2px 0px #000;
 }
 
 /* Lightbox 全螢幕圖片彈窗 */
@@ -281,8 +287,20 @@
     background-color: #c42b2b;
 }
 
-/* RWD 手機版微調 */
-@media (max-width: 600px) {
+/* RWD 手機版微調 (螢幕較小切換為上下排列) */
+@media (max-width: 768px) {
+    .featured-card {
+        flex-direction: column-reverse;
+    }
+
+    .card-image-wrapper {
+        width: 100%;
+        max-width: 100%;
+        aspect-ratio: 16 / 9;
+        border-left: none;
+        border-bottom: 3px solid #000;
+    }
+
     .featured-title {
         font-size: 1.3rem;
     }
