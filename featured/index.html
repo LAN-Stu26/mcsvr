@@ -28,14 +28,40 @@
         <!-- 分類篩選按鈕 -->
         <div class="filter-bar">
             <button class="filter-btn active" data-filter="all">全部展示</button>
-            <button class="filter-btn" data-filter="build">建築巨作</button>
-            <button class="filter-btn" data-filter="redstone">紅石科技</button>
+            <button class="filter-btn" data-filter="build">建築</button>
+            <button class="filter-btn" data-filter="special">特殊</button>
             <button class="filter-btn" data-filter="landmark">景觀地標</button>
             <button class="filter-btn" data-filter="noun">無分類</button>
         </div>
 
         <!-- 精選展示卡片列表 -->
         <div class="featured-grid">
+
+            <!-- 卡片 2 -->
+            <article class="featured-card" data-category="landmark">
+                <div class="card-content">
+                    <h2 class="card-title">伺服器網站背景</h2>
+                    <div class="card-meta">
+                        <span class="meta-item">👤 創作者：LazySheep</span>
+                        <span class="meta-item">🌍 時間： 2026/08/10</span>
+                        <span class="meta-item">🔆 光影： MakeUp - Ultra Fast | Shaders</span>
+                    </div>
+                    <p class="card-desc">這個世界的出生盆地，開了光影後的樣子，超讚的!</p>
+                    <div class="card-footer">
+                        <div class="coords-box">
+                            <span class="coords-text">X: 4, Y: 143, Z: 31</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCoordinates('X: 4, Y: 143, Z: 31', this)">
+                            📋 複製座標
+                        </button>
+                    </div>
+                </div>
+                <div class="card-image-wrapper">
+                    <img src="/featured/bg.png" alt="伺服器bg" class="card-image" loading="lazy">
+                    <span class="card-badge">景觀地標</span>
+                </div>
+            </article>
+
             <!-- 卡片 1 -->
             <article class="featured-card" data-category="noun">
                 <div class="card-content">
@@ -55,10 +81,13 @@
                     </div -->
                 </div>
                 <div class="card-image-wrapper">
-                    <img src="/featured/image/icon.png" alt="伺服器icon" class="card-image" loading="lazy">
+                    <img src="/featured/icon.png" alt="伺服器icon" class="card-image" loading="lazy">
                     <span class="card-badge">官網</span>
                 </div>
             </article>
+
+
+
         </div>
     </main>
 
