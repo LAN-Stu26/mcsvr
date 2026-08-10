@@ -6,23 +6,23 @@
     "commands": [
       {
         "code": "/sethome",
-        "badge": "全玩家",
+        "badge": "已驗證玩家",
         "badgeClass": "badge-player",
         "isAdmin": false,
         "effect": "在目前站立的位置設定「家」的座標。"
       },
       {
         "code": "/home",
-        "badge": "全玩家",
+        "badge": "已驗證玩家",
         "badgeClass": "badge-player",
         "isAdmin": false,
         "effect": "一秒瞬間傳送回設定好的家。"
       },
       {
         "code": "/home <名稱>",
-        "badge": "全玩家",
+        "badge": "管理員",
         "badgeClass": "badge-player",
-        "isAdmin": false,
+        "isAdmin": true,
         "effect": "當開啟多個家權限時，傳送到指定名稱的家（例如 <code>/home mine</code>）。"
       },
       {
@@ -41,7 +41,7 @@
       },
       {
         "code": "/warp <地標名稱>",
-        "badge": "全玩家",
+        "badge": "已驗證玩家",
         "badgeClass": "badge-player",
         "isAdmin": false,
         "effect": "傳送到伺服器公共地標（需擁有管理員分配的特定權限）。"
