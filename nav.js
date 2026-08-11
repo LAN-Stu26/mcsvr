@@ -67,6 +67,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             <a href="/join/" class="dropdown-item ${currentPath.includes('/join') ? 'active' : ''}">
                                 立即加入
                             </a>
+                            <a href="https://discord.gg/FTzReGYz" class="dropdown-item">
+                                Discord
+                            </a>
                         </div>
                     </div>
                 </div>
