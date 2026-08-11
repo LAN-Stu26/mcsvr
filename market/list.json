@@ -24,15 +24,15 @@
     "expireDate": "2026-08-10T23:59:59"
   },
   {
-    "id": "daily_reward_0809",
-    "name": "每日獎勵",
-    "category": "reward",
-    "categoryName": "🎁 每日",
-    "price": 0,
-    "quantity": "麵包 x64",
-    "description": "昨天不小心忘記更新商品，所以今天上傳:)",
-    "image": "bread.png",
-    "startDate": "2026-08-09T00:00:00",
-    "expireDate": "2026-08-09T23:59:59"
+    "id": "fast-move",
+    "name": "快速移動結構",
+    "category": "noun",
+    "categoryName": "特殊商品",
+    "price": "64*1 個鐵錠",
+    "quantity": "幫你移動建築的服務",
+    "description": "購買後請聯絡管理員(伺服主)，他將會幫你移動指定建築",
+    "image": "wooden_axe.png",
+    "startDate": "2026-08-11T00:00:00",
+    "expireDate": "2026-08-24T23:59:59"
   }
 ]

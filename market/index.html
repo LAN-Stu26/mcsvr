@@ -454,7 +454,7 @@
                         <h2 class="product-name">
                             ${isPurchased ? '<span style="color:#55ff55; font-size:0.85em;">[已購買] </span>' : ''}${product.name}
                         </h2>
-                        <div class="product-meta">包含數量：<span>${product.quantity}</span></div>
+                        <div class="product-meta">內容：<span>${product.quantity}</span></div>
                         <div class="product-desc">${product.description}</div>
                         <div class="expire-tag">${expireText}</div>
                         <button class="claim-btn" ${btnDisabled ? 'disabled' : ''} ${btnStyle} onclick="openClaimModal('${product.id}', '${product.name}')">
