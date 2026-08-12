@@ -1,17 +1,5 @@
 [
 {
-    "id": "august_reward_2026",
-    "name": "8 月獎勵",
-    "category": "reward",
-    "categoryName": "⭐ 月度獎勵",
-    "price": 0,
-    "image": "dm.png",
-    "quantity": "鑽石 x8",
-    "startDate": "2026-08-01T00:00:00",
-    "expireDate": "2026-08-08T23:59:59",
-    "description": "8 月份限定免費補償與獎勵，每個 Minecraft 帳號限領取一次！"
-  },
-  {
     "id": "daily_reward_0812",
     "name": "每日獎勵",
     "category": "reward",
