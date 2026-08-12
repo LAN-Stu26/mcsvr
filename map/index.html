@@ -88,7 +88,8 @@
             crs: L.CRS.Simple,
             minZoom: -3,
             maxZoom: 3,
-            zoomSnap: 0.5,
+            zoomSnap: 1,
+            zoomDelta: 1,
             attributionControl: false
         }).setView([0, 0], 0);
 
@@ -104,12 +105,10 @@
         const mapTileLayer = new JourneyMapLayer({
             tileSize: 512,
             noWrap: true,
+            minZoom: -3,
+            maxZoom: 3,
             minNativeZoom: 0,
-            maxNativeZoom: 0,
-            bounds: [
-                [-10000, -10000],
-                [10000, 10000]
-            ]
+            maxNativeZoom: 0
         });
 
         mapTileLayer.addTo(map);
