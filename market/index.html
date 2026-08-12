@@ -158,7 +158,7 @@
     <!-- 2. 領取資料填寫彈出視窗 (Claim Modal) -->
     <div class="modal-overlay" id="claim-modal">
         <div class="modal-box">
-            <h3 class="modal-title">CLAIM ITEM</h3>
+            <h3 class="modal-title" id="claim-modal-title">CLAIM ITEM</h3>
             <div class="modal-subtitle" id="modal-product-title">商品名稱</div>
             
             <form id="claim-form">
@@ -410,6 +410,7 @@
                 const isUpcoming = startDate && now < startDate;
                 const isExpired = now > expireDate;
                 const isPurchased = userPurchasedItemIds.includes(product.id);
+                const isFree = isProductFree(product);
 
                 const card = document.createElement('div');
                 card.className = 'product-card';
@@ -421,7 +422,7 @@
 
                 // 時間標籤與按鈕邏輯判斷
                 let expireText = '';
-                let btnText = '免費領取';
+                let btnText = isFree ? '免費領取' : '購買';
                 let btnDisabled = false;
                 let btnStyle = '';
 
@@ -431,12 +432,12 @@
                     btnDisabled = true;
                     btnStyle = 'style="background-color: #555; border-color: #333; color: #aaa; cursor: not-allowed;"';
                 } else if (isPurchased) {
-                    expireText = '您已完成購買/領取';
-                    btnText = '✔ 已購買';
+                    expireText = isFree ? '您已完成領取' : '您已完成購買';
+                    btnText = isFree ? '✔ 已領取' : '✔ 已購買';
                     btnDisabled = true;
                     btnStyle = 'style="background-color: #444; border-color: #222; color: #888; cursor: not-allowed;"';
                 } else if (isExpired) {
-                    expireText = '🛑 領取期限已截止';
+                    expireText = isFree ? '🛑 領取期限已截止' : '🛑 購買期限已截止';
                     btnText = '已截止';
                     btnDisabled = true;
                 } else {
@@ -452,7 +453,7 @@
                     </div>
                     <div class="product-info">
                         <h2 class="product-name">
-                            ${isPurchased ? '<span style="color:#55ff55; font-size:0.85em;">[已購買] </span>' : ''}${product.name}
+                            ${isPurchased ? `<span style="color:#55ff55; font-size:0.85em;">[${isFree ? '已領取' : '已購買'}] </span>` : ''}${product.name}
                         </h2>
                         <div class="product-meta">內容：<span>${product.quantity}</span></div>
                         <div class="product-desc">${product.description}</div>
@@ -560,7 +561,7 @@
             }
         });
 
-        // 領取 Modal 控制 (依據登入狀態與商品是否免費切換欄位)
+        // 領取/購買 Modal 控制 (依據登入狀態與商品是否免費切換欄位與文字)
         function openClaimModal(id, name) {
             document.getElementById('form-item-id').value = id;
             document.getElementById('form-item-name').value = name;
@@ -568,6 +569,16 @@
 
             const targetProduct = allProducts.find(p => p.id === id);
             const isFree = isProductFree(targetProduct);
+
+            const modalTitle = document.getElementById('claim-modal-title');
+            if (modalTitle) {
+                modalTitle.innerText = isFree ? 'CLAIM ITEM' : 'BUY ITEM';
+            }
+
+            const submitBtn = document.getElementById('btn-submit-claim');
+            if (submitBtn) {
+                submitBtn.innerText = isFree ? '確認領取' : '確認購買';
+            }
 
             const loggedInDiv = document.getElementById('claim-logged-in-fields');
             const guestDiv = document.getElementById('claim-guest-fields');
@@ -609,7 +620,7 @@
             document.getElementById('claim-form').reset();
         }
 
-        // 處理領取提交 (支援已登入/未登入雙模式驗證與免費/付費區分)
+        // 處理領取/購買提交 (支援已登入/未登入雙模式驗證與免費/付費區分)
         document.getElementById('claim-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -620,6 +631,7 @@
 
             const targetProduct = allProducts.find(p => p.id === itemId);
             const isFree = isProductFree(targetProduct);
+            const actionText = isFree ? '領取' : '購買';
 
             let mcId = "";
             let email = "";
@@ -667,16 +679,16 @@
                             showToast("❌ 驗證失敗！Minecraft ID、電子郵件或驗證碼不相符。");
                         }
                         submitBtn.disabled = false;
-                        submitBtn.innerText = "確認領取";
+                        submitBtn.innerText = `確認${actionText}`;
                         return;
                     }
 
                     const userData = userQuery.docs[0].data();
                     const registeredName = userData.name || userData.minecraftId || mcId;
 
-                    submitBtn.innerText = "檢查重複領取...";
+                    submitBtn.innerText = `檢查重複${actionText}...`;
 
-                    // 2. 查詢該 Minecraft ID 是否已領取過此商品
+                    // 2. 查詢該 Minecraft ID 是否已領取/購買過此商品
                     const existingDocs = await db.collection('market_claims')
                         .where('minecraftIdLower', '==', mcIdLower)
                         .get();
@@ -684,9 +696,9 @@
                     const hasClaimed = existingDocs.docs.some(doc => doc.data().itemId === itemId);
 
                     if (hasClaimed) {
-                        showToast("⚠️ 該 Minecraft 帳號已領取過此商品，無法重複領取！");
+                        showToast(`⚠️ 該 Minecraft 帳號已${actionText}過此商品，無法重複${actionText}！`);
                         submitBtn.disabled = false;
-                        submitBtn.innerText = "確認領取";
+                        submitBtn.innerText = `確認${actionText}`;
                         return;
                     }
 
@@ -694,7 +706,7 @@
 
                     const productPrice = targetProduct ? targetProduct.price : 0;
 
-                    // 3. 寫入領取紀錄
+                    // 3. 寫入領取/購買紀錄
                     const claimData = {
                         itemId: itemId,
                         itemName: itemName,
@@ -709,20 +721,20 @@
 
                     await db.collection('market_claims').add(claimData);
 
-                    // 寫入成功後，即時更新本地購買紀錄並重繪 UI
+                    // 寫入成功後，即時更新本地紀錄並重繪 UI
                     if (!userPurchasedItemIds.includes(itemId)) {
                         userPurchasedItemIds.push(itemId);
                     }
                     renderProducts();
 
-                    showToast(`✔ 領取成功！玩家：${registeredName} (${mcId})，工作人員將儘速發放。`);
+                    showToast(`✔ ${actionText}成功！玩家：${registeredName} (${mcId})，工作人員將儘速發放。`);
                     closeClaimModal();
                 } catch (error) {
                     console.error("Firebase 處理失敗:", error);
-                    showToast("❌ 領取失敗，請確認網路連線或聯絡管理員。");
+                    showToast(`❌ ${actionText}失敗，請確認網路連線或聯絡管理員。`);
                 } finally {
                     submitBtn.disabled = false;
-                    submitBtn.innerText = "確認領取";
+                    submitBtn.innerText = `確認${actionText}`;
                 }
             } else {
                 // 模擬測試模式
@@ -731,10 +743,10 @@
                         userPurchasedItemIds.push(itemId);
                     }
                     renderProducts();
-                    showToast(`✔ 測試模式：已紀錄領取請求 (${mcId})。`);
+                    showToast(`✔ 測試模式：已紀錄${actionText}請求 (${mcId})。`);
                     closeClaimModal();
                     submitBtn.disabled = false;
-                    submitBtn.innerText = "確認領取";
+                    submitBtn.innerText = `確認${actionText}`;
                 }, 800);
             }
         });
