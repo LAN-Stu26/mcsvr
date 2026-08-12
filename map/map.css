@@ -109,6 +109,14 @@ body {
     gap: 10px;
 }
 
+/* 地圖選擇器選單容器 */
+.map-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 .toolbar-item {
     font-size: 0.9rem;
     color: #aaaaaa;
@@ -192,6 +200,15 @@ body {
     transform: translateY(1px);
 }
 
+/* 目前選取中的分頁/地圖按鈕高亮樣式 */
+.mc-btn.active {
+    background-color: #55ff55 !important;
+    color: #000000 !important;
+    box-shadow: 
+        inset -2px -2px 0px #00aa00, 
+        inset 2px 2px 0px #ffffff !important;
+}
+
 /* --- 特色介紹清單 --- */
 .features-grid {
     display: grid;
@@ -231,7 +248,7 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
-    .map-toolbar button {
+    .map-toolbar button, .map-selector a {
         width: 100%;
     }
 }

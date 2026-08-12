@@ -39,11 +39,19 @@
                     <i class="fa-solid fa-map-location-dot"></i> 世界地圖視窗
                 </div>
                 
-                <!-- 地圖拖曳與控制提示條 -->
+                <!-- 地圖切換與控制提示條 -->
                 <div class="map-toolbar">
-                    <div class="toolbar-item">
-                        <i class="fa-solid fa-computer-mouse"></i> 滾輪放大/縮小，按住拖曳移動
+                    <!-- 圖片切換列表按鈕 -->
+                    <div class="map-selector">
+                        <span style="color: #aaa; font-weight: bold; font-size: 0.9rem; align-self: center;">切換地圖：</span>
+                        <a href="#a" class="mc-btn mc-btn-sm map-tab-btn" data-map="a">
+                            <i class="fa-solid fa-map"></i> 地圖 A (#a)
+                        </a>
+                        <a href="#b" class="mc-btn mc-btn-sm map-tab-btn" data-map="b">
+                            <i class="fa-solid fa-map"></i> 地圖 B (#b)
+                        </a>
                     </div>
+
                     <button class="mc-btn mc-btn-sm" onclick="resetMapCenter()">
                         <i class="fa-solid fa-crosshairs"></i> 回原點 (0, 0)
                     </button>
@@ -77,9 +85,15 @@
     <script src="/nav.js"></script>
     <script src="/footer.js" defer></script>
 
-    <!-- 地圖載入邏輯 Script -->
+    <!-- 地圖載入與 Hash 路由邏輯 Script -->
     <script>
-        // 1. 初始化 Leaflet 地圖（採用平面座標系 L.CRS.Simple）
+        // 1. 地圖清單配置檔（可依需求擴充 #c, #d 等）
+        const mapsData = {
+            'b': { url: '20260812b.png', name: '8/12 主世界' },
+            'c': { url: '20260812c.png', name: '8/12 主世界(含標籤)' }
+        };
+
+        // 2. 初始化 Leaflet 地圖（採用平面座標系 L.CRS.Simple）
         const map = L.map('map', {
             crs: L.CRS.Simple,
             minZoom: -3,
@@ -88,26 +102,56 @@
             attributionControl: false
         });
 
-        // 2. 載入單張拼好的全景圖片
-        const imageUrl = '20260812b.png';
-        const img = new Image();
-        img.src = imageUrl;
+        let currentOverlay = null;
+        let mapBounds = null;
 
-        let mapBounds;
+        // 3. 載入指定 Hash Key 的地圖圖片
+        function loadMapByKey(key) {
+            // 若 Hash 不存在，預設載入 'a'
+            const targetKey = mapsData[key] ? key : 'a';
+            const mapInfo = mapsData[targetKey];
 
-        img.onload = function() {
-            const w = this.naturalWidth;
-            const h = this.naturalHeight;
-            
-            // 將圖片中心設定為 (0, 0) 原點
-            mapBounds = [[-h / 2, -w / 2], [h / 2, w / 2]];
-            
-            // 加入圖片覆蓋圖層
-            L.imageOverlay(imageUrl, mapBounds).addTo(map);
-            
-            // 自動調整視野涵蓋整張地圖
-            map.fitBounds(mapBounds);
-        };
+            // 更新按鈕高亮（Active Status）
+            document.querySelectorAll('.map-tab-btn').forEach(btn => {
+                if (btn.getAttribute('data-map') === targetKey) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // 移除舊的地圖覆蓋圖層
+            if (currentOverlay) {
+                map.removeLayer(currentOverlay);
+            }
+
+            // 載入新地圖圖片
+            const img = new Image();
+            img.src = mapInfo.url;
+
+            img.onload = function() {
+                const w = this.naturalWidth;
+                const h = this.naturalHeight;
+                
+                // 設定圖片中心為 (0, 0)
+                mapBounds = [[-h / 2, -w / 2], [h / 2, w / 2]];
+                
+                // 建立新的圖層並加入地圖
+                currentOverlay = L.imageOverlay(mapInfo.url, mapBounds).addTo(map);
+                
+                // 自動重置視野涵蓋新圖片
+                map.fitBounds(mapBounds);
+            };
+        }
+
+        // 4. 監聽網址 Hash 變更事件 (#a, #b)
+        function handleHashChange() {
+            const hashKey = window.location.hash.replace('#', '').toLowerCase();
+            loadMapByKey(hashKey);
+        }
+
+        window.addEventListener('hashchange', handleHashChange);
+        window.addEventListener('DOMContentLoaded', handleHashChange);
 
         // 重置地圖中心回原點 (0, 0)
         function resetMapCenter() {
