@@ -52,12 +52,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/commands/" class="nav-item ${currentPath.includes('/commands') ? 'active' : ''}">
                         >_ 指令大全
                     </a>
-                    <a href="/featured/" class="nav-item ${currentPath.includes('/featured') ? 'active' : ''}">
-                        伺服器精選
-                    </a>
-                    <a href="/map/" class="nav-item ${currentPath.includes('/map') ? 'active' : ''}">
-                        地圖
-                    </a>
+
+                    <div class="nav-dropdown">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/featured') || currentPath.includes('/map') ? 'active' : ''}" id="joinDropdownToggle" aria-label="加入伺服器選單">
+                            更多 <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="joinDropdownMenu">
+                            <a href="/featured/" class="dropdown-item ${currentPath.includes('/featured') ? 'active' : ''}">
+                                社群精選
+                            </a>
+                            <a href="/map/" class="dropdown-item ${currentPath.includes('/map') ? 'active' : ''}">
+                                世界地圖
+                            </a>
+                        </div>
+                    </div>
+
                     <!-- 加入伺服器 (子選單：含規範與立即加入) -->
                     <div class="nav-dropdown">
                         <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') ? 'active' : ''}" id="joinDropdownToggle" aria-label="加入伺服器選單">
