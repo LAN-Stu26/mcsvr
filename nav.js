@@ -21,16 +21,13 @@ document.addEventListener('DOMContentLoaded', function () {
         </svg>
     `;
 
-    // 2. 生成導覽列 HTML 結構（修正：統一引入完整的 Material Symbols 樣式表）
+    // 2. 生成導覽列 HTML 結構（已修正重複 ID 問題）
     const navHTML = `
-
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
                 <span>📢 立刻加入官方 Discord </span>
-
                 <a href="https://discord.gg/FTzReGYz" class="banner-btn" target="_blank">立即加入</a>
-                
             </div>
 
             <div class="nav-container">
@@ -53,11 +50,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         >_ 指令大全
                     </a>
 
+                    <!-- 下拉選單 1：更多 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/featured') || currentPath.includes('/map') ? 'active' : ''}" id="joinDropdownToggle" aria-label="加入伺服器選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/featured') || currentPath.includes('/map') ? 'active' : ''}" aria-label="更多選單">
                             更多 <span class="dropdown-arrow">▼</span>
                         </button>
-                        <div class="dropdown-menu" id="joinDropdownMenu">
+                        <div class="dropdown-menu">
                             <a href="/featured/" class="dropdown-item ${currentPath.includes('/featured') ? 'active' : ''}">
                                 社群精選
                             </a>
@@ -67,12 +65,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     </div>
 
-                    <!-- 加入伺服器 (子選單：含規範與立即加入) -->
+                    <!-- 下拉選單 2：加入伺服器 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') ? 'active' : ''}" id="joinDropdownToggle" aria-label="加入伺服器選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') ? 'active' : ''}" aria-label="加入伺服器選單">
                             加入伺服器 <span class="dropdown-arrow">▼</span>
                         </button>
-                        <div class="dropdown-menu" id="joinDropdownMenu">
+                        <div class="dropdown-menu">
                             <a href="/rules/" class="dropdown-item ${currentPath.includes('/rules') ? 'active' : ''}">
                                 規範
                             </a>
@@ -87,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
 
                 <div class="nav-right-tools">
-                    <!-- 像素風放大鏡按鈕 (位於最右側) -->
+                    <!-- 像素風放大鏡按鈕 -->
                     <button class="nav-search-btn" id="navSearchTrigger" aria-label="開啟搜尋">
                         ${pixelSearchSVG}
                     </button>
@@ -117,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     `;
 
-    // 3. 渲染導覽列 (優先填入 #nav-placeholder，沒有的話則插入在 <body> 最前方)
+    // 3. 渲染導覽列
     const placeholder = document.getElementById('nav-placeholder');
     if (placeholder) {
         placeholder.innerHTML = navHTML;
@@ -125,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.insertAdjacentHTML('afterbegin', navHTML);
     }
 
-    // 4. 自動計算並調整 body padding-top 以防止導覽列遮擋內容
+    // 4. 自動計算並調整 body padding-top
     const navElement = document.querySelector('.mc-nav');
     if (navElement) {
         const updateBodyPadding = () => {
@@ -155,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const links = navLinks.querySelectorAll('.nav-item, .dropdown-item');
         links.forEach(link => {
-            if (link.id === 'joinDropdownToggle') return;
+            if (link.classList.contains('nav-dropdown-toggle')) return;
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
             });
@@ -168,24 +166,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 5.5 綁定「加入伺服器」子選單點擊展開/收起與點擊外部關閉邏輯
-    const joinDropdownToggle = document.getElementById('joinDropdownToggle');
-    const joinDropdownMenu = document.getElementById('joinDropdownMenu');
+    // 5.5 通用綁定所有「下拉選單」邏輯（支援多個子選單獨立運作）
+    const dropdowns = document.querySelectorAll('.nav-dropdown');
 
-    if (joinDropdownToggle && joinDropdownMenu) {
-        joinDropdownToggle.addEventListener('click', function (e) {
-            e.stopPropagation();
-            joinDropdownMenu.classList.toggle('show');
-            joinDropdownToggle.classList.toggle('open');
-        });
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
 
-        document.addEventListener('click', function (e) {
-            if (!joinDropdownToggle.contains(e.target) && !joinDropdownMenu.contains(e.target)) {
-                joinDropdownMenu.classList.remove('show');
-                joinDropdownToggle.classList.remove('open');
-            }
+        if (toggle && menu) {
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                
+                // 關閉其他已開啟的下拉選單
+                dropdowns.forEach(otherDropdown => {
+                    if (otherDropdown !== dropdown) {
+                        const otherMenu = otherDropdown.querySelector('.dropdown-menu');
+                        const otherToggle = otherDropdown.querySelector('.nav-dropdown-toggle');
+                        if (otherMenu) otherMenu.classList.remove('show');
+                        if (otherToggle) otherToggle.classList.remove('open');
+                    }
+                });
+
+                // 切換當前選單狀態
+                menu.classList.toggle('show');
+                toggle.classList.toggle('open');
+            });
+        }
+    });
+
+    // 點擊頁面任意空白處，關閉所有下拉選單
+    document.addEventListener('click', function () {
+        dropdowns.forEach(dropdown => {
+            const menu = dropdown.querySelector('.dropdown-menu');
+            const toggle = dropdown.querySelector('.nav-dropdown-toggle');
+            if (menu) menu.classList.remove('show');
+            if (toggle) toggle.classList.remove('open');
         });
-    }
+    });
 
     // 6. 全螢幕搜尋彈窗控制與讀取 /sites.json 搜尋邏輯
     const searchTrigger = document.getElementById('navSearchTrigger');
@@ -196,13 +213,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchResults = document.getElementById('navSearchResults');
     let siteData = [];
 
-    // 開啟彈窗
     function openSearch() {
         searchOverlay.classList.add('active');
         setTimeout(() => searchInput.focus(), 100);
     }
 
-    // 關閉彈窗
     function closeSearch() {
         searchOverlay.classList.remove('active');
         searchInput.value = '';
@@ -213,21 +228,18 @@ document.addEventListener('DOMContentLoaded', function () {
         searchTrigger.addEventListener('click', openSearch);
         searchCloseBtn.addEventListener('click', closeSearch);
 
-        // 點擊彈窗外面空白區域時關閉
         searchOverlay.addEventListener('click', function (e) {
             if (!searchModal.contains(e.target)) {
                 closeSearch();
             }
         });
 
-        // 按下 Esc 鍵關閉搜尋
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
                 closeSearch();
             }
         });
 
-        // 讀取 /sites.json
         fetch('/sites.json')
             .then(res => res.json())
             .then(data => {
@@ -235,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(err => console.error('無法讀取 sites.json:', err));
 
-        // 搜尋比對 logic
         searchInput.addEventListener('input', function () {
             const keyword = this.value.trim().toLowerCase();
             if (!keyword) {
