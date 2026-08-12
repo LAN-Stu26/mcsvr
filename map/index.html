@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伺服器地圖 - Lazy Sheep Minecraft 伺服器</title>
+    <link rel="icon" href="/icon.png" type="image/png">
+    
+    <!-- 引入 Google Fonts：中文採用 Noto Sans，標題採用復古像素風 Press Start 2P -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- 引入 Leaflet.js 地圖庫 CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- 引入導覽列共用樣式與頁面樣式 -->
+    <link rel="stylesheet" href="/nav.css">
+    <link rel="stylesheet" href="/footer.css">
+    <link rel="stylesheet" href="map.css">
+    
+    <!-- 引入 Leaflet.js 地圖庫 JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- 頁面頂部標題卡片 -->
+        <header class="map-header-card card">
+            <h1 class="server-logo">JOURNEYMAP</h1>
+            <p style="color: #aaaaaa; font-weight: bold; margin-top: 5px;">Server Map</p>
+            <div style="margin-top: 10px;">
+                <span class="server-version">Java 26.2</span>
+                <span class="server-version" style="background-color: #55ffff; box-shadow: 2px 2px 0px #00aaaa;">高清切片地圖</span>
+            </div>
+        </header>
+
+        <!-- 主要地圖展示區域 -->
+        <main class="main-content">
+            <section class="card map-wrapper-card">
+                <div class="card-title">
+                    <i class="fa-solid fa-map-location-dot"></i> 世界地圖視窗
+                </div>
+                
+                <!-- 地圖拖曳與控制提示條 -->
+                <div class="map-toolbar">
+                    <div class="toolbar-item">
+                        <i class="fa-solid fa-computer-mouse"></i> 滾輪放大/縮小，按住拖曳移動
+                    </div>
+                    <button class="mc-btn mc-btn-sm" onclick="resetMapCenter()">
+                        <i class="fa-solid fa-crosshairs"></i> 回原點 (0, 0)
+                    </button>
+                </div>
+
+                <!-- Leaflet 地圖容器 -->
+                <div id="map"></div>
+            </section>
+
+            <!-- 地圖說明與座標指南 -->
+            <section class="card">
+                <h2 class="card-title">地圖使用說明</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-title"><span>✦</span> 平面座標系統</div>
+                        <p style="color: #ccc; font-size: 0.95rem;">地圖採用 JourneyMap 原生分頁切片技術，座標點直接對應 Minecraft 遊戲內的 X 與 Z 軸世界座標。</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-title"><span>✦</span> 區域切片載入</div>
+                        <p style="color: #ccc; font-size: 0.95rem;">未探測或未生成的區域將自動隱藏，不會顯示斷圖圖案。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <!-- 頁尾載入點 -->
+    <div id="footer-placeholder"></div>
+    
+    <script src="/nav.js"></script>
+    <script src="/footer.js" defer></script>
+
+    <!-- 地圖載入邏輯 Script -->
+    <script>
+        // 1. 初始化 Leaflet 地圖（採用平面座標系 L.CRS.Simple 對應遊戲內 X/Z 座標）
+        const map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -3,
+            maxZoom: 3,
+            zoomSnap: 0.5,
+            attributionControl: false
+        }).setView([0, 0], 0);
+
+        // 2. 自訂 JourneyMap 切片圖層（載入 /map/image/X,Z.png）
+        const JourneyMapLayer = L.TileLayer.extend({
+            getTileUrl: function(coords) {
+                // coords.x 對應 Minecraft X 軸網格；coords.y 對應 Z 軸網格
+                return `image/${coords.x},${coords.y}.png`;
+            }
+        });
+
+        // 3. 建立並加入圖層 (JourneyMap 預設導出的區域圖塊單張尺寸為 512x512)
+        const mapTileLayer = new JourneyMapLayer({
+            tileSize: 512,
+            noWrap: true,
+            bounds: [
+                [-10000, -10000],
+                [10000, 10000]
+            ]
+        });
+
+        mapTileLayer.addTo(map);
+
+        // 4. 當切片圖片不存在（404 或未探索區域）時隱藏該 Tile，不顯現破圖
+        mapTileLayer.on('tileerror', function(error, tile) {
+            error.tile.style.display = 'none';
+        });
+
+        // 重置地圖中心回原點 (0, 0)
+        function resetMapCenter() {
+            map.setView([0, 0], 0);
+        }
+    </script>
+</body>
+</html>
