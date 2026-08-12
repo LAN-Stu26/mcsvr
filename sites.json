@@ -25,6 +25,11 @@
     "description": "有趣/特殊/壯觀 的世界圖片。 "
   },
   {
+    "title": "地圖",
+    "url": "/map/",
+    "description": "伺服器地圖，方便找內容。 "
+  },
+  {
     "title": "伺服器規範",
     "url": "/rules/",
     "description": "玩家守則與違規懲處說明。 "

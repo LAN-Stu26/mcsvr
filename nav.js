@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <a href="/featured/" class="nav-item ${currentPath.includes('/featured') ? 'active' : ''}">
                         伺服器精選
                     </a>
+                    <a href="/map/" class="nav-item ${currentPath.includes('/map') ? 'active' : ''}">
+                        地圖
+                    </a>
                     <!-- 加入伺服器 (子選單：含規範與立即加入) -->
                     <div class="nav-dropdown">
                         <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') ? 'active' : ''}" id="joinDropdownToggle" aria-label="加入伺服器選單">
