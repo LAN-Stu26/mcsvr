@@ -29,8 +29,7 @@
 
         <!-- 頁面頂部標題卡片 -->
         <header class="map-header-card card">
-            <h1 class="server-logo">JOURNEYMAP</h1>
-            <p style="color: #aaaaaa; font-weight: bold; margin-top: 5px;">Server Map</p>
+            <h1 class="server-logo">Server Map</h1>
             <div style="margin-top: 10px;">
                 <span class="server-version">Java 26.2</span>
                 <span class="server-version" style="background-color: #55ffff; box-shadow: 2px 2px 0px #00aaaa;">高清切片地圖</span>
@@ -105,6 +104,8 @@
         const mapTileLayer = new JourneyMapLayer({
             tileSize: 512,
             noWrap: true,
+            minNativeZoom: 0,
+            maxNativeZoom: 0,
             bounds: [
                 [-10000, -10000],
                 [10000, 10000]
