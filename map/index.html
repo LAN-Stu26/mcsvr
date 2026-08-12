@@ -32,7 +32,7 @@
             <h1 class="server-logo">Server Map</h1>
             <div style="margin-top: 10px;">
                 <span class="server-version">Java 26.2</span>
-                <span class="server-version" style="background-color: #55ffff; box-shadow: 2px 2px 0px #00aaaa;">高清切片地圖</span>
+                <span class="server-version" style="background-color: #55ffff; box-shadow: 2px 2px 0px #00aaaa;">高清完整地圖</span>
             </div>
         </header>
 
@@ -63,11 +63,11 @@
                 <div class="features-grid">
                     <div class="feature-item">
                         <div class="feature-title"><span>✦</span> 平面座標系統</div>
-                        <p style="color: #ccc; font-size: 0.95rem;">地圖採用 JourneyMap 原生分頁切片技術，座標點直接對應 Minecraft 遊戲內的 X 與 Z 軸世界座標。</p>
+                        <p style="color: #ccc; font-size: 0.95rem;">地圖採用平面座標渲染，座標點直接對應 Minecraft 遊戲內的世界座標。</p>
                     </div>
                     <div class="feature-item">
-                        <div class="feature-title"><span>✦</span> 區域切片載入</div>
-                        <p style="color: #ccc; font-size: 0.95rem;">未探測或未生成的區域將自動隱藏，不會顯示斷圖圖案。</p>
+                        <div class="feature-title"><span>✦</span> 高清縮放瀏覽</div>
+                        <p style="color: #ccc; font-size: 0.95rem;">支援自由平滑放大與縮小，可完整檢視已探索的伺服器地貌。</p>
                     </div>
                 </div>
             </section>
@@ -83,44 +83,43 @@
 
     <!-- 地圖載入邏輯 Script -->
     <script>
-        // 1. 初始化 Leaflet 地圖（採用平面座標系 L.CRS.Simple 對應遊戲內 X/Z 座標）
+        // 1. 初始化 Leaflet 地圖（採用平面座標系 L.CRS.Simple）
         const map = L.map('map', {
             crs: L.CRS.Simple,
             minZoom: -3,
             maxZoom: 3,
-            zoomSnap: 1,
-            zoomDelta: 1,
+            zoomSnap: 0.5,
             attributionControl: false
-        }).setView([0, 0], 0);
-
-        // 2. 自訂 JourneyMap 切片圖層（載入 /map/image/X,Z.png）
-        const JourneyMapLayer = L.TileLayer.extend({
-            getTileUrl: function(coords) {
-                // coords.x 對應 Minecraft X 軸網格；coords.y 對應 Z 軸網格
-                return `image/${coords.x},${coords.y}.png`;
-            }
         });
 
-        // 3. 建立並加入圖層 (JourneyMap 預設導出的區域圖塊單張尺寸為 512x512)
-        const mapTileLayer = new JourneyMapLayer({
-            tileSize: 512,
-            noWrap: true,
-            minZoom: -3,
-            maxZoom: 3,
-            minNativeZoom: 0,
-            maxNativeZoom: 0
-        });
+        // 2. 載入單張拼好的全景圖片
+        const imageUrl = '20260812a.png';
+        const img = new Image();
+        img.src = imageUrl;
 
-        mapTileLayer.addTo(map);
+        let mapBounds;
 
-        // 4. 當切片圖片不存在（404 或未探索區域）時隱藏該 Tile，不顯現破圖
-        mapTileLayer.on('tileerror', function(error, tile) {
-            error.tile.style.display = 'none';
-        });
+        img.onload = function() {
+            const w = this.naturalWidth;
+            const h = this.naturalHeight;
+            
+            // 將圖片中心設定為 (0, 0) 原點
+            mapBounds = [[-h / 2, -w / 2], [h / 2, w / 2]];
+            
+            // 加入圖片覆蓋圖層
+            L.imageOverlay(imageUrl, mapBounds).addTo(map);
+            
+            // 自動調整視野涵蓋整張地圖
+            map.fitBounds(mapBounds);
+        };
 
         // 重置地圖中心回原點 (0, 0)
         function resetMapCenter() {
-            map.setView([0, 0], 0);
+            if (mapBounds) {
+                map.fitBounds(mapBounds);
+            } else {
+                map.setView([0, 0], 0);
+            }
         }
     </script>
 </body>
