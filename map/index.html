@@ -41,26 +41,44 @@
                 
                 <!-- 地圖切換與控制提示條 -->
                 <div class="map-toolbar">
-                    <!-- 圖片切換列表按鈕 -->
+                    <!-- 圖片切換列表按鈕（最多放 3 個，其餘收進更多選單） -->
                     <div class="map-selector">
                         <span style="color: #aaa; font-weight: bold; font-size: 0.9rem; align-self: center;">切換地圖：</span>
-                        <a href="#20260812d" class="mc-btn mc-btn-sm map-tab-btn" data-map="d">
-                            <i class="fa-solid fa-map"></i> <b>8/12 主世界(新)</b>
+                        <a href="#20260812d" class="mc-btn mc-btn-sm map-tab-btn" data-map="20260812d">
+                            <i class="fa-solid fa-map"></i> 8/12 主世界(新)
                         </a>
-                        <a href="#20260812e" class="mc-btn mc-btn-sm map-tab-btn" data-map="e">
-                            <i class="fa-solid fa-map"></i> <b>8/12 主世界(含標籤)(新)</b>
+                        <a href="#20260812e" class="mc-btn mc-btn-sm map-tab-btn" data-map="20260812e">
+                            <i class="fa-solid fa-map"></i> 8/12 主世界(含標籤)(新)
                         </a>
-                        <a href="#20260812b" class="mc-btn mc-btn-sm map-tab-btn" data-map="b">
+                        <a href="#20260812b" class="mc-btn mc-btn-sm map-tab-btn" data-map="20260812b">
                             <i class="fa-solid fa-map"></i> 8/12 主世界
                         </a>
-                        <a href="#20260812c" class="mc-btn mc-btn-sm map-tab-btn" data-map="c">
-                            <i class="fa-solid fa-map"></i> 8/12 主世界(含標籤)
-                        </a>
+
+                        <!-- 超過 3 張圖時折疊收納 -->
+                        <div class="map-dropdown" id="mapDropdown">
+                            <button class="mc-btn mc-btn-sm dropdown-btn" onclick="toggleDropdown(event)">
+                                <i class="fa-solid fa-layer-group"></i> 更多地圖 <i class="fa-solid fa-caret-down"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="#20260812c" class="dropdown-item map-tab-btn" data-map="20260812c">
+                                    <i class="fa-solid fa-map"></i> 8/12 主世界(含標籤)
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
-                    <button class="mc-btn mc-btn-sm" onclick="resetMapCenter()">
-                        <i class="fa-solid fa-crosshairs"></i> 回原點 (0, 0)
-                    </button>
+                    <!-- 操作與下載區域 -->
+                    <div class="toolbar-actions">
+                        <span id="loadingNotice" class="loading-status" style="display: none;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> 載入中...
+                        </span>
+                        <a id="downloadMapBtn" class="mc-btn mc-btn-sm" download target="_blank">
+                            <i class="fa-solid fa-download"></i> 下載圖片
+                        </a>
+                        <button class="mc-btn mc-btn-sm" onclick="resetMapCenter()">
+                            <i class="fa-solid fa-crosshairs"></i> 回原點 (0, 0)
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Leaflet 地圖容器 -->
@@ -77,7 +95,7 @@
                     </div>
                     <div class="feature-item">
                         <div class="feature-title"><span>✦</span> 縮放瀏覽</div>
-                        <p style="color: #ccc; font-size: 0.95rem;">支援自由平滑放大與縮小，可完整檢視已探索的伺服器地貌。 </p>
+                        <p style="color: #ccc; font-size: 0.95rem;">支援自由平滑放大與縮小，可完整檢視已探索的伺服器地貌。</p>
                     </div>
                 </div>
             </section>
@@ -93,7 +111,7 @@
 
     <!-- 地圖載入與 Hash 路由邏輯 Script -->
     <script>
-        // 1. 地圖清單配置檔（可依需求擴充 #c, #d 等）
+        // 1. 地圖清單配置檔
         const mapsData = {
             '20260812d': { url: '20260812d.png', name: '8/12 主世界(新)' },
             '20260812e': { url: '20260812e.png', name: '8/12 主世界(含標籤)(新)' },
@@ -112,47 +130,97 @@
 
         let currentOverlay = null;
         let mapBounds = null;
+        let currentLoadToken = 0; // 防止快速連續點擊時的非同步競態問題
 
-        // 3. 載入指定 Hash Key 的地圖圖片
+        // 3. 按需下載並平滑載入地圖圖片
         function loadMapByKey(key) {
-            // 若 Hash 不存在，預設載入 'e'
-            const targetKey = mapsData[key] ? key : 'e';
+            const targetKey = mapsData[key] ? key : '20260812e';
             const mapInfo = mapsData[targetKey];
 
-            // 更新按鈕高亮（Active Status）
+            // 更新按鈕高亮狀態
+            let isDropdownActive = false;
             document.querySelectorAll('.map-tab-btn').forEach(btn => {
                 if (btn.getAttribute('data-map') === targetKey) {
                     btn.classList.add('active');
+                    if (btn.classList.contains('dropdown-item')) {
+                        isDropdownActive = true;
+                    }
                 } else {
                     btn.classList.remove('active');
                 }
             });
 
-            // 移除舊的地圖覆蓋圖層
-            if (currentOverlay) {
-                map.removeLayer(currentOverlay);
+            // 若選擇的是下拉選單裡的地圖，高亮下拉按鈕
+            const dropdownBtn = document.querySelector('.dropdown-btn');
+            if (dropdownBtn) {
+                if (isDropdownActive) {
+                    dropdownBtn.classList.add('active');
+                } else {
+                    dropdownBtn.classList.remove('active');
+                }
             }
 
-            // 載入新地圖圖片
+            // 更新下載按鈕網址
+            const downloadBtn = document.getElementById('downloadMapBtn');
+            if (downloadBtn) {
+                downloadBtn.href = mapInfo.url;
+                downloadBtn.download = mapInfo.url;
+            }
+
+            // 顯示載入中提示
+            const loadingNotice = document.getElementById('loadingNotice');
+            if (loadingNotice) loadingNotice.style.display = 'inline-flex';
+
+            const thisToken = ++currentLoadToken;
+
+            // 在背景下載圖片，下載期間保持當前地圖顯示不白屏
             const img = new Image();
             img.src = mapInfo.url;
 
             img.onload = function() {
+                // 如果載入期間使用者又切換了別張圖，則捨棄舊請求
+                if (thisToken !== currentLoadToken) return;
+
                 const w = this.naturalWidth;
                 const h = this.naturalHeight;
                 
                 // 設定圖片中心為 (0, 0)
                 mapBounds = [[-h / 2, -w / 2], [h / 2, w / 2]];
                 
-                // 建立新的圖層並加入地圖
-                currentOverlay = L.imageOverlay(mapInfo.url, mapBounds).addTo(map);
+                // 無縫替換：先加入新圖層，再移除舊圖層
+                const newOverlay = L.imageOverlay(mapInfo.url, mapBounds).addTo(map);
+                if (currentOverlay) {
+                    map.removeLayer(currentOverlay);
+                }
+                currentOverlay = newOverlay;
                 
                 // 自動重置視野涵蓋新圖片
                 map.fitBounds(mapBounds);
+
+                if (loadingNotice) loadingNotice.style.display = 'none';
+            };
+
+            img.onerror = function() {
+                if (thisToken !== currentLoadToken) return;
+                if (loadingNotice) loadingNotice.style.display = 'none';
+                alert('地圖圖片載入失敗，請檢查檔案是否存在：' + mapInfo.url);
             };
         }
 
-        // 4. 監聽網址 Hash 變更事件 (#a, #b)
+        // 下開選單選單開關
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('mapDropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        // 點擊頁面其它區域自動收合下拉選單
+        window.addEventListener('click', function() {
+            const dropdown = document.getElementById('mapDropdown');
+            if (dropdown) dropdown.classList.remove('open');
+        });
+
+        // 4. 監聽網址 Hash 變更事件
         function handleHashChange() {
             const hashKey = window.location.hash.replace('#', '').toLowerCase();
             loadMapByKey(hashKey);
