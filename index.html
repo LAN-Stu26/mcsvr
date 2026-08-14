@@ -70,9 +70,9 @@
 
                 <!-- 上線狀態溫馨提示區塊 -->
                 <div class="online-notice" id="online-notice" style="display: none;">
-                    <p class="online-desc">
-                        <i class="fa-solid fa-circle-info"></i>
-                        由於快取與 3 秒 Timeout 機制，網頁狀態無法 100% 準確即時判斷是否離線。建議同步加入 Discord 進行確認！
+                    <p class="online-desc" id="online-players-desc">
+                        <i class="fa-solid fa-circle-check"></i>
+                        伺服器正常運作中！快連線進來一起玩吧！
                     </p>
                 </div>
 
@@ -267,14 +267,13 @@
             }
         });
 
-        // 伺服器狀態自動偵測功能
+        // 伺服器狀態自動偵測功能 (使用 mcsv.top API)
         function checkServerStatus() {
-            const targetUserId = "1531668956249723121"; 
-            const guildId = "1536731095607943331";
-
+            const serverIp = "java.mcsvr.sld.tw";
             const statusText = document.getElementById('api-status-text');
             const lastCheckedText = document.getElementById('last-checked-time');
             const recheckBtn = document.getElementById('recheck-btn');
+            const onlineNoticeDesc = document.getElementById('online-players-desc');
 
             if (recheckBtn) {
                 recheckBtn.disabled = true;
@@ -284,64 +283,42 @@
             statusText.innerText = "正在偵測狀態...";
 
             const cacheBuster = Date.now();
+            console.log(`[StatusCheck] 開始透過 mcsv.top 檢查伺服器狀態...`);
 
-            console.log(`[StatusCheck] 開始檢查伺服器狀態...`);
-
-            // 【第一步】嘗試 Discord Guild Widget API
-            fetch(`https://discord.com/api/guilds/${guildId}/widget.json?nocache=${cacheBuster}`)
+            // 【第一步】主要方案：呼叫 mcsv.top API
+            fetch(`https://mcsv.top/api/${serverIp}?nocache=${cacheBuster}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Widget API 傳回錯誤 HTTP 狀態碼: ${response.status}`);
+                        throw new Error(`mcsv.top API 傳回錯誤 HTTP 狀態碼: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log("[StatusCheck] Discord Widget 回傳資料:", data);
-                    let isOnline = false;
-
-                    if (data && Array.isArray(data.members)) {
-                        // 修正：搜尋伺服器 Bot/帳號 "Lazy Sheep Server" 或暱稱 "伺服器 INFO"
-                        const member = data.members.find(m => {
-                            const name = m.username || "";
-                            const nick = m.nickname || "";
-                            return name.includes("Lazy Sheep Server") || 
-                                   nick.includes("伺服器 INFO / Chat") || 
-                                   name.includes("Lazy Sheep Server#4628");
-                        });
-
-                        if (member && member.status !== 'offline') {
-                            isOnline = true;
-                        }
-                    }
-
-                    updateUI(isOnline);
+                    console.log("[StatusCheck] mcsv.top API 回傳資料:", data);
+                    const isOnline = !!(data && (data.online || data.status === "online" || data.online === "true"));
+                    const onlinePlayers = data.players ? (data.players.online ?? 0) : 0;
+                    const maxPlayers = data.players ? (data.players.max ?? 0) : 0;
+                    updateUI(isOnline, onlinePlayers, maxPlayers);
                 })
                 .catch(err => {
-                    console.warn("[StatusCheck] Discord Widget API 偵測失敗，自動嘗試備用方案 (Lanyard API)...", err);
+                    console.warn("[StatusCheck] mcsv.top 檢測失敗，自動切換備用方案 (mcsrvstat.us)...", err);
                     
-                    // 【第二步】備用方案：Lanyard API
-                    fetch(`https://api.lanyard.rest/v1/users/${targetUserId}?nocache=${cacheBuster}`)
-                        .then(response => {
-                            if (!response.ok) throw new Error(`Lanyard API 傳回錯誤 HTTP 狀態碼: ${response.status}`);
-                            return response.json();
-                        })
+                    // 【第二步】備用方案：使用公用 mcsrvstat.us API Ping
+                    fetch(`https://api.mcsrvstat.us/2/${serverIp}?nocache=${cacheBuster}`)
+                        .then(res => res.json())
                         .then(data => {
-                            let isOnline = false;
-                            if (data && data.success && data.data) {
-                                const status = data.data.discord_status;
-                                if (status && status !== 'offline') {
-                                    isOnline = true;
-                                }
-                            }
-                            updateUI(isOnline);
+                            const isOnline = !!(data && data.online);
+                            const onlinePlayers = data.players ? data.players.online : 0;
+                            const maxPlayers = data.players ? data.players.max : 0;
+                            updateUI(isOnline, onlinePlayers, maxPlayers);
                         })
                         .catch(err2 => {
                             console.error("[StatusCheck] 所有 API 檢測皆失敗:", err2);
-                            updateUI(false);
+                            updateUI(false, 0, 0);
                         });
                 });
 
-            function updateUI(isOnline) {
+            function updateUI(isOnline, onlinePlayers = 0, maxPlayers = 0) {
                 const statusCard = document.getElementById('status-card-box');
                 const offlineNotice = document.getElementById('offline-notice');
                 const onlineNotice = document.getElementById('online-notice');
@@ -351,6 +328,14 @@
                     statusText.innerText = "伺服器線上";
                     if (offlineNotice) offlineNotice.style.display = 'none';
                     if (onlineNotice) onlineNotice.style.display = 'block';
+
+                    if (onlineNoticeDesc) {
+                        if (onlinePlayers > 0 || maxPlayers > 0) {
+                            onlineNoticeDesc.innerHTML = `<i class="fa-solid fa-circle-check"></i> 伺服器正常運作中！目前線上人數：<strong>${onlinePlayers} / ${maxPlayers}</strong> 人`;
+                        } else {
+                            onlineNoticeDesc.innerHTML = `<i class="fa-solid fa-circle-check"></i> 伺服器正常運作中！快連線進來一起玩吧！`;
+                        }
+                    }
                 } else {
                     statusCard.className = "card status-card status-card-offline";
                     statusText.innerText = "伺服器離線";
@@ -376,7 +361,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             checkServerStatus();
-            setInterval(checkServerStatus, 300000);
+            setInterval(checkServerStatus, 180000); // 每 3 分鐘自動更新一次
         });
 
         // 複製 IP 功能
