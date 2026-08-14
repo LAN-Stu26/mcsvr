@@ -35,9 +35,14 @@
     "description": "玩家守則與違規懲處說明。 "
   },
   {
-    "title": "申請白名單",
+    "title": "申請加入",
     "url": "/join/",
     "description": "加入伺服器白名單申請表單。 "
+  },
+  {
+    "title": "加入 Discord",
+    "url": "/join/dc/",
+    "description": "官方 DC ，可即時取得伺服器狀態訊息。 "
   },
   {
     "title": "文件",

@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
                 <span>📢 立刻加入官方 Discord </span>
-                <a href="https://discord.gg/FTzReGYz" class="banner-btn" target="_blank">立即加入</a>
+                <a href="/join/dc/" class="banner-btn">立即加入</a>
             </div>
 
             <div class="nav-container">
@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                 規範
                             </a>
                             <a href="/join/" class="dropdown-item ${currentPath.includes('/join') ? 'active' : ''}">
-                                立即加入
+                                申請加入
                             </a>
-                            <a href="https://discord.gg/FTzReGYz" class="dropdown-item" target="_blank">
+                            <a href="/join/go" class="dropdown-item ${currentPath.includes('/join/go') ? 'active' : ''}">
                                 Discord
                             </a>
                         </div>
