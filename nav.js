@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <!-- 下拉選單 2：加入伺服器 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') ? 'active' : ''}" aria-label="加入伺服器選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') || currentPath.includes('/join/dc') ? 'active' : ''}" aria-label="加入伺服器選單">
                             加入伺服器 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
