@@ -1,0 +1,255 @@
+/* --- 基礎樣式與主題設定 --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: #1a1a1a;
+    /* 沿用出生點村莊圖片背景與暗色漸層遮罩 */
+    background-image: 
+        radial-gradient(circle, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.75) 100%),
+        url('/bg.png'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #f0f0f0;
+    line-height: 1.6;
+    padding: 0 20px 40px 20px;
+    padding-top: 90px; /* 留出空間給固定式導覽列 */
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.main-content {
+    margin-top: 20px;
+}
+
+/* --- 頁面頭部卡片 --- */
+.dc-header-card {
+    text-align: center;
+    padding: 25px 20px;
+}
+
+.server-logo {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 2.2rem;
+    color: #ffaa00;
+    text-shadow: 4px 4px 0px #3f2a00;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+    word-wrap: break-word;
+}
+
+.server-version {
+    display: inline-block;
+    background-color: #55ff55;
+    color: #000;
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin: 4px;
+    box-shadow: 2px 2px 0px #00aa00;
+}
+
+/* --- 核心資訊卡片（Minecraft 經典容器風） --- */
+.card {
+    background-color: #2e2e2e;
+    border: 4px solid #000;
+    box-shadow: 
+        inset -4px -4px 0px #1a1a1a, 
+        inset 4px 4px 0px #5c5c5c,
+        0px 8px 16px rgba(0,0,0,0.6);
+    padding: 25px;
+    margin-bottom: 25px;
+    image-rendering: pixelated;
+}
+
+.dc-wrapper-card {
+    padding: 25px;
+}
+
+.card-title {
+    font-size: 1.4rem;
+    color: #ffff55;
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #5c5c5c;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-title::before {
+    content: "■";
+    color: #5865f2; /* Discord 品牌藍紫 */
+}
+
+/* --- Discord 版面組件 --- */
+.dc-container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.dc-info {
+    flex: 1;
+}
+
+.dc-info h3 {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.dc-info p {
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+.dc-features-list {
+    list-style: none;
+    margin-bottom: 25px;
+}
+
+.dc-features-list li {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+}
+
+.dc-features-list li i {
+    color: #5865f2;
+    width: 20px;
+    text-align: center;
+}
+
+.dc-action-box {
+    margin-top: 15px;
+}
+
+/* --- Discord 特效 3D 按鈕 --- */
+.mc-btn-dc {
+    background-color: #5865f2;
+    box-shadow: 
+        inset -3px -3px 0px #2c2f82, 
+        inset 3px 3px 0px #8892f7;
+    color: #ffffff;
+    width: 100%;
+    max-width: 350px;
+}
+
+.mc-btn-dc:hover {
+    background-color: #4752c4;
+    box-shadow: 
+        inset -3px -3px 0px #1c1e54, 
+        inset 3px 3px 0px #6e79f5;
+}
+
+/* --- Discord Widget 外框裝飾（Minecraft 內嵌框質感） --- */
+.dc-widget-frame {
+    border: 4px solid #000;
+    box-shadow: 
+        inset 4px 4px 0px #000000, 
+        inset -2px -2px 0px #444444;
+    background-color: #2f3136;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.dc-widget-frame iframe {
+    display: block;
+    max-width: 100%;
+}
+
+/* --- Minecraft 經典 3D 按鈕基礎類別 --- */
+.mc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #4a4a4a;
+    border: 3px solid #000;
+    box-shadow: 
+        inset -3px -3px 0px #2e2e2e, 
+        inset 3px 3px 0px #8b8b8b;
+    padding: 12px 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.1s ease;
+    text-align: center;
+    text-decoration: none;
+}
+
+/* --- 特色介紹清單 --- */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.feature-item {
+    background-color: #252525;
+    border: 2px solid #5c5c5c;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.feature-title {
+    color: #ff55ff;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* RWD 響應式微調 */
+@media (max-width: 768px) {
+    body {
+        padding-top: 130px;
+    }
+    .server-logo {
+        font-size: 1.6rem;
+    }
+    .dc-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .dc-info {
+        width: 100%;
+    }
+    .dc-widget-frame {
+        width: 100%;
+        max-width: 350px;
+    }
+    .dc-widget-frame iframe {
+        width: 100%;
+    }
+    .mc-btn-dc {
+        max-width: 100%;
+    }
+}
