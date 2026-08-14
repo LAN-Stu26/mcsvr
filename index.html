@@ -267,7 +267,7 @@
             }
         });
 
-        // 伺服器狀態自動偵測功能 (使用 mcsv.top API)
+        // 伺服器狀態自動偵測功能 (使用 sr-api.sfirew.com API)
         function checkServerStatus() {
             const serverIp = "java.mcsvr.sld.tw";
             const statusText = document.getElementById('api-status-text');
@@ -283,25 +283,25 @@
             statusText.innerText = "正在偵測狀態...";
 
             const cacheBuster = Date.now();
-            console.log(`[StatusCheck] 開始透過 mcsv.top 檢查伺服器狀態...`);
+            console.log(`[StatusCheck] 開始透過 sr-api.sfirew.com 檢查伺服器狀態...`);
 
-            // 【第一步】主要方案：呼叫 mcsv.top API
-            fetch(`https://mcsv.top/api/${serverIp}?nocache=${cacheBuster}`)
+            // 【第一步】主要方案：呼叫 sr-api.sfirew.com API
+            fetch(`https://sr-api.sfirew.com/server/${serverIp}?hl=tw&v=${cacheBuster}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`mcsv.top API 傳回錯誤 HTTP 狀態碼: ${response.status}`);
+                        throw new Error(`sr-api 傳回錯誤 HTTP 狀態碼: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log("[StatusCheck] mcsv.top API 回傳資料:", data);
+                    console.log("[StatusCheck] sr-api.sfirew.com API 回傳資料:", data);
                     const isOnline = !!(data && (data.online || data.status === "online" || data.online === "true"));
                     const onlinePlayers = data.players ? (data.players.online ?? 0) : 0;
                     const maxPlayers = data.players ? (data.players.max ?? 0) : 0;
                     updateUI(isOnline, onlinePlayers, maxPlayers);
                 })
                 .catch(err => {
-                    console.warn("[StatusCheck] mcsv.top 檢測失敗，自動切換備用方案 (mcsrvstat.us)...", err);
+                    console.warn("[StatusCheck] sr-api 檢測失敗，自動切換備用方案 (mcsrvstat.us)...", err);
                     
                     // 【第二步】備用方案：使用公用 mcsrvstat.us API Ping
                     fetch(`https://api.mcsrvstat.us/2/${serverIp}?nocache=${cacheBuster}`)
