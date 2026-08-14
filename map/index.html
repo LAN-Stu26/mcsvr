@@ -44,11 +44,11 @@
                     <!-- 圖片切換列表按鈕（最多放 3 個，其餘收進更多選單） -->
                     <div class="map-selector">
                         <span style="color: #aaa; font-weight: bold; font-size: 0.9rem; align-self: center;">切換地圖：</span>
-                        <a href="#813a" class="mc-btn mc-btn-sm map-tab-btn" data-map="813a">
-                            <i class="fa-solid fa-map"></i> 8/13 主世界
+                        <a href="#814a" class="mc-btn mc-btn-sm map-tab-btn" data-map="814a">
+                            <i class="fa-solid fa-map"></i> 8/14 主世界
                         </a>
-                        <a href="#813b" class="mc-btn mc-btn-sm map-tab-btn" data-map="813b">
-                            <i class="fa-solid fa-map"></i> 8/13 主世界(無位置標籤)
+                        <a href="#814b" class="mc-btn mc-btn-sm map-tab-btn" data-map="814b">
+                            <i class="fa-solid fa-map"></i> 8/14 主世界(無位置標籤)
                         </a>
 
                         <!-- 超過 3 張圖時折疊收納 -->
@@ -57,6 +57,12 @@
                                 <i class="fa-solid fa-layer-group"></i> 更多地圖 <i class="fa-solid fa-caret-down"></i>
                             </button>
                             <div class="dropdown-content">
+                                <a href="#813a" class="dropdown-item map-tab-btn" data-map="813a">
+                                    <i class="fa-solid fa-map"></i> 8/13 主世界(a)
+                                </a>
+                                <a href="#813b" class="dropdown-item map-tab-btn" data-map="813b">
+                                    <i class="fa-solid fa-map"></i> 8/13 主世界(無位置標籤)(b)
+                                </a>
                                 <a href="#812b" class="dropdown-item map-tab-btn" data-map="812b">
                                     <i class="fa-solid fa-map"></i> 8/12 主世界(b)
                                 </a>
@@ -119,6 +125,8 @@
     <script>
         // 1. 地圖清單配置檔
         const mapsData = {
+            '814a': { url: '20260814/a.png', name: '8/14 主世界' },
+            '814b': { url: '20260814/b.png', name: '8/14 主世界(無位置標籤)' },
             '813a': { url: '20260813/a.png', name: '8/13 主世界' },
             '813b': { url: '20260813/b.png', name: '8/13 主世界(無位置標籤)' },
             '812a': { url: '20260812/a.png', name: '8/12 主世界(新)' },
@@ -143,7 +151,7 @@
 
         // 3. 按需下載並平滑載入地圖圖片
         function loadMapByKey(key) {
-            const targetKey = mapsData[key] ? key : '813a';
+            const targetKey = mapsData[key] ? key : '814a';
             const mapInfo = mapsData[targetKey];
 
             // 更新按鈕高亮狀態
