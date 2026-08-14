@@ -23,8 +23,10 @@
             <div class="header-hero-content">
                 <h1 class="server-logo">Lazy Sheep Server</h1>
                 <p style="color: #aaaaaa; font-weight: bold; margin-bottom: 10px;">Lazy_Sheep_x 創的私人伺服器</p>
-                <span class="server-version">Java 26.2</span>
-                <span class="server-version">Purpur</span>
+                <div>
+                    <span class="server-version">Java 26.2</span>
+                    <span class="server-version">Purpur</span>
+                </div>
             </div> 
 
             <!-- 向下滑動提示引導 -->
@@ -66,6 +68,14 @@
                     <div class="toast" id="toast-ip">✔ IP 複製成功！快去遊戲裡貼上吧！</div>
                 </div>
 
+                <!-- 上線狀態溫馨提示區塊 -->
+                <div class="online-notice" id="online-notice" style="display: none;">
+                    <p class="online-desc">
+                        <i class="fa-solid fa-circle-info"></i>
+                        由於快取與 3 秒 Timeout 機制，網頁狀態無法 100% 準確即時判斷是否離線。建議同步加入 Discord 進行確認！
+                    </p>
+                </div>
+
                 <!-- 離線時才顯示的提示與 DC 請求連結 -->
                 <div class="offline-notice" id="offline-notice">
                     <p class="offline-desc">
@@ -73,56 +83,100 @@
                         本伺服器為 <strong>Aternos 免費主機</strong>，長時間無人遊玩會自動關機。若目前處於離線狀態，請至 Discord 發起開服請求！
                     </p>
                     <div class="btn-group" style="margin-top: 15px;">
-                        <a class="mc-btn mc-btn-dc" href="/join/dc">
+                        <a class="mc-btn mc-btn-dc" href="/join/dc/">
                             <i class="fa-brands fa-discord"></i> 前往 Discord 請求開服
                         </a>
                     </div>
                 </div>
-            </section>
 
-            <!-- 2. 如何開始遊戲？ -->
-            <section class="card">
-                <h2 class="card-title">如何開始遊戲？</h2>
-                <ul class="steps">
-                    <li data-step="1">
-                        <strong>確認伺服器是否開啟：</strong><br>
-                        若發現伺服器未連線，請點選上方按鈕前往 Discord 頻道請求開服。
-                    </li>
-                    <li data-step="2">
-                        <strong>選擇多人遊戲：</strong><br>
-                        注意！是 Java 版。點選 <strong>「多人遊戲 (Multiplayer)」</strong>。
-                    </li>
-                    <li data-step="3">
-                        <strong>新增伺服器：</strong><br>
-                        點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器「位址」輸入欄貼上複製的網址：<br>
-                        <code style="background: #151515; padding: 2px 6px; border: 1px solid #5c5c5c; color: #55ffff;">java.mcsvr.sld.tw</code>
-                    </li>
-                    <li data-step="4">
-                        <strong>連線冒險：</strong><br>
-                        點擊 <strong>「完成 (Done)」</strong>，雙擊伺服器即可直接進入世界！
-                    </li>
-                </ul>
-            </section>
-
-            <!-- 3. 第一次遊玩嗎？ -->
-            <section class="card">
-                <h2 class="card-title"><i class="fa-solid fa-user-plus" style="color: #55ff55;"></i> 第一次遊玩嗎？</h2>
-                <p style="margin-bottom: 15px; color: #e0e0e0;">還不是伺服器成員嗎？立即填寫申請，一起加入 Lazy Sheep 的冒險旅程！</p>
-                <div class="btn-group">
-                    <a href="/join" class="mc-btn mc-btn-join">
-                        <i class="fa-solid fa-paper-plane"></i> 立即申請 /join
-                    </a>
+                <!-- 不論開關機皆常駐顯示的快捷彈窗按鈕 -->
+                <div class="status-actions-group">
+                    <button class="mc-btn mc-btn-info" onclick="openModal('modal-how-to-play')">
+                        <i class="fa-solid fa-circle-question"></i> 如何開始遊戲？
+                    </button>
+                    <button class="mc-btn mc-btn-join" onclick="openModal('modal-join-info')">
+                        <i class="fa-solid fa-user-plus"></i> 第一次遊玩 / 申請白名單
+                    </button>
                 </div>
             </section>
 
-            <!-- 4. 伺服器市集 -->
-            <section class="card">
-                <h2 class="card-title"><i class="fa-solid fa-store" style="color: #ffaa00;"></i> 伺服器市集</h2>
-                <p style="margin-bottom: 15px; color: #e0e0e0;">想買東西或領取每日獎品？這裡領！</p>
-                <div class="btn-group">
-                    <a href="/market" class="mc-btn mc-btn-market">
-                        <i class="fa-solid fa-basket-shopping"></i> 前往市集 /market
+            <!-- 2. 伺服器快捷選單導覽網格 -->
+            <section class="nav-grid-section">
+                <h2 class="section-title"><i class="fa-solid fa-compass"></i> 快速導覽與功能</h2>
+                <div class="nav-grid">
+                    
+                    <a href="/" class="nav-card">
+                        <div class="nav-card-icon"><i class="fa-solid fa-house"></i></div>
+                        <div class="nav-card-content">
+                            <h3>首頁</h3>
+                            <p>Lazy Sheep 伺服器首頁與最新動態。</p>
+                        </div>
                     </a>
+
+                    <a href="/market/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #ffaa00;"><i class="fa-solid fa-store"></i></div>
+                        <div class="nav-card-content">
+                            <h3>市集</h3>
+                            <p>免費慶祝與特殊商品。</p>
+                        </div>
+                    </a>
+
+                    <a href="/news/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #55ffff;"><i class="fa-solid fa-newspaper"></i></div>
+                        <div class="nav-card-content">
+                            <h3>最新消息</h3>
+                            <p>伺服器公告與活動資訊。</p>
+                        </div>
+                    </a>
+
+                    <a href="/commands/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #ff55ff;"><i class="fa-solid fa-terminal"></i></div>
+                        <div class="nav-card-content">
+                            <h3>指令大全</h3>
+                            <p>指令統整。</p>
+                        </div>
+                    </a>
+
+                    <a href="/featured/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #ffff55;"><i class="fa-solid fa-star"></i></div>
+                        <div class="nav-card-content">
+                            <h3>伺服器精選</h3>
+                            <p>有趣/特殊/壯觀 的世界圖片。</p>
+                        </div>
+                    </a>
+
+                    <a href="/map/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #ff5555;"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <div class="nav-card-content">
+                            <h3>地圖</h3>
+                            <p>伺服器地圖，方便找內容。</p>
+                        </div>
+                    </a>
+
+                    <a href="/rules/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #aaaaaa;"><i class="fa-solid fa-book-bookmark"></i></div>
+                        <div class="nav-card-content">
+                            <h3>伺服器規範</h3>
+                            <p>玩家守則與違規懲處說明。</p>
+                        </div>
+                    </a>
+
+                    <a href="/join/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #55ff55;"><i class="fa-solid fa-user-plus"></i></div>
+                        <div class="nav-card-content">
+                            <h3>申請加入</h3>
+                            <p>加入伺服器白名單申請表單。</p>
+                        </div>
+                    </a>
+
+                    <a href="/join/dc/" class="nav-card">
+                        <div class="nav-card-icon" style="color: #5865F2;"><i class="fa-brands fa-discord"></i></div>
+                        <div class="nav-card-content">
+                            <h3>加入 Discord</h3>
+                            <p>官方 DC ，可即時取得伺服器狀態訊息。</p>
+                        </div>
+                    </a>
+
                 </div>
             </section>
 
@@ -130,17 +184,92 @@
 
     </div>
 
+    <!-- 彈窗 1：如何開始遊戲 -->
+    <div class="modal-backdrop" id="modal-how-to-play" onclick="closeModalOnBackdrop(event, 'modal-how-to-play')">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" onclick="closeModal('modal-how-to-play')">&times;</button>
+            <h2 class="modal-title"><i class="fa-solid fa-gamepad" style="color: #ffff55;"></i> 如何開始遊戲？</h2>
+            <ul class="steps">
+                <li data-step="1">
+                    <strong>確認伺服器是否開啟：</strong><br>
+                    若發現伺服器未連線，請點選上方按鈕前往 Discord 頻道請求開服。
+                </li>
+                <li data-step="2">
+                    <strong>選擇多人遊戲：</strong><br>
+                    注意！是 Java 版。點選 <strong>「多人遊戲 (Multiplayer)」</strong>。
+                </li>
+                <li data-step="3">
+                    <strong>新增伺服器：</strong><br>
+                    點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器「位址」輸入欄貼上複製的網址：<br>
+                    <code style="background: #151515; padding: 2px 6px; border: 1px solid #5c5c5c; color: #55ffff;">java.mcsvr.sld.tw</code>
+                </li>
+                <li data-step="4">
+                    <strong>連線冒險：</strong><br>
+                    點擊 <strong>「完成 (Done)」</strong>，雙擊伺服器即可直接進入世界！
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 彈窗 2：第一次遊玩 / 申請白名單 -->
+    <div class="modal-backdrop" id="modal-join-info" onclick="closeModalOnBackdrop(event, 'modal-join-info')">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" onclick="closeModal('modal-join-info')">&times;</button>
+            <h2 class="modal-title"><i class="fa-solid fa-user-plus" style="color: #55ff55;"></i> 第一次遊玩嗎？</h2>
+            <p style="margin-bottom: 20px; color: #e0e0e0; font-size: 1rem;">
+                還不是伺服器成員嗎？我們伺服器開啟了白名單驗證機制，立即填寫申請表單，一起加入 Lazy Sheep 的冒險旅程！
+            </p>
+            <div class="btn-group">
+                <a href="/join/" class="mc-btn mc-btn-join" style="width: 100%; max-width: 100%;">
+                    <i class="fa-solid fa-paper-plane"></i> 立即填寫申請表單 /join
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div id="footer-placeholder"></div>
     
     <script src="/nav.js"></script>
     <script src="/footer.js" defer></script>
     
-    <!-- API 偵測與複製功能 JS 邏輯 -->
+    <!-- API 偵測、複製與彈窗動畫邏輯 JS -->
     <script>
+        // 開啟與關閉彈窗
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 鎖定背景滾動
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function closeModalOnBackdrop(event, id) {
+            if (event.target === document.getElementById(id)) {
+                closeModal(id);
+            }
+        }
+
+        // 按 ESC 鍵關閉所有彈窗
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-backdrop.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
         // 伺服器狀態自動偵測功能
         function checkServerStatus() {
-            const targetUserId = "1531668956249723121";       // 備用 Lanyard API 使用
-            const targetUsername = "伺服主 Lazy Sheep";        // Widget API 成員名稱比對
+            const targetUserId = "1531668956249723121"; 
             const guildId = "1536731095607943331";
 
             const statusText = document.getElementById('api-status-text');
@@ -171,10 +300,14 @@
                     let isOnline = false;
 
                     if (data && Array.isArray(data.members)) {
-                        const member = data.members.find(m => 
-                            m.username === targetUsername || 
-                            (m.username && m.username.includes("Lazy Sheep"))
-                        );
+                        // 修正：搜尋伺服器 Bot/帳號 "Lazy Sheep Server" 或暱稱 "伺服器 INFO"
+                        const member = data.members.find(m => {
+                            const name = m.username || "";
+                            const nick = m.nickname || "";
+                            return name.includes("Lazy Sheep Server") || 
+                                   nick.includes("伺服器 INFO / Chat ") || 
+                                   name.includes("Lazy Sheep Server#4628");
+                        });
 
                         if (member && member.status !== 'offline') {
                             isOnline = true;
@@ -211,15 +344,18 @@
             function updateUI(isOnline) {
                 const statusCard = document.getElementById('status-card-box');
                 const offlineNotice = document.getElementById('offline-notice');
+                const onlineNotice = document.getElementById('online-notice');
 
                 if (isOnline) {
                     statusCard.className = "card status-card status-card-online";
                     statusText.innerText = "伺服器線上";
                     if (offlineNotice) offlineNotice.style.display = 'none';
+                    if (onlineNotice) onlineNotice.style.display = 'block';
                 } else {
                     statusCard.className = "card status-card status-card-offline";
                     statusText.innerText = "伺服器離線";
                     if (offlineNotice) offlineNotice.style.display = 'block';
+                    if (onlineNotice) onlineNotice.style.display = 'none';
                 }
                 finalizeCheck();
             }
