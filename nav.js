@@ -11,8 +11,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })();
 
-    // 1. 自動判斷當前網址以高亮顯示 Active 標籤
-    const currentPath = window.location.pathname;
+    // 1. 自動判斷當前網址以高亮顯示 Active 標籤（路徑正規化）
+    const rawPath = window.location.pathname;
+    const currentPath = rawPath.endsWith('/index.html') 
+        ? (rawPath.slice(0, -10) || '/') 
+        : (rawPath.endsWith('.html') ? rawPath.slice(0, -5) : rawPath);
+
+    const normalizedPath = currentPath === '/' ? '/' : currentPath.replace(/\/$/, '');
+
+    // 精確判斷 Active 高亮狀態的輔助函式
+    const isActive = (targetPath, exact = false) => {
+        const target = targetPath === '/' ? '/' : targetPath.replace(/\/$/, '');
+        if (exact || target === '/') {
+            return normalizedPath === target;
+        }
+        return normalizedPath === target || normalizedPath.startsWith(target + '/');
+    };
 
     // 自製像素風格放大鏡 SVG
     const pixelSearchSVG = `
@@ -21,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </svg>
     `;
 
-    // 2. 生成導覽列 HTML 結構（已修正重複 ID 問題）
+    // 2. 生成導覽列 HTML 結構（修正高亮誤判與行內樣式遮蔽問題）
     const navHTML = `
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
@@ -37,29 +51,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 <!-- 導覽連結 -->
                 <div class="nav-links" id="navLinks">
-                    <a href="/" class="nav-item ${currentPath === '/' || currentPath.endsWith('/index.html') ? 'active' : ''}">
+                    <a href="/" class="nav-item ${isActive('/') ? 'active' : ''}">
                         首頁
                     </a>
-                    <a href="/news/" class="nav-item ${currentPath.includes('/news') ? 'active' : ''}">
+                    <a href="/news/" class="nav-item ${isActive('/news') ? 'active' : ''}">
                         最新消息
                     </a>
-                    <a href="/market/" class="nav-item ${currentPath.includes('/market') ? 'active' : ''}">
+                    <a href="/market/" class="nav-item ${isActive('/market') ? 'active' : ''}">
                         市集
                     </a>
-                    <a href="/commands/" class="nav-item ${currentPath.includes('/commands') ? 'active' : ''}">
+                    <a href="/commands/" class="nav-item ${isActive('/commands') ? 'active' : ''}">
                         >_ 指令大全
                     </a>
 
                     <!-- 下拉選單 1：更多 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/featured') || currentPath.includes('/map') ? 'active' : ''}" aria-label="更多選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/featured') || isActive('/map') ? 'active' : ''}" aria-label="更多選單">
                             更多 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="/featured/" class="dropdown-item ${currentPath.includes('/featured') ? 'active' : ''}">
+                            <a href="/featured/" class="dropdown-item ${isActive('/featured') ? 'active' : ''}">
                                 社群精選
                             </a>
-                            <a href="/map/" class="dropdown-item ${currentPath.includes('/map') ? 'active' : ''}">
+                            <a href="/map/" class="dropdown-item ${isActive('/map') ? 'active' : ''}">
                                 世界地圖
                             </a>
                         </div>
@@ -67,17 +81,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <!-- 下拉選單 2：加入伺服器 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${currentPath.includes('/rules') || currentPath.includes('/join') || currentPath.includes('/join/dc') ? 'active' : ''}" aria-label="加入伺服器選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/rules') || isActive('/join', true) || isActive('/join/dc') ? 'active' : ''}" aria-label="加入伺服器選單">
                             加入伺服器 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="/rules/" class="dropdown-item ${currentPath.includes('/rules') ? 'active' : ''}">
+                            <a href="/rules/" class="dropdown-item ${isActive('/rules') ? 'active' : ''}">
                                 規範
                             </a>
-                            <a href="/join/" class="dropdown-item ${currentPath.includes('/join') ? 'active' : ''}">
+                            <a href="/join/" class="dropdown-item ${isActive('/join', true) ? 'active' : ''}">
                                 申請加入
                             </a>
-                            <a href="/join/dc" class="dropdown-item ${currentPath.includes('/join/dc') ? 'active' : ''}">
+                            <a href="/join/dc" class="dropdown-item ${isActive('/join/dc') ? 'active' : ''}">
                                 Discord
                             </a>
                         </div>
@@ -91,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </button>
 
                     <!-- 手機版漢堡選單按鈕 -->
-                    <button class="nav-toggle" id="navToggle" aria-label="切換選單" style="display: none;">
+                    <button class="nav-toggle" id="navToggle" aria-label="切換選單">
                         ☰
                     </button>
                 </div>
