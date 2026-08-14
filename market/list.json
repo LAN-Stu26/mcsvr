@@ -1,15 +1,15 @@
 [
 {
-    "id": "daily_reward_0813",
+    "id": "daily_reward_0815",
     "name": "每日獎勵",
     "category": "reward",
     "categoryName": "🎁 每日",
     "price": 0,
-    "quantity": "隨機物品 x3",
-    "description": ":) ",
-    "image": "unknow.png",
-    "startDate": "2026-08-13T00:00:00",
-    "expireDate": "2026-08-13T23:59:59"
+    "quantity": "鑽石*30",
+    "description": "EASONKAO0105 提議。",
+    "image": "dm.png",
+    "startDate": "2026-08-15T00:00:00",
+    "expireDate": "2026-08-15T23:59:59"
   },
   {
     "id": "fast-move",
