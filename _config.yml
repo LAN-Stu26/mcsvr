@@ -35,3 +35,7 @@
 #   - .bundle/
 #   - .git/
 #  - .sass-cache/
+
+# 告訴 GitHub Pages 在發布網站時，忽略這些檔案或資料夾
+exclude:
+  - index2.html

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market - Lazy Sheep</title>
+    
+    <!-- 網站 Icon -->
+    <link rel="icon" href="/icon.png" type="image/png">
+
+    <!-- Google 像素字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- 引入導覽列與市場專屬樣式 -->
+    <link rel="stylesheet" href="/nav.css">
+    <link rel="stylesheet" href="/footer.css">
+    <link rel="stylesheet" href="/market/market.css">
+    
+    <!-- 引入導覽列腳本 -->
+    <script src="/nav.js" defer></script>
+
+    <!-- 引入 Firebase SDK (Compat 版本) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* 玩家登入狀態列像素風樣式 */
+        .user-auth-bar {
+            background-color: rgba(26, 26, 26, 0.95);
+            border: 4px solid #000;
+            padding: 12px 18px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: inset -2px -2px 0px #111, inset 2px 2px 0px #444, 0 6px 16px rgba(0,0,0,0.5);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .user-auth-info {
+            color: #ffff55;
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-auth-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ff5555;
+            display: inline-block;
+            box-shadow: 0 0 6px #ff5555;
+        }
+        .user-auth-status-dot.online {
+            background-color: #55ff55;
+            box-shadow: 0 0 6px #55ff55;
+        }
+        .btn-pixel-sm {
+            background-color: #ffaa00;
+            color: #000;
+            border: 2px solid #000;
+            padding: 6px 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: inset -2px -2px 0px #9f6f00, inset 2px 2px 0px #ffcf40;
+            font-size: 0.85rem;
+            transition: all 0.1s ease;
+        }
+        .btn-pixel-sm:hover {
+            background-color: #ffbb22;
+        }
+        .btn-pixel-danger {
+            background-color: #dc3545;
+            color: #fff;
+            border: 2px solid #000;
+            padding: 6px 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: inset -2px -2px 0px #741a22, inset 2px 2px 0px #f16875;
+            font-size: 0.85rem;
+            transition: all 0.1s ease;
+        }
+        .btn-pixel-danger:hover {
+            background-color: #ed4353;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列佔位點 (防止手機版渲染跑版) -->
+    <div id="nav-placeholder"></div>
+
+    <div class="market-container">
+        <!-- 頁面標頭 -->
+        <header class="market-header">
+            <h1 class="market-title">Market</h1>
+            <p class="market-subtitle">伺服器免費補償與活動獎勵領取中心（輸入玩家 ID、Email 與驗證碼即可領取）</p>
+        </header>
+
+        <!-- 玩家登入狀態列 -->
+        <div class="user-auth-bar" id="user-auth-bar">
+            <div class="user-auth-info">
+                <span class="user-auth-status-dot" id="auth-status-dot"></span>
+                <span id="auth-status-text">⚪ 尚未登入玩家帳號</span>
+            </div>
+            <div>
+                <button class="btn-pixel-sm" id="btn-auth-action" onclick="handleAuthAction()">🔑 玩家登入</button>
+            </div>
+        </div>
+
+        <!-- 分類過濾列 -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterMarket('all', this)">全部商品</button>
+            <button class="filter-btn" onclick="filterMarket('compensation', this)">🎁 伺服器補償</button>
+            <button class="filter-btn" onclick="filterMarket('reward', this)">⭐ 活動與簽到獎勵</button>
+        </div>
+
+        <!-- 商品網格區域 -->
+        <div class="products-grid" id="products-grid">
+            <p style="color: #aaa; text-align: center; grid-column: 1 / -1;">正在載入商品清單...</p>
+        </div>
+    </div>
+
+    <!-- 1. 玩家登入彈出視窗 (Login Modal) -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-box">
+            <h3 class="modal-title">PLAYER LOGIN</h3>
+            <div class="modal-subtitle">請輸入您的 Minecraft ID、電子郵件與專屬驗證碼</div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-mc-id">Minecraft ID (遊戲名稱)：</label>
+                    <input type="text" id="login-mc-id" class="form-input" placeholder="例如: steve" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-email">電子郵件：</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="例如: steve@gmail.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-verify-code">個人領取驗證碼：</label>
+                    <input type="password" id="login-verify-code" class="form-input" placeholder="請輸入您的驗證碼" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-submit" id="btn-submit-login">登入系統</button>
+                    <button type="button" class="btn-cancel" onclick="closeLoginModal()">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. 領取資料填寫彈出視窗 (Claim Modal) -->
+    <div class="modal-overlay" id="claim-modal">
+        <div class="modal-box">
+            <h3 class="modal-title" id="claim-modal-title">CLAIM ITEM</h3>
+            <div class="modal-subtitle" id="modal-product-title">商品名稱</div>
+            
+            <form id="claim-form">
+                <input type="hidden" id="form-item-id">
+                <input type="hidden" id="form-item-name">
+
+                <!-- 已登入狀態顯示區域 -->
+                <div id="claim-logged-in-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>當前登入帳號：</label>
+                        <input type="text" id="claim-display-info" class="form-input" style="color: #ffaa00; font-weight: bold; background-color: #1a1a1a;" readonly>
+                    </div>
+                </div>
+
+                <!-- 未登入狀態動態輸入區域 -->
+                <div id="claim-guest-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="claim-guest-mc-id">Minecraft ID (遊戲名稱)：</label>
+                        <input type="text" id="claim-guest-mc-id" class="form-input" placeholder="例如: steve">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="claim-guest-email">電子郵件：</label>
+                        <input type="email" id="claim-guest-email" class="form-input" placeholder="例如: steve@gmail.com">
+                    </div>
+                </div>
+
+                <!-- 驗證碼輸入 (僅付費商品需要) -->
+                <div class="form-group" id="claim-verify-code-group">
+                    <label for="claim-verify-code">領取驗證碼：</label>
+                    <input type="password" id="claim-verify-code" class="form-input" placeholder="請輸入您的驗證碼">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-submit" id="btn-submit-claim">確認領取</button>
+                    <button type="button" class="btn-cancel" onclick="closeClaimModal()">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast 提示訊息 -->
+    <div class="toast-msg" id="toast"></div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/footer.js" defer></script>
+
+    <script>
+        // ========================================================
+        // Firebase 專案設定
+        // ========================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhQu5yJD1ojrWv9xZ6GTU2zhZwFH4e4KA",
+            authDomain: "lazy-sheep-server.firebaseapp.com",
+            projectId: "lazy-sheep-server",
+            storageBucket: "lazy-sheep-server.firebasestorage.app",
+            messagingSenderId: "665251951199",
+            appId: "1:665251951199:web:45c36cc44badd65681a1ea",
+            measurementId: "G-REH9JHGGJ8"
+        };
+
+        // 初始化 Firebase Firestore
+        let db = null;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.firestore();
+        } catch (e) {
+            console.warn("Firebase 未正確設定，將在無資料庫模式下進行前端預覽：", e);
+        }
+
+        let allProducts = [];
+        let currentFilter = 'all';
+        let currentUser = null; // 儲存已登入玩家 Session: { mcId, mcIdLower, name, email }
+        let userPurchasedItemIds = []; // 儲存已登入玩家已購買/領取的商品 ID 清單
+
+        // 判斷商品是否為免費
+        function isProductFree(product) {
+            if (!product) return true;
+            return product.price === undefined || product.price === null || product.price === 0 || product.price === '0' || product.price === '免費';
+        }
+
+        // 頁面載入後初始化 Session 與商品列表
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkUserSession();
+            
+            fetch('/market/list.json')
+                .then(res => {
+                    if (!res.ok) throw new Error('無法讀取 list.json');
+                    return res.json();
+                })
+                .then(data => {
+                    allProducts = data;
+                    renderProducts();
+                })
+                .catch(err => {
+                    console.error('載入商品失敗:', err);
+                    document.getElementById('products-grid').innerHTML = 
+                        '<p style="color:#ff5555; text-align:center; grid-column: 1 / -1;">⚠️ 商品清單載入失敗，請確認 /market/list.json 是否存在。</p>';
+                });
+        });
+
+        // 檢查 Session 登入狀態並加載購買歷史
+        async function checkUserSession() {
+            const savedUser = sessionStorage.getItem('mcsvr_user');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    updateAuthUI(true);
+                    await loadUserPurchases();
+                } catch (e) {
+                    sessionStorage.removeItem('mcsvr_user');
+                    currentUser = null;
+                    userPurchasedItemIds = [];
+                    updateAuthUI(false);
+                }
+            } else {
+                currentUser = null;
+                userPurchasedItemIds = [];
+                updateAuthUI(false);
+            }
+        }
+
+        // 查詢已登入使用者的購買紀錄
+        async function loadUserPurchases() {
+            if (!currentUser || !db) {
+                userPurchasedItemIds = [];
+                return;
+            }
+            try {
+                const claimsQuery = await db.collection('market_claims')
+                    .where('minecraftIdLower', '==', currentUser.mcIdLower)
+                    .get();
+
+                userPurchasedItemIds = claimsQuery.docs.map(doc => doc.data().itemId);
+            } catch (e) {
+                console.error("讀取玩家購買歷史失敗:", e);
+                userPurchasedItemIds = [];
+            }
+        }
+
+        // 更新登入狀態欄 UI
+        function updateAuthUI(isLoggedIn) {
+            const dot = document.getElementById('auth-status-dot');
+            const text = document.getElementById('auth-status-text');
+            const btn = document.getElementById('btn-auth-action');
+
+            if (isLoggedIn && currentUser) {
+                dot.className = "user-auth-status-dot online";
+                text.innerText = ` 已登入：${currentUser.name} (${currentUser.mcId})`;
+                btn.innerText = " 登出";
+                btn.className = "btn-pixel-danger";
+            } else {
+                dot.className = "user-auth-status-dot";
+                text.innerText = "⚪ 尚未登入玩家帳號";
+                btn.innerText = "🔑 玩家登入";
+                btn.className = "btn-pixel-sm";
+            }
+        }
+
+        // 登入 / 登出 按鈕觸發
+        function handleAuthAction() {
+            if (currentUser) {
+                // 執行登出
+                sessionStorage.removeItem('mcsvr_user');
+                currentUser = null;
+                userPurchasedItemIds = [];
+                updateAuthUI(false);
+                renderProducts();
+                showToast("👋 已成功登出玩家帳號");
+            } else {
+                openLoginModal();
+            }
+        }
+
+        // 渲染商品清單 (排序邏輯：已經可以購買且即將超過截止日期 > 已經可以購買 > 無法購買但即將開始販賣 > 已經無法購買(截止了) > 已經無法購買(已購買))
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            let filtered = allProducts.filter(item => {
+                if (currentFilter === 'all') return true;
+                return item.category === currentFilter;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="color:#aaa; text-align:center; grid-column: 1 / -1;">目前沒有此分類的商品。</p>';
+                return;
+            }
+
+            const now = new Date();
+
+            // 排序邏輯：
+            // 1 & 2. 已經可以購買且即將超過截止日期 > 已經可以購買（按截止時間由近到遠）
+            // 3. 無法購買但即將開始販賣（按開始時間由近到遠）
+            // 4. 已經無法購買(截止了)
+            // 5. 已經無法購買(已購買)
+            filtered.sort((a, b) => {
+                const aStart = a.startDate ? new Date(a.startDate) : new Date(0);
+                const bStart = b.startDate ? new Date(b.startDate) : new Date(0);
+                const aExpire = new Date(a.expireDate);
+                const bExpire = new Date(b.expireDate);
+
+                const aIsPurchased = userPurchasedItemIds.includes(a.id);
+                const bIsPurchased = userPurchasedItemIds.includes(b.id);
+
+                const aIsUpcoming = a.startDate ? now < aStart : false;
+                const bIsUpcoming = b.startDate ? now < bStart : false;
+
+                const aIsExpired = now > aExpire;
+                const bIsExpired = now > bExpire;
+
+                const getRank = (isUpcoming, isExpired, isPurchased) => {
+                    if (!isPurchased && !isExpired && !isUpcoming) return 1; // 1 & 2. 已經可以購買 (按截止時間排序，即將截止者排最前)
+                    if (!isPurchased && !isExpired && isUpcoming) return 2;  // 3. 無法購買但即將開始販賣
+                    if (!isPurchased && isExpired) return 3;                 // 4. 已經無法購買(截止了)
+                    return 4;                                                // 5. 已經無法購買(已購買)
+                };
+
+                const rankA = getRank(aIsUpcoming, aIsExpired, aIsPurchased);
+                const rankB = getRank(bIsUpcoming, bIsExpired, bIsPurchased);
+
+                if (rankA !== rankB) {
+                    return rankA - rankB;
+                }
+
+                // 同等級內之細項排序：
+                if (rankA === 1) {
+                    // 已經可以購買：按截止時間由近到遠排序 (即將超過截止日期排最前)
+                    return aExpire - bExpire;
+                } else if (rankA === 2) {
+                    // 無法購買但即將開始販賣：按開始時間由近到遠排序 (即將開始販賣排最前)
+                    return aStart - bStart;
+                } else if (rankA === 3) {
+                    // 已經無法購買(截止了)：按截止時間由近到遠排序
+                    return aExpire - bExpire;
+                } else {
+                    // 已經無法購買(已購買)：按截止時間由近到遠排序
+                    return aExpire - bExpire;
+                }
+            });
+
+            filtered.forEach(product => {
+                const startDate = product.startDate ? new Date(product.startDate) : null;
+                const expireDate = new Date(product.expireDate);
+                
+                const isUpcoming = startDate && now < startDate;
+                const isExpired = now > expireDate;
+                const isPurchased = userPurchasedItemIds.includes(product.id);
+                const isFree = isProductFree(product);
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+
+                let priceText = '免費';
+                if (product.price !== undefined && product.price !== null && product.price !== 0 && product.price !== '0' && product.price !== '免費') {
+                    priceText = typeof product.price === 'number' ? `$${product.price}` : product.price;
+                }
+
+                // 時間標籤與按鈕邏輯判斷
+                let expireText = '';
+                let btnText = isFree ? '免費領取' : '購買';
+                let btnDisabled = false;
+                let btnStyle = '';
+
+                if (isUpcoming) {
+                    expireText = `🚀 上架時間：${startDate.toLocaleString('zh-TW', { hour12: false })}`;
+                    btnText = '尚未開放';
+                    btnDisabled = true;
+                    btnStyle = 'style="background-color: #555; border-color: #333; color: #aaa; cursor: not-allowed;"';
+                } else if (isPurchased) {
+                    expireText = isFree ? '您已完成領取' : '您已完成購買';
+                    btnText = isFree ? '✔ 已領取' : '✔ 已購買';
+                    btnDisabled = true;
+                    btnStyle = 'style="background-color: #444; border-color: #222; color: #888; cursor: not-allowed;"';
+                } else if (isExpired) {
+                    expireText = isFree ? '🛑 領取期限已截止' : '🛑 購買期限已截止';
+                    btnText = '已截止';
+                    btnDisabled = true;
+                } else {
+                    expireText = `⏰ 截止時間：${expireDate.toLocaleString('zh-TW', { hour12: false })}`;
+                }
+
+                card.innerHTML = `
+                    <div class="product-image-box">
+                        <span class="badge-category">${product.categoryName || '獎勵'}</span>
+                        <span class="badge-price">${priceText}</span>
+                        <img src="/market/${product.image}" alt="${product.name}" class="product-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="product-image-fallback" style="display:none;">🎁</div>
+                    </div>
+                    <div class="product-info">
+                        <h2 class="product-name">
+                            ${isPurchased ? `<span style="color:#55ff55; font-size:0.85em;">[${isFree ? '已領取' : '已購買'}] </span>` : ''}${product.name}
+                        </h2>
+                        <div class="product-meta">內容：<span>${product.quantity}</span></div>
+                        <div class="product-desc">${product.description}</div>
+                        <div class="expire-tag">${expireText}</div>
+                        <button class="claim-btn" ${btnDisabled ? 'disabled' : ''} ${btnStyle} onclick="openClaimModal('${product.id}', '${product.name}')">
+                            ${btnText}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 切換過濾分類
+        function filterMarket(category, btnElement) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+            renderProducts();
+        }
+
+        // 登入 Modal 控制
+        function openLoginModal() {
+            document.getElementById('login-modal').classList.add('active');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.remove('active');
+            document.getElementById('login-form').reset();
+        }
+
+        // 處理玩家登入 (比對 users 集合，登入後加載購買歷史)
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const mcId = document.getElementById('login-mc-id').value.trim();
+            const email = document.getElementById('login-email').value.trim();
+            const verifyCode = document.getElementById('login-verify-code').value.trim();
+            const submitBtn = document.getElementById('btn-submit-login');
+
+            if (!mcId || !email || !verifyCode) {
+                showToast("⚠️ 請確實填寫所有欄位！");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "驗證帳密中...";
+
+            if (db) {
+                try {
+                    const mcIdLower = mcId.toLowerCase();
+                    const emailLower = email.toLowerCase();
+
+                    // 查詢 users 集合，三重核驗
+                    const userQuery = await db.collection('users')
+                        .where('minecraftIdLower', '==', mcIdLower)
+                        .where('email', '==', emailLower)
+                        .where('verificationCode', '==', verifyCode)
+                        .get();
+
+                    if (userQuery.empty) {
+                        showToast("❌ 驗證失敗！Minecraft ID、電子郵件或驗證碼不正確。");
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "登入系統";
+                        return;
+                    }
+
+                    const userData = userQuery.docs[0].data();
+                    
+                    // 登入成功，儲存 Session
+                    currentUser = {
+                        mcId: userData.minecraftId || mcId,
+                        mcIdLower: mcIdLower,
+                        name: userData.name || userData.minecraftId || mcId,
+                        email: emailLower
+                    };
+
+                    sessionStorage.setItem('mcsvr_user', JSON.stringify(currentUser));
+                    updateAuthUI(true);
+                    
+                    // 登入後抓取買過的商品資料並重繪商品列表
+                    await loadUserPurchases();
+                    renderProducts();
+
+                    showToast(`✔ 登入成功！歡迎回到伺服器，${currentUser.name}`);
+                    closeLoginModal();
+                } catch (error) {
+                    console.error("登入驗證錯誤:", error);
+                    showToast("❌ 系統連線驗證失敗，請聯絡管理員。");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "登入系統";
+                }
+            } else {
+                // 模擬測試模式
+                setTimeout(() => {
+                    currentUser = { mcId: mcId, mcIdLower: mcId.toLowerCase(), name: mcId, email: email.toLowerCase() };
+                    sessionStorage.setItem('mcsvr_user', JSON.stringify(currentUser));
+                    updateAuthUI(true);
+                    renderProducts();
+                    showToast(`✔ 測試模式：已登入為 ${mcId}`);
+                    closeLoginModal();
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "登入系統";
+                }, 800);
+            }
+        });
+
+        // 領取/購買 Modal 控制 (依據登入狀態與商品是否免費切換欄位與文字)
+        function openClaimModal(id, name) {
+            document.getElementById('form-item-id').value = id;
+            document.getElementById('form-item-name').value = name;
+            document.getElementById('modal-product-title').innerText = `商品：${name}`;
+
+            const targetProduct = allProducts.find(p => p.id === id);
+            const isFree = isProductFree(targetProduct);
+
+            const modalTitle = document.getElementById('claim-modal-title');
+            if (modalTitle) {
+                modalTitle.innerText = isFree ? 'CLAIM ITEM' : 'BUY ITEM';
+            }
+
+            const submitBtn = document.getElementById('btn-submit-claim');
+            if (submitBtn) {
+                submitBtn.innerText = isFree ? '確認領取' : '確認購買';
+            }
+
+            const loggedInDiv = document.getElementById('claim-logged-in-fields');
+            const guestDiv = document.getElementById('claim-guest-fields');
+            const guestMcIdInput = document.getElementById('claim-guest-mc-id');
+            const guestEmailInput = document.getElementById('claim-guest-email');
+            const verifyGroup = document.getElementById('claim-verify-code-group');
+            const verifyInput = document.getElementById('claim-verify-code');
+
+            if (currentUser) {
+                // 已登入：隱藏 ID/Email 輸入框，改為靜態顯示
+                loggedInDiv.style.display = 'block';
+                guestDiv.style.display = 'none';
+                guestMcIdInput.removeAttribute('required');
+                guestEmailInput.removeAttribute('required');
+                document.getElementById('claim-display-info').value = `${currentUser.name} (${currentUser.mcId}) | ${currentUser.email}`;
+            } else {
+                // 未登入：顯示 ID/Email 輸入框，並設置為必填
+                loggedInDiv.style.display = 'none';
+                guestDiv.style.display = 'block';
+                guestMcIdInput.setAttribute('required', 'required');
+                guestEmailInput.setAttribute('required', 'required');
+            }
+
+            // 判斷是否需要驗證碼（免費商品不需要，付費商品需要）
+            if (isFree) {
+                verifyGroup.style.display = 'none';
+                verifyInput.removeAttribute('required');
+                verifyInput.value = '';
+            } else {
+                verifyGroup.style.display = 'block';
+                verifyInput.setAttribute('required', 'required');
+            }
+
+            document.getElementById('claim-modal').classList.add('active');
+        }
+
+        function closeClaimModal() {
+            document.getElementById('claim-modal').classList.remove('active');
+            document.getElementById('claim-form').reset();
+        }
+
+        // 處理領取/購買提交 (支援已登入/未登入雙模式驗證與免費/付費區分)
+        document.getElementById('claim-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const itemId = document.getElementById('form-item-id').value;
+            const itemName = document.getElementById('form-item-name').value;
+            const verifyCode = document.getElementById('claim-verify-code').value.trim();
+            const submitBtn = document.getElementById('btn-submit-claim');
+
+            const targetProduct = allProducts.find(p => p.id === itemId);
+            const isFree = isProductFree(targetProduct);
+            const actionText = isFree ? '領取' : '購買';
+
+            let mcId = "";
+            let email = "";
+
+            if (currentUser) {
+                // 已登入：直接提取 Session 中的資訊
+                mcId = currentUser.mcId;
+                email = currentUser.email;
+            } else {
+                // 未登入：自表單欄位讀取玩家輸入
+                mcId = document.getElementById('claim-guest-mc-id').value.trim();
+                email = document.getElementById('claim-guest-email').value.trim();
+            }
+
+            // 身分欄位檢查 (付費商品才額外檢查驗證碼)
+            if (!mcId || !email || (!isFree && !verifyCode)) {
+                showToast("⚠️ 請確實填寫所有必要欄位！");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "驗證玩家身分中...";
+
+            if (db) {
+                try {
+                    const mcIdLower = mcId.toLowerCase();
+                    const emailLower = email.toLowerCase();
+
+                    // 1. 查詢 users 集合核驗身分
+                    // 若為付費商品，連同 verificationCode 一併核驗；免費商品則核驗帳號與 Email
+                    let userQueryRef = db.collection('users')
+                        .where('minecraftIdLower', '==', mcIdLower)
+                        .where('email', '==', emailLower);
+
+                    if (!isFree) {
+                        userQueryRef = userQueryRef.where('verificationCode', '==', verifyCode);
+                    }
+
+                    const userQuery = await userQueryRef.get();
+
+                    if (userQuery.empty) {
+                        if (isFree) {
+                            showToast("❌ 驗證失敗！Minecraft ID 或電子郵件不正確。");
+                        } else {
+                            showToast("❌ 驗證失敗！Minecraft ID、電子郵件或驗證碼不相符。");
+                        }
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = `確認${actionText}`;
+                        return;
+                    }
+
+                    const userData = userQuery.docs[0].data();
+                    const registeredName = userData.name || userData.minecraftId || mcId;
+
+                    submitBtn.innerText = `檢查重複${actionText}...`;
+
+                    // 2. 查詢該 Minecraft ID 是否已領取/購買過此商品
+                    const existingDocs = await db.collection('market_claims')
+                        .where('minecraftIdLower', '==', mcIdLower)
+                        .get();
+
+                    const hasClaimed = existingDocs.docs.some(doc => doc.data().itemId === itemId);
+
+                    if (hasClaimed) {
+                        showToast(`⚠️ 該 Minecraft 帳號已${actionText}過此商品，無法重複${actionText}！`);
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = `確認${actionText}`;
+                        return;
+                    }
+
+                    submitBtn.innerText = "資料寫入中...";
+
+                    const productPrice = targetProduct ? targetProduct.price : 0;
+
+                    // 3. 寫入領取/購買紀錄
+                    const claimData = {
+                        itemId: itemId,
+                        itemName: itemName,
+                        minecraftId: mcId,
+                        minecraftIdLower: mcIdLower,
+                        userName: registeredName,
+                        email: emailLower,
+                        price: productPrice,
+                        status: "pending",
+                        claimedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    await db.collection('market_claims').add(claimData);
+
+                    // 寫入成功後，即時更新本地紀錄並重繪 UI
+                    if (!userPurchasedItemIds.includes(itemId)) {
+                        userPurchasedItemIds.push(itemId);
+                    }
+                    renderProducts();
+
+                    showToast(`✔ ${actionText}成功！玩家：${registeredName} (${mcId})，工作人員將儘速發放。`);
+                    closeClaimModal();
+                } catch (error) {
+                    console.error("Firebase 處理失敗:", error);
+                    showToast(`❌ ${actionText}失敗，請確認網路連線或聯絡管理員。`);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = `確認${actionText}`;
+                }
+            } else {
+                // 模擬測試模式
+                setTimeout(() => {
+                    if (!userPurchasedItemIds.includes(itemId)) {
+                        userPurchasedItemIds.push(itemId);
+                    }
+                    renderProducts();
+                    showToast(`✔ 測試模式：已紀錄${actionText}請求 (${mcId})。`);
+                    closeClaimModal();
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = `確認${actionText}`;
+                }, 800);
+            }
+        });
+
+        // 顯示浮動 Toast 提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
