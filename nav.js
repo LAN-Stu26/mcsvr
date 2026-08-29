@@ -66,15 +66,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <!-- 下拉選單 1：更多 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/featured') || isActive('/terms/plan') ||isActive('/map') ? 'active' : ''}" aria-label="更多選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/featured') || isActive('/map') ? 'active' : ''}" aria-label="更多選單">
                             更多 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
                             <a href="/featured/" class="dropdown-item ${isActive('/featured') ? 'active' : ''}">
                                 社群精選
-                            </a>
-                            <a href="/terms/plan/" class="dropdown-item ${isActive('/terms/plan') ? 'active' : ''}">
-                                費用方案
                             </a>
                             <a href="/map/" class="dropdown-item ${isActive('/map') ? 'active' : ''}">
                                 世界地圖
@@ -84,12 +81,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <!-- 下拉選單 2：加入伺服器 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/terms') || isActive('/rules') || isActive('/join', true) || isActive('/join/dc') ? 'active' : ''}" aria-label="加入伺服器選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/terms') || isActive('/terms/plan') || isActive('/rules') || isActive('/join', true) || isActive('/join/dc') ? 'active' : ''}" aria-label="加入伺服器選單">
                             加入伺服器 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
                             <a href="/terms/" class="dropdown-item ${isActive('/terms') ? 'active' : ''}">
                                 營運與贊助條款
+                            </a>
+                            <a href="/terms/plan/" class="dropdown-item ${isActive('/terms/plan') ? 'active' : ''}">
+                                費用方案
                             </a>
                             <a href="/rules/" class="dropdown-item ${isActive('/rules') ? 'active' : ''}">
                                 規範
