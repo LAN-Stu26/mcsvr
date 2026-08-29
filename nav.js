@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             加入伺服器 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="/terms/" class="dropdown-item ${isActive('/terms') ? 'active' : ''}">
+                            <a href="/terms/" class="dropdown-item ${isActive('/terms', true) ? 'active' : ''}">
                                 營運與贊助條款
                             </a>
                             <a href="/terms/plan/" class="dropdown-item ${isActive('/terms/plan') ? 'active' : ''}">
