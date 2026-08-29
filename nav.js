@@ -40,9 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
-                <span>📢 伺服器更新主機投票 </span>
-                <a href="/news/#8" class="banner-btn">簡單閱讀</a> 或
-                <a href="/form" class="banner-btn">立即投票</a>
+                <span>📢 伺服器調整通知 </span>
+                <a href="/news/#9" class="banner-btn">了解情況</a>
             </div>
 
             <div class="nav-container">
