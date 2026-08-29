@@ -1,0 +1,9 @@
+暫停服務
+/market
+/join
+
+    <!-- 阻擋瀏覽此頁面!!!!!!!!!!!!!!!!! -->
+    <script>
+        // 立即跳轉至目標網址
+        window.location.href = "/503";
+    </script>
