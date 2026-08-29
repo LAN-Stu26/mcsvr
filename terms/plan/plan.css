@@ -1,0 +1,208 @@
+/* === Lazy Sheep 伺服器贊助方案頁面樣式 === */
+
+body {
+    background-color: #141414;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    color: #dcdcdc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.plan-container {
+    max-width: 1200px;
+    margin: 40px auto 50px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+/* 標頭區塊 */
+.plan-header {
+    text-align: center;
+    padding: 30px 20px;
+    margin-bottom: 35px;
+    background-color: rgba(37, 37, 37, 0.92);
+    border: 4px solid #000000;
+    box-shadow: inset -4px -4px 0px #151515, inset 4px 4px 0px #444444, 0 8px 20px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.plan-title {
+    font-family: 'Press Start 2P', cursive, sans-serif;
+    color: #ffaa00;
+    font-size: 1.6rem;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 0px #3f2a00;
+}
+
+.plan-subtitle {
+    color: #aaaaaa;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* 方案網格 */
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* 單一方案卡片 */
+.plan-card {
+    background-color: rgba(30, 30, 30, 0.95);
+    border: 4px solid #000000;
+    box-shadow: inset -4px -4px 0px #111111, inset 4px 4px 0px #3a3a3a, 0 6px 16px rgba(0,0,0,0.5);
+    padding: 24px 18px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* 推薦樣式突顯 */
+.plan-recommended {
+    border-color: #ffaa00;
+    box-shadow: inset -4px -4px 0px #b37700, inset 4px 4px 0px #ffdd80, 0 8px 24px rgba(255, 170, 0, 0.25);
+    background-color: rgba(38, 33, 20, 0.95);
+}
+
+.plan-badge {
+    position: absolute;
+    top: -14px;
+    right: 15px;
+    background-color: #333333;
+    color: #ffffff;
+    border: 2px solid #000000;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge-popular {
+    background-color: #ffaa00;
+    color: #000000;
+}
+
+.badge-vip {
+    background-color: #ff55ff;
+    color: #000000;
+}
+
+.plan-name {
+    font-family: 'Press Start 2P', cursive, sans-serif;
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin: 10px 0;
+}
+
+.plan-c .plan-name { color: #ffaa00; }
+.plan-b .plan-name { color: #55ffff; }
+.plan-a .plan-name { color: #ff55ff; }
+
+.plan-price {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #55ff55;
+    margin-bottom: 5px;
+}
+
+.plan-price small {
+    font-size: 0.85rem;
+    color: #888888;
+}
+
+.plan-limit {
+    font-size: 0.8rem;
+    color: #aaaaaa;
+    background-color: #101010;
+    border: 1px solid #333333;
+    padding: 6px 10px;
+    margin-bottom: 20px;
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.plan-features li {
+    font-size: 0.88rem;
+    color: #dddddd;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.plan-features li i {
+    margin-top: 3px;
+    font-size: 0.9rem;
+}
+
+.plan-features li.positive i { color: #55ff55; }
+.plan-features li.negative i { color: #ff5555; }
+
+/* 標籤顯示框 */
+.tag-box {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid #000;
+    font-size: 0.78rem;
+    font-weight: bold;
+}
+
+.tag-free { background-color: #555555; color: #ffffff; }
+.tag-verified { background-color: #00aa00; color: #ffffff; }
+.tag-patron { background-color: #ffaa00; color: #000000; }
+.tag-custom { background-color: #aa00aa; color: #ffffff; }
+
+/* 頁尾資訊 */
+.plan-footer-info {
+    margin-top: 35px;
+    text-align: center;
+    color: #aaaaaa;
+    font-size: 0.9rem;
+}
+
+.plan-footer-info a {
+    color: #ffaa00;
+    text-decoration: underline;
+}
+
+.action-box {
+    margin-top: 20px;
+}
+
+.mc-btn-home {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #ffaa00;
+    color: #000000;
+    border: 3px solid #000000;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: inset -2px -2px 0px #b37700, inset 2px 2px 0px #ffdd80;
+    transition: background-color 0.1s;
+}
+
+.mc-btn-home:hover {
+    background-color: #ffff55;
+}
+
+@media (max-width: 600px) {
+    .plan-title {
+        font-size: 1.2rem;
+    }
+}
