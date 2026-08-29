@@ -81,10 +81,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <!-- 下拉選單 2：加入伺服器 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/rules') || isActive('/join', true) || isActive('/join/dc') ? 'active' : ''}" aria-label="加入伺服器選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/terms') || isActive('/rules') || isActive('/join', true) || isActive('/join/dc') ? 'active' : ''}" aria-label="加入伺服器選單">
                             加入伺服器 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
+                            <a href="/terms/" class="dropdown-item ${isActive('/terms') ? 'active' : ''}">
+                                營運與贊助條款
+                            </a>
                             <a href="/rules/" class="dropdown-item ${isActive('/rules') ? 'active' : ''}">
                                 規範
                             </a>

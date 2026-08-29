@@ -1,0 +1,176 @@
+/* === Lazy Sheep 伺服器營運與條款頁面樣式 === */
+
+body {
+    background-color: #141414;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    color: #dcdcdc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.7;
+}
+
+.terms-container {
+    max-width: 900px;
+    margin: 40px auto 50px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+/* 頁面標頭 */
+.terms-header {
+    text-align: center;
+    padding: 30px 20px;
+    margin-bottom: 25px;
+    background-color: rgba(37, 37, 37, 0.92);
+    border: 4px solid #000000;
+    box-shadow: inset -4px -4px 0px #151515, inset 4px 4px 0px #444444, 0 8px 20px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.terms-title {
+    font-family: 'Press Start 2P', cursive, sans-serif;
+    color: #ffaa00;
+    font-size: 1.6rem;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 0px #3f2a00;
+}
+
+.terms-subtitle {
+    color: #aaaaaa;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* 費用概況卡片 */
+.cost-card {
+    background-color: rgba(25, 25, 25, 0.95);
+    border: 4px solid #000000;
+    box-shadow: inset -4px -4px 0px #111111, inset 4px 4px 0px #333333, 0 6px 16px rgba(0,0,0,0.5);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.cost-header {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffff55;
+    border-bottom: 2px dashed #444;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.cost-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.cost-item {
+    background-color: #101010;
+    border: 2px solid #000000;
+    padding: 12px;
+    text-align: center;
+    box-shadow: inset 2px 2px 0px #000, inset -1px -1px 0px #222;
+}
+
+.cost-item.highlight {
+    border-color: #ffaa00;
+    background-color: #1a1500;
+}
+
+.cost-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #aaaaaa;
+    margin-bottom: 5px;
+}
+
+.cost-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #55ff55;
+}
+
+.cost-item.highlight .cost-value {
+    color: #ffaa00;
+}
+
+.cost-value small {
+    font-size: 0.8rem;
+    color: #888888;
+}
+
+/* 條款內容區域 */
+.terms-content-box {
+    background-color: rgba(37, 37, 37, 0.95);
+    border: 4px solid #000000;
+    box-shadow: inset -4px -4px 0px #151515, inset 4px 4px 0px #444444, 0 8px 20px rgba(0, 0, 0, 0.6);
+    padding: 30px;
+}
+
+.terms-section {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 20px;
+}
+
+.terms-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.terms-sec-title {
+    font-size: 1.15rem;
+    color: #ffaa00;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.terms-section p {
+    color: #cccccc;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.terms-section strong {
+    color: #ffff55;
+}
+
+.terms-action {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.mc-btn-home {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #ffaa00;
+    color: #000000;
+    border: 3px solid #000000;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: inset -2px -2px 0px #b37700, inset 2px 2px 0px #ffdd80;
+    transition: background-color 0.1s;
+}
+
+.mc-btn-home:hover {
+    background-color: #ffff55;
+}
+
+@media (max-width: 600px) {
+    .terms-title {
+        font-size: 1.2rem;
+    }
+    .terms-content-box {
+        padding: 20px 15px;
+    }
+}
