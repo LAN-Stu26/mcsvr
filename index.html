@@ -57,7 +57,7 @@
                 <!-- 伺服器連線資訊 -->
                 <div class="ip-container">
                     <span class="ip-label">SERVER IP</span>
-                    <span class="ip-text" id="server-ip">java.mcsvr.sld.tw</span>
+                    <span class="ip-text" id="server-ip">play.mcsvr.sld.tw</span>
                     
                     <div class="btn-group">
                         <button class="mc-btn mc-btn-copy" onclick="copyIp()">
@@ -73,8 +73,6 @@
                     <p class="online-desc" id="online-players-desc">
                         <i class="fa-solid fa-circle-check"></i>
                         伺服器正常運作中！快連線進來一起玩吧！
-                        <br> 
-                        *0 人可能為錯誤狀態。(本伺服器為 <strong>Aternos 免費主機</strong>，Aternos 有時會開啟等候地圖，請至 Discord 發起開服請求！)
                     </p>
                 </div>
 
@@ -82,7 +80,7 @@
                 <div class="offline-notice" id="offline-notice">
                     <p class="offline-desc">
                         <i class="fa-solid fa-triangle-exclamation"></i>
-                        本伺服器為 <strong>Aternos 免費主機</strong>，長時間無人遊玩會自動關機。若目前處於離線狀態，請至 Discord 發起開服請求！
+                        本伺服器可以直接進去，進去後會自動啟動! 斥可選擇
                     </p>
                     <div class="btn-group" style="margin-top: 15px;">
                         <a class="mc-btn mc-btn-dc" href="/join/dc/">
@@ -194,7 +192,7 @@
             <ul class="steps">
                 <li data-step="1">
                     <strong>確認伺服器是否開啟：</strong><br>
-                    若發現伺服器未連線，請點選上方按鈕前往 Discord 頻道請求開服。
+                    若發現伺服器未連線，請點選上方按鈕前往 Discord 頻道請求開服或嘗試加入。
                 </li>
                 <li data-step="2">
                     <strong>選擇多人遊戲：</strong><br>
@@ -203,7 +201,7 @@
                 <li data-step="3">
                     <strong>新增伺服器：</strong><br>
                     點選 <strong>「新增伺服器 (Add Server)」</strong>，並在伺服器「位址」輸入欄貼上複製的網址：<br>
-                    <code style="background: #151515; padding: 2px 6px; border: 1px solid #5c5c5c; color: #55ffff;">java.mcsvr.sld.tw</code>
+                    <code style="background: #151515; padding: 2px 6px; border: 1px solid #5c5c5c; color: #55ffff;">play.mcsvr.sld.tw</code>
                 </li>
                 <li data-step="4">
                     <strong>連線冒險：</strong><br>
@@ -271,7 +269,7 @@
 
         // 伺服器狀態自動偵測功能 (使用 sr-api.sfirew.com API)
         function checkServerStatus() {
-            const serverIp = "java.mcsvr.sld.tw";
+            const serverIp = "play.mcsvr.sld.tw";
             const statusText = document.getElementById('api-status-text');
             const lastCheckedText = document.getElementById('last-checked-time');
             const recheckBtn = document.getElementById('recheck-btn');

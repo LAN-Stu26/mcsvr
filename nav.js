@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
-                <span>📢 伺服器調整通知 </span>
+                <span>📢 伺服器變更為付費伺服器 </span>
                 <a href="/news/#9" class="banner-btn">了解情況</a>
             </div>
 
