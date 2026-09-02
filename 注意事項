@@ -6,3 +6,25 @@
         // 立即跳轉至目標網址
         window.location.href = "/503";
     </script>
+
+firebase - users
+
+    minecraftId
+    minecraftIdLower
+    verificationCode
+    email
+    plan - Regular/Plus/Super
+    points
+    playtimeHours
+    lastPaymentAt
+    status
+
+freebase - market_claims
+
+    minecraftIdLower
+    itemName
+    price
+    claimedAt
+    status - completed/pending
+
+https://chatgpt.com/c/6a97fb31-00bc-83e9-abc6-e11e77cb3e2c

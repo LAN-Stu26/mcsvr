@@ -20,6 +20,11 @@
     "description": "指令統整。 "
   },
   {
+    "title": "玩家帳號資訊查詢",
+    "url": "/player/",
+    "description": "遊玩時數點數/上線時間/繳費/方案 "
+  },
+  {
     "title": "伺服器精選",
     "url": "/featured/",
     "description": "有趣/特殊/壯觀 的世界圖片。 "

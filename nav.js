@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
         <nav class="mc-nav">
             <!-- 頂部橫幅公告區 -->
             <div class="nav-banner">
-                <span>📢 伺服器變更為付費伺服器 </span>
-                <a href="/news/#9" class="banner-btn">了解情況</a>
+                <span>📢 想了解帳號詳細資訊? </span>
+                <a href="/player" class="banner-btn">立即查詢</a>
             </div>
 
             <div class="nav-container">
@@ -66,10 +66,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <!-- 下拉選單 1：更多 -->
                     <div class="nav-dropdown">
-                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/featured') || isActive('/map') ? 'active' : ''}" aria-label="更多選單">
+                        <button type="button" class="nav-item nav-dropdown-toggle ${isActive('/player') || isActive('/featured') || isActive('/map') ? 'active' : ''}" aria-label="更多選單">
                             更多 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
+                            <a href="/featured/" class="dropdown-item ${isActive('/player') ? 'active' : ''}">
+                                帳號查詢
+                            </a>
                             <a href="/featured/" class="dropdown-item ${isActive('/featured') ? 'active' : ''}">
                                 社群精選
                             </a>
