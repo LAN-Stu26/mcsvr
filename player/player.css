@@ -1,9 +1,11 @@
 /* ========================================================
-   Lazy Sheep Minecraft - Player Profile
+   Lazy Sheep Minecraft
+   Player Profile Page
    ======================================================== */
 
+
 /* ========================================================
-   全站背景
+   01. 基礎設定
    ======================================================== */
 
 html {
@@ -13,22 +15,28 @@ html {
 
 body {
     min-height: 100vh;
+
     margin: 0;
     padding: 0;
 
     background:
         linear-gradient(
-            rgba(0, 0, 0, 0.28),
-            rgba(0, 0, 0, 0.28)
+            rgba(0, 0, 0, 0.30),
+            rgba(0, 0, 0, 0.30)
         ),
         url('/bg.png') center center / cover fixed no-repeat;
 
     color: #fff;
+
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
 }
 
 
 /* ========================================================
-   Player 主容器
+   02. Player 主容器
    ======================================================== */
 
 .player-container {
@@ -43,18 +51,22 @@ body {
 
 
 /* ========================================================
-   頁面標頭
+   03. 頁面標題
    ======================================================== */
 
 .player-header {
     text-align: center;
+
     margin-bottom: 30px;
 }
 
 .player-title {
     margin: 0 0 12px 0;
 
-    font-family: 'Press Start 2P', monospace, cursive;
+    font-family:
+        'Press Start 2P',
+        monospace;
+
     font-size: 2rem;
     line-height: 1.5;
 
@@ -71,26 +83,37 @@ body {
     margin: 0;
 
     color: #d0d0d0;
-    font-size: 0.95rem;
 
-    text-shadow: 1px 1px 2px #000;
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
+    font-size: 0.95rem;
+    font-weight: 400;
+
+    line-height: 1.7;
+
+    text-shadow:
+        1px 1px 2px #000;
 }
 
 
 /* ========================================================
-   搜尋卡片
+   04. 搜尋卡片
    ======================================================== */
 
 .search-card {
     width: 100%;
+
     box-sizing: border-box;
+
+    margin-bottom: 24px;
+    padding: 20px;
 
     background-color: rgba(26, 26, 26, 0.96);
 
     border: 4px solid #000;
-
-    padding: 20px;
-    margin-bottom: 24px;
 
     box-shadow:
         inset -2px -2px 0 #111,
@@ -98,19 +121,28 @@ body {
         0 8px 20px rgba(0, 0, 0, 0.75);
 }
 
+
+/* ========================================================
+   05. 搜尋表單
+   ======================================================== */
+
 .search-form {
+    width: 100%;
+
     display: flex;
     align-items: stretch;
 
     gap: 10px;
-    width: 100%;
 }
 
 .search-input {
     flex: 1;
+
     min-width: 0;
 
     box-sizing: border-box;
+
+    padding: 12px 14px;
 
     background-color: #111;
 
@@ -118,12 +150,15 @@ body {
 
     color: #fff;
 
-    padding: 12px 14px;
-
-    font-family: 'Noto Sans TC', sans-serif;
-    font-size: 0.95rem;
-
     outline: none;
+
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
+    font-size: 0.95rem;
+    font-weight: 400;
 
     box-shadow:
         inset 2px 2px 0 #000;
@@ -147,11 +182,15 @@ body {
 
 
 /* ========================================================
-   查詢按鈕
+   06. 查詢按鈕
    ======================================================== */
 
 .btn-search {
     flex-shrink: 0;
+
+    box-sizing: border-box;
+
+    padding: 12px 20px;
 
     background-color: #ffaa00;
 
@@ -159,9 +198,11 @@ body {
 
     border: 2px solid #000;
 
-    padding: 12px 20px;
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
 
-    font-family: 'Noto Sans TC', sans-serif;
     font-size: 0.95rem;
     font-weight: 700;
 
@@ -189,34 +230,42 @@ body {
 
 .btn-search:disabled {
     opacity: 0.7;
+
     cursor: wait;
 }
 
 
 /* ========================================================
-   狀態訊息
+   07. 狀態訊息
    ======================================================== */
 
 .info-status-msg {
     width: 100%;
-    box-sizing: border-box;
 
     min-height: 145px;
 
+    box-sizing: border-box;
+
     display: flex;
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
-    text-align: center;
-
     padding: 30px 20px;
-
-    color: #aaa;
 
     background-color: rgba(26, 26, 26, 0.96);
 
+    color: #aaa;
+
     border: 4px solid #000;
+
+    text-align: center;
+
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
 
     box-shadow:
         inset -2px -2px 0 #111,
@@ -226,22 +275,25 @@ body {
 
 .info-status-msg p {
     margin: 8px 0 0;
+
+    line-height: 1.7;
 }
 
 
 /* ========================================================
-   玩家個人資料面板
+   08. 玩家 Profile 卡片
    ======================================================== */
 
 .profile-card {
     width: 100%;
+
     box-sizing: border-box;
+
+    padding: 30px;
 
     background-color: rgba(26, 26, 26, 0.96);
 
     border: 4px solid #000;
-
-    padding: 30px;
 
     box-shadow:
         inset -2px -2px 0 #111,
@@ -257,16 +309,18 @@ body {
 
 
 /* ========================================================
-   玩家基本資訊
+   09. 玩家基本資料
    ======================================================== */
 
 .profile-header-info {
     display: flex;
+
     align-items: center;
 
     gap: 20px;
 
     padding-bottom: 24px;
+
     margin-bottom: 24px;
 
     border-bottom: 2px dashed #444;
@@ -276,7 +330,7 @@ body {
 
 
 /* ========================================================
-   Minecraft 頭像
+   10. Minecraft 玩家頭像
    ======================================================== */
 
 .avatar-box {
@@ -285,19 +339,22 @@ body {
 
     flex-shrink: 0;
 
-    border: 4px solid #000;
+    box-sizing: border-box;
 
     background-color: #222;
 
-    box-shadow:
-        inset -2px -2px 0 #111,
-        inset 2px 2px 0 #555;
+    border: 4px solid #000;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     overflow: hidden;
+
+    box-shadow:
+        inset -2px -2px 0 #111,
+        inset 2px 2px 0 #555;
 }
 
 .avatar-box img {
@@ -307,15 +364,18 @@ body {
     display: block;
 
     image-rendering: pixelated;
+
+    object-fit: cover;
 }
 
 
 /* ========================================================
-   玩家資訊
+   11. 玩家資訊
    ======================================================== */
 
 .user-main-details {
     flex: 1;
+
     min-width: 200px;
 }
 
@@ -323,88 +383,130 @@ body {
     margin: 0 0 6px 0;
 
     display: flex;
+
     align-items: center;
 
     gap: 10px;
 
-    font-size: 1.6rem;
-    font-weight: 700;
+    flex-wrap: wrap;
 
     color: #ffff55;
 
-    flex-wrap: wrap;
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
+    font-size: 1.5rem;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+    text-shadow:
+        1px 1px 0 #000;
 }
 
 .user-email {
     color: #aaa;
+
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
     font-size: 0.9rem;
+
+    line-height: 1.6;
 }
 
 
 /* ========================================================
-   方案標籤
+   12. 方案 Badge
    ======================================================== */
 
 .plan-badge-tag {
     display: inline-block;
 
-    padding: 4px 10px;
+    box-sizing: border-box;
 
-    font-size: 0.8rem;
-    font-weight: 700;
+    padding: 3px 9px;
+
+    background-color: #555;
+
+    color: #fff;
 
     border: 2px solid #000;
 
-    background-color: #555;
-    color: #fff;
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
+    font-size: 0.75rem;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+    text-shadow: none;
 }
 
 .plan-badge-tag.plan-a {
     background-color: #ff5555;
+
     color: #fff;
 }
 
 .plan-badge-tag.plan-b {
     background-color: #ffaa00;
+
     color: #000;
 }
 
 .plan-badge-tag.plan-c {
     background-color: #55ff55;
+
     color: #000;
 }
 
 .plan-badge-tag.plan-free {
     background-color: #aaaaaa;
+
     color: #000;
 }
 
 
 /* ========================================================
-   數據網格
+   13. 統計資料 Grid
    ======================================================== */
 
 .stats-grid {
     display: grid;
 
     grid-template-columns:
-        repeat(auto-fit, minmax(200px, 1fr));
+        repeat(2, minmax(0, 1fr));
 
-    gap: 16px;
+    gap: 14px;
 
     margin-bottom: 30px;
 }
 
+
+/* ========================================================
+   14. 統計資料卡片
+   ======================================================== */
+
 .stat-box {
-    background-color: #151515;
-
-    border: 2px solid #000;
-
-    padding: 16px;
-
     min-width: 0;
 
     box-sizing: border-box;
+
+    padding: 16px;
+
+    background-color: #151515;
+
+    border: 2px solid #000;
 
     box-shadow:
         inset -2px -2px 0 #080808,
@@ -413,6 +515,7 @@ body {
 
 .stat-label {
     display: flex;
+
     align-items: center;
 
     gap: 6px;
@@ -421,35 +524,58 @@ body {
 
     color: #aaa;
 
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
     font-size: 0.85rem;
+
+    font-weight: 500;
+
+    line-height: 1.5;
 }
 
 .stat-value {
     color: #55ff55;
 
-    font-size: 1.3rem;
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
+    font-size: 1.25rem;
+
     font-weight: 700;
 
-    font-family: 'Press Start 2P', monospace, cursive;
+    line-height: 1.5;
+
+    letter-spacing: 0.3px;
 
     word-break: break-word;
 }
 
 .stat-value small {
-    font-size: 0.75rem;
-
     color: #fff;
 
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
+    font-size: 0.75rem;
+
+    font-weight: 500;
 }
 
 
 /* ========================================================
-   領取紀錄標題
+   15. 歷史紀錄標題
    ======================================================== */
 
 .history-section-title {
     display: flex;
+
     align-items: center;
 
     gap: 8px;
@@ -462,13 +588,21 @@ body {
 
     color: #ffaa00;
 
-    font-size: 1.1rem;
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
+    font-size: 1.05rem;
+
     font-weight: 700;
+
+    line-height: 1.6;
 }
 
 
 /* ========================================================
-   表格
+   16. 表格容器
    ======================================================== */
 
 .history-table-wrapper {
@@ -479,8 +613,14 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+
+/* ========================================================
+   17. 歷史紀錄表格
+   ======================================================== */
+
 .history-table {
     width: 100%;
+
     min-width: 600px;
 
     border-collapse: collapse;
@@ -488,6 +628,11 @@ body {
     background-color: #111;
 
     border: 2px solid #000;
+
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
 
     font-size: 0.9rem;
 }
@@ -499,6 +644,8 @@ body {
     text-align: left;
 
     border-bottom: 1px solid #333;
+
+    line-height: 1.6;
 }
 
 .history-table th {
@@ -511,6 +658,8 @@ body {
 
 .history-table td {
     color: #ddd;
+
+    font-weight: 400;
 }
 
 .history-table tr:hover {
@@ -519,35 +668,47 @@ body {
 
 
 /* ========================================================
-   狀態標籤
+   18. 發放狀態 Badge
    ======================================================== */
 
 .status-badge {
     display: inline-block;
 
+    box-sizing: border-box;
+
     padding: 2px 8px;
 
     border-radius: 2px;
 
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
     font-size: 0.8rem;
+
     font-weight: 700;
+
+    line-height: 1.5;
 
     white-space: nowrap;
 }
 
 .status-pending {
     background-color: #ffaa00;
+
     color: #000;
 }
 
 .status-completed {
     background-color: #55ff55;
+
     color: #000;
 }
 
 
 /* ========================================================
-   Toast
+   19. Toast
    ======================================================== */
 
 .toast-msg {
@@ -560,11 +721,11 @@ body {
 
     box-sizing: border-box;
 
+    padding: 14px 24px;
+
     background-color: rgba(0, 0, 0, 0.95);
 
     color: #fff;
-
-    padding: 14px 24px;
 
     border: 3px solid #ffaa00;
 
@@ -575,23 +736,76 @@ body {
 
     z-index: 2000;
 
+    font-family:
+        'Noto Sans TC',
+        'Microsoft JhengHei',
+        sans-serif;
+
     font-size: 0.95rem;
+
+    line-height: 1.6;
+
+    text-align: center;
 }
 
 
 /* ========================================================
-   手機版
+   20. Font Awesome 圖示
    ======================================================== */
 
-@media (max-width: 700px) {
+.player-container i {
+    font-family: "Font Awesome 6 Free";
+}
+
+
+/* ========================================================
+   21. 平板 / 小型桌面
+   ======================================================== */
+
+@media (max-width: 750px) {
 
     .player-container {
-        margin: 25px auto;
-        padding: 0 12px;
+        margin: 30px auto;
+
+        padding: 0 15px;
     }
 
     .player-title {
-        font-size: 1.35rem;
+        font-size: 1.55rem;
+    }
+
+    .search-form {
+        flex-wrap: wrap;
+    }
+
+    .search-input {
+        min-width: calc(50% - 5px);
+    }
+
+    .btn-search {
+        width: 100%;
+    }
+}
+
+
+/* ========================================================
+   22. 手機
+   ======================================================== */
+
+@media (max-width: 600px) {
+
+    .player-container {
+        margin: 25px auto;
+
+        padding: 0 10px;
+    }
+
+    .player-header {
+        margin-bottom: 22px;
+    }
+
+    .player-title {
+        font-size: 1.15rem;
 
         text-shadow:
             2px 2px 0 #000,
@@ -601,38 +815,66 @@ body {
     }
 
     .player-subtitle {
-        font-size: 0.85rem;
-        line-height: 1.6;
+        font-size: 0.82rem;
     }
 
+
+    /* 搜尋 */
+
     .search-card {
-        padding: 16px;
+        padding: 15px;
+
+        border-width: 3px;
     }
 
     .search-form {
         flex-direction: column;
+
+        gap: 9px;
     }
 
     .search-input {
         width: 100%;
+
+        min-width: 0;
     }
 
     .btn-search {
         width: 100%;
     }
 
+
+    /* 狀態 */
+
+    .info-status-msg {
+        min-height: 130px;
+
+        padding: 25px 15px;
+
+        border-width: 3px;
+    }
+
+
+    /* Profile */
+
     .profile-card {
-        padding: 20px 16px;
+        padding: 20px 15px;
+
+        border-width: 3px;
     }
 
     .profile-header-info {
         flex-direction: column;
 
         text-align: center;
+
+        gap: 14px;
     }
 
     .user-main-details {
         width: 100%;
+
+        min-width: 0;
     }
 
     .user-mc-id {
@@ -641,13 +883,43 @@ body {
         font-size: 1.25rem;
     }
 
-    .stats-grid {
-        grid-template-columns: 1fr;
+    .user-email {
+        font-size: 0.82rem;
     }
 
-    .history-section-title {
-        font-size: 1rem;
+
+    /* 統計 */
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
     }
+
+    .stat-box {
+        padding: 14px;
+    }
+
+
+    /* 歷史紀錄 */
+
+    .history-section-title {
+        font-size: 0.95rem;
+    }
+
+    .history-table {
+        min-width: 580px;
+
+        font-size: 0.82rem;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 10px;
+    }
+
+
+    /* Toast */
 
     .toast-msg {
         left: 15px;
@@ -656,31 +928,41 @@ body {
 
         max-width: none;
 
-        text-align: center;
+        padding: 12px 16px;
+
+        font-size: 0.85rem;
     }
 }
 
 
 /* ========================================================
-   更小螢幕
+   23. 超小型手機
    ======================================================== */
 
 @media (max-width: 400px) {
 
     .player-title {
-        font-size: 1.05rem;
+        font-size: 0.95rem;
     }
 
-    .player-container {
-        padding: 0 8px;
+    .player-subtitle {
+        font-size: 0.78rem;
     }
 
-    .search-card,
     .profile-card {
-        border-width: 3px;
+        padding: 16px 12px;
     }
 
-    .info-status-msg {
-        border-width: 3px;
+    .avatar-box {
+        width: 72px;
+        height: 72px;
+    }
+
+    .user-mc-id {
+        font-size: 1.1rem;
+    }
+
+    .stat-value {
+        font-size: 1.1rem;
     }
 }
