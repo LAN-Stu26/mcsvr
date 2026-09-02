@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             更多 <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="/featured/" class="dropdown-item ${isActive('/player') ? 'active' : ''}">
+                            <a href="/player/" class="dropdown-item ${isActive('/player') ? 'active' : ''}">
                                 帳號查詢
                             </a>
                             <a href="/featured/" class="dropdown-item ${isActive('/featured') ? 'active' : ''}">
