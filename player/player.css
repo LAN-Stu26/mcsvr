@@ -1,0 +1,276 @@
+/* ========================================================
+   Lazy Sheep Minecraft - Player Profile Page Styles
+   ======================================================== */
+
+.player-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* 頁面標頭 */
+.player-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.player-title {
+    font-family: 'Press Start 2P', monospace, cursive;
+    font-size: 2rem;
+    color: #ffaa00;
+    text-shadow: 3px 3px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000;
+    margin-bottom: 12px;
+}
+
+.player-subtitle {
+    color: #bbb;
+    font-size: 0.95rem;
+}
+
+/* 搜尋/登入卡片 */
+.search-card {
+    background-color: rgba(26, 26, 26, 0.95);
+    border: 4px solid #000;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: inset -2px -2px 0px #111, inset 2px 2px 0px #444, 0 8px 20px rgba(0,0,0,0.6);
+}
+
+.search-form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 200px;
+    background-color: #111;
+    border: 2px solid #444;
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    outline: none;
+    box-shadow: inset 2px 2px 0px #000;
+}
+
+.search-input:focus {
+    border-color: #ffaa00;
+}
+
+.btn-search {
+    background-color: #ffaa00;
+    color: #000;
+    border: 2px solid #000;
+    padding: 12px 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: inset -2px -2px 0px #9f6f00, inset 2px 2px 0px #ffcf40;
+    transition: all 0.1s ease;
+    font-size: 0.95rem;
+}
+
+.btn-search:hover {
+    background-color: #ffbb22;
+}
+
+/* 玩家個人資料個人面板 */
+.profile-card {
+    background-color: rgba(26, 26, 26, 0.95);
+    border: 4px solid #000;
+    padding: 30px;
+    box-shadow: inset -2px -2px 0px #111, inset 2px 2px 0px #444, 0 8px 20px rgba(0,0,0,0.6);
+    display: none;
+}
+
+.profile-card.active {
+    display: block;
+}
+
+/* 玩家基本資訊抬頭 */
+.profile-header-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 24px;
+    border-bottom: 2px dashed #444;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.avatar-box {
+    width: 80px;
+    height: 80px;
+    border: 4px solid #000;
+    background-color: #222;
+    box-shadow: inset -2px -2px 0px #111, inset 2px 2px 0px #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.avatar-box img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+.user-main-details {
+    flex: 1;
+}
+
+.user-mc-id {
+    font-size: 1.6rem;
+    color: #ffff55;
+    font-weight: bold;
+    margin: 0 0 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-email {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.plan-badge-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 2px solid #000;
+    background-color: #555;
+    color: #fff;
+}
+
+.plan-badge-tag.plan-a { background-color: #ff5555; color: #fff; }
+.plan-badge-tag.plan-b { background-color: #ffaa00; color: #000; }
+.plan-badge-tag.plan-c { background-color: #55ff55; color: #000; }
+.plan-badge-tag.plan-free { background-color: #aaaaaa; color: #000; }
+
+/* 數據網格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    background-color: #151515;
+    border: 2px solid #000;
+    padding: 16px;
+    box-shadow: inset -2px -2px 0px #080808, inset 2px 2px 0px #333;
+}
+
+.stat-label {
+    color: #aaa;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stat-value {
+    color: #55ff55;
+    font-size: 1.3rem;
+    font-weight: bold;
+    font-family: 'Press Start 2P', monospace, cursive;
+}
+
+.stat-value small {
+    font-size: 0.75rem;
+    color: #fff;
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+/* 領取紀錄表格 */
+.history-section-title {
+    color: #ffaa00;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-left: 4px solid #ffaa00;
+    padding-left: 10px;
+}
+
+.history-table-wrapper {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #111;
+    border: 2px solid #000;
+    font-size: 0.9rem;
+}
+
+.history-table th, .history-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.history-table th {
+    background-color: #222;
+    color: #ffaa00;
+    font-weight: bold;
+}
+
+.history-table tr:hover {
+    background-color: #1a1a1a;
+}
+
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-pending { background-color: #ffaa00; color: #000; }
+.status-completed { background-color: #55ff55; color: #000; }
+
+/* 提示訊息與載入中 */
+.info-status-msg {
+    text-align: center;
+    padding: 40px 20px;
+    color: #aaa;
+    background-color: rgba(26, 26, 26, 0.95);
+    border: 4px solid #000;
+}
+
+/* Toast 提示 */
+.toast-msg {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 14px 24px;
+    border: 3px solid #ffaa00;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.8);
+    display: none;
+    z-index: 2000;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+    .profile-header-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    .user-mc-id {
+        justify-content: center;
+    }
+    .search-form {
+        flex-direction: column;
+    }
+}
