@@ -18,11 +18,6 @@
     
     <script src="/nav.js" defer></script>
     <script src="/footer.js" defer></script>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -57,7 +52,7 @@
             </div>
 
             <!-- 狀態 3: 已登入且已載入資料 (顯示登出按鈕) -->
-            <div id="login-state-authed" style="display: none; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div id="login-state-authed" style="display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <span style="color: #aaa; font-size: 0.9rem;">
                     <i class="fa-solid fa-circle-user" style="color: #55ff55;"></i> 當前登入：<strong id="logged-in-email" style="color: #fff;">--</strong>
                 </span>
@@ -139,10 +134,28 @@
 
     <div id="footer-placeholder"></div>
 
-    <script>
-        // ========================================================
+    <!-- 最新 Firebase Modular ES Module 腳本 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            query, 
+            where, 
+            getDocs, 
+            doc, 
+            setDoc, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { 
+            getAuth, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
         // Firebase 專案設定
-        // ========================================================
         const firebaseConfig = {
             apiKey: "AIzaSyDhQu5yJD1ojrWv9xZ6GTU2zhZwFH4e4KA",
             authDomain: "lazy-sheep-server.firebaseapp.com",
@@ -154,66 +167,17 @@
         };
 
         // 初始化 Firebase
-        let db = null;
-        let auth = null;
-        let googleProvider = null;
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
         let currentUser = null;
-
-        try {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            db = firebase.firestore();
-            auth = firebase.auth();
-            googleProvider = new firebase.auth.GoogleAuthProvider();
-        } catch (e) {
-            console.warn("Firebase 初始化失敗，請檢查網路:", e);
-        }
-
-        // 監聽 Firebase Auth 登入狀態改變
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!auth) return;
-
-            auth.onAuthStateChanged(async (user) => {
-                const statusMsg = document.getElementById('status-message');
-                const profileCard = document.getElementById('profile-card');
-                const stateUnauth = document.getElementById('login-state-unauth');
-                const stateRegister = document.getElementById('login-state-register');
-                const stateAuthed = document.getElementById('login-state-authed');
-
-                if (user) {
-                    currentUser = user;
-                    document.getElementById('logged-in-email').innerText = user.email;
-                    document.getElementById('reg-google-email').innerText = user.email;
-
-                    statusMsg.style.display = 'block';
-                    statusMsg.innerHTML = '<p><i class="fa-solid fa-spinner fa-spin"></i> 正在驗證登入並讀取 Firestore 玩家資料...</p>';
-
-                    await checkUserAndLoadData(user.email);
-                } else {
-                    currentUser = null;
-                    stateUnauth.style.display = 'block';
-                    stateRegister.style.display = 'none';
-                    stateAuthed.style.display = 'none';
-                    profileCard.classList.remove('active');
-
-                    statusMsg.style.display = 'block';
-                    statusMsg.innerHTML = `
-                        <i class="fa-solid fa-user-gear fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
-                        <p>請於上方點擊按鈕登入 Google 帳號以載入資料。</p>
-                    `;
-                }
-            });
-        });
 
         // Google 登入處理
         async function loginWithGoogle() {
-            if (!auth) {
-                showToast("❌ Firebase 未妥善初始化");
-                return;
-            }
             try {
-                await auth.signInWithPopup(googleProvider);
+                await signInWithPopup(auth, googleProvider);
             } catch (error) {
                 console.error("Google 登入失敗:", error);
                 showToast("❌ 登入失敗：" + error.message);
@@ -222,16 +186,51 @@
 
         // Google 登出處理
         async function logoutGoogle() {
-            if (!auth) return;
             try {
-                await auth.signOut();
+                await signOut(auth);
                 showToast("✔ 已成功登出帳號");
             } catch (error) {
                 console.error("登出失敗:", error);
             }
         }
 
-        // 檢查使用者是否存在並載入資料，若不存在則提示綁定註冊
+        // 將登入/登出函式綁定給全局 window 物件，供 HTML onclick 呼叫
+        window.loginWithGoogle = loginWithGoogle;
+        window.logoutGoogle = logoutGoogle;
+
+        // 監聽 Firebase Auth 登入狀態改變
+        onAuthStateChanged(auth, async (user) => {
+            const statusMsg = document.getElementById('status-message');
+            const profileCard = document.getElementById('profile-card');
+            const stateUnauth = document.getElementById('login-state-unauth');
+            const stateRegister = document.getElementById('login-state-register');
+            const stateAuthed = document.getElementById('login-state-authed');
+
+            if (user) {
+                currentUser = user;
+                document.getElementById('logged-in-email').innerText = user.email;
+                document.getElementById('reg-google-email').innerText = user.email;
+
+                statusMsg.style.display = 'block';
+                statusMsg.innerHTML = '<p><i class="fa-solid fa-spinner fa-spin"></i> 正在驗證登入並讀取 Firestore 玩家資料...</p>';
+
+                await checkUserAndLoadData(user.email);
+            } else {
+                currentUser = null;
+                stateUnauth.style.display = 'block';
+                stateRegister.style.display = 'none';
+                stateAuthed.style.display = 'none';
+                profileCard.classList.remove('active');
+
+                statusMsg.style.display = 'block';
+                statusMsg.innerHTML = `
+                    <i class="fa-solid fa-user-gear fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
+                    <p>請於上方點擊按鈕登入 Google 帳號以載入資料。</p>
+                `;
+            }
+        });
+
+        // 檢查使用者是否存在並載入資料
         async function checkUserAndLoadData(email) {
             const statusMsg = document.getElementById('status-message');
             const profileCard = document.getElementById('profile-card');
@@ -240,11 +239,11 @@
             const stateAuthed = document.getElementById('login-state-authed');
 
             try {
-                // 依 Email 搜尋 users 集合
-                const userSnapshot = await db.collection('users').where('email', '==', email).get();
+                const q = query(collection(db, 'users'), where('email', '==', email));
+                const userSnapshot = await getDocs(q);
 
                 if (userSnapshot.empty) {
-                    // 查無資料：提示註冊/綁定 Minecraft ID
+                    // 查無資料：提示綁定 Minecraft ID 註冊
                     stateUnauth.style.display = 'none';
                     stateRegister.style.display = 'block';
                     stateAuthed.style.display = 'none';
@@ -256,7 +255,7 @@
                         <p style="color: #ffaa00;">尚未綁定 Minecraft 帳號，請於上方輸入 ID 以完成首次註冊。</p>
                     `;
                 } else {
-                    // 找到資料：顯示面板並讀取紀錄
+                    // 找到資料：載入面板
                     stateUnauth.style.display = 'none';
                     stateRegister.style.display = 'none';
                     stateAuthed.style.display = 'flex';
@@ -264,12 +263,10 @@
                     const userData = userSnapshot.docs[0].data();
                     const mcIdLower = userData.minecraftIdLower || (userData.minecraftId ? userData.minecraftId.toLowerCase() : '');
 
-                    // 讀取該玩家的商城領取與兌換紀錄
                     let claimsDocs = [];
                     if (mcIdLower) {
-                        const claimsSnapshot = await db.collection('market_claims')
-                            .where('minecraftIdLower', '==', mcIdLower)
-                            .get();
+                        const claimsQ = query(collection(db, 'market_claims'), where('minecraftIdLower', '==', mcIdLower));
+                        const claimsSnapshot = await getDocs(claimsQ);
                         claimsDocs = claimsSnapshot.docs.map(doc => doc.data());
                     }
 
@@ -315,11 +312,10 @@
                     points: 0,
                     playtimeHours: 0,
                     status: '正常運作中',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: serverTimestamp()
                 };
 
-                // 將使用者資料以 Google UID 作為文件 ID 寫入 Firestore 'users' 集合
-                await db.collection('users').doc(currentUser.uid).set(newUserObj, { merge: true });
+                await setDoc(doc(db, 'users', currentUser.uid), newUserObj, { merge: true });
 
                 showToast("🎉 帳號綁定成功！");
                 await checkUserAndLoadData(currentUser.email);
@@ -336,22 +332,18 @@
         function renderUserProfile(user, claims) {
             const mcId = user.minecraftId || '未知玩家';
             
-            // 替換頭像與基本資訊
             document.getElementById('user-avatar').src = `https://mc-heads.net/avatar/${mcId}/80`;
             document.getElementById('disp-mc-id').innerText = mcId;
             document.getElementById('disp-email').innerHTML = `<i class="fa-regular fa-envelope"></i> ${user.email || '未設定 Email'}`;
 
-            // 贊助方案標籤
             const planBadge = document.getElementById('disp-plan-badge');
             const plan = (user.plan || 'FREE').toUpperCase();
             planBadge.innerText = plan;
             planBadge.className = `plan-badge-tag plan-${plan.toLowerCase()}`;
 
-            // 四大核心統計
             document.getElementById('disp-points').innerHTML = `${user.points ?? 0} <small>點</small>`;
             document.getElementById('disp-playtime').innerHTML = `${user.playtimeHours ?? 0} <small>小時</small>`;
 
-            // 最新繳費時間處理
             if (user.lastPaymentAt) {
                 const payDate = user.lastPaymentAt.toDate ? user.lastPaymentAt.toDate() : new Date(user.lastPaymentAt);
                 document.getElementById('disp-last-payment').innerText = payDate.toLocaleDateString('zh-TW');
@@ -359,10 +351,8 @@
                 document.getElementById('disp-last-payment').innerText = '無繳費紀錄';
             }
 
-            // 權限狀態
             document.getElementById('disp-status').innerText = user.status || '正常運作中';
 
-            // 渲染兌換/領取紀錄表格
             const tbody = document.getElementById('history-table-body');
             tbody.innerHTML = '';
 
@@ -401,7 +391,6 @@
             });
         }
 
-        // 顯示浮動 Toast 提示
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
