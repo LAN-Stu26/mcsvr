@@ -18,6 +18,9 @@
     
     <script src="/nav.js" defer></script>
     <script src="/footer.js" defer></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -29,46 +32,19 @@
             <p class="player-subtitle">查詢您的點數餘額、繳費紀錄與遊玩時數統計</p>
         </header>
 
-        <!-- 登入與註冊卡片區塊 -->
-        <div class="search-card" id="auth-card">
-            <!-- 狀態 1: 未登入 Google -->
-            <div id="login-state-unauth" style="text-align: center; padding: 10px 0;">
-                <p style="margin-bottom: 16px; color: #ddd;">請登入 Google 帳號以查看或綁定您的 Minecraft 玩家資料</p>
-                <button type="button" class="btn-search" id="btn-google-login" onclick="loginWithGoogle()" style="width: auto; padding: 12px 28px; font-size: 1rem;">
-                    <i class="fa-brands fa-google" style="margin-right: 8px;"></i> 使用 Google 帳號登入
-                </button>
-            </div>
-
-            <!-- 狀態 2: 已登入 Google 但尚未綁定 Minecraft ID (首次註冊) -->
-            <div id="login-state-register" style="display: none;">
-                <h3 style="margin-top: 0; color: #ffaa00;"><i class="fa-solid fa-user-plus"></i> 首次登入：綁定 Minecraft 帳號</h3>
-                <p style="color: #bbb; font-size: 0.9rem; margin-bottom: 15px;">
-                    登入帳號：<strong id="reg-google-email" style="color: #fff;"></strong>（查無對應玩家資料，請建立新帳號）
-                </p>
-                <form class="search-form" id="register-form">
-                    <input type="text" id="reg-mc-id" class="search-input" placeholder="輸入您的 Minecraft ID (例如: Steve)" required>
-                    <button type="submit" class="btn-search" id="btn-register"><i class="fa-solid fa-check"></i> 完成註冊綁定</button>
-                </form>
-            </div>
-
-            <!-- 狀態 3: 已登入且已載入資料 (顯示登出按鈕) -->
-            <div id="login-state-authed" style="display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <span style="color: #aaa; font-size: 0.9rem;">
-                    <i class="fa-solid fa-circle-user" style="color: #55ff55;"></i> 當前登入：<strong id="logged-in-email" style="color: #fff;">--</strong>
-                </span>
-                <button type="button" class="btn-search" onclick="logoutGoogle()" style="background-color: #444; color: #fff; box-shadow: inset -2px -2px 0 #222, inset 2px 2px 0 #666; padding: 6px 16px; font-size: 0.85rem;">
-                    <i class="fa-solid fa-right-from-bracket"></i> 登出帳號
-                </button>
-            </div>
+        <div class="search-card">
+            <form class="search-form" id="search-form">
+                <input type="text" id="search-mc-id" class="search-input" placeholder="輸入 Minecraft ID (例如: steve)" required>
+                <input type="password" id="search-verify-code" class="search-input" placeholder="驗證碼，不知道請在 DC 私訊伺服主" required>
+                <button type="submit" class="btn-search" id="btn-search"><i class="fa-solid fa-magnifying-glass"></i> 查詢帳號</button>
+            </form>
         </div>
 
-        <!-- 狀態訊息提示區塊 -->
         <div id="status-message" class="info-status-msg">
             <i class="fa-solid fa-user-gear fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
-            <p>請點擊上方按鈕登入 Google 帳號以載入資料。</p>
+            <p>請於上方輸入您的 Minecraft ID 與個人驗證碼以載入資料。</p>
         </div>
 
-        <!-- 玩家 Profile 資料卡片 -->
         <div class="profile-card" id="profile-card">
             
             <div class="profile-header-info">
@@ -134,28 +110,10 @@
 
     <div id="footer-placeholder"></div>
 
-    <!-- 最新 Firebase Modular ES Module 腳本 -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            getFirestore, 
-            collection, 
-            query, 
-            where, 
-            getDocs, 
-            doc, 
-            setDoc, 
-            serverTimestamp 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { 
-            getAuth, 
-            GoogleAuthProvider, 
-            signInWithPopup, 
-            signOut, 
-            onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+    <script>
+        // ========================================================
         // Firebase 專案設定
+        // ========================================================
         const firebaseConfig = {
             apiKey: "AIzaSyDhQu5yJD1ojrWv9xZ6GTU2zhZwFH4e4KA",
             authDomain: "lazy-sheep-server.firebaseapp.com",
@@ -166,184 +124,131 @@
             measurementId: "G-REH9JHGGJ8"
         };
 
-        // 初始化 Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        let currentUser = null;
-
-        // Google 登入處理
-        async function loginWithGoogle() {
-            try {
-                await signInWithPopup(auth, googleProvider);
-            } catch (error) {
-                console.error("Google 登入失敗:", error);
-                showToast("❌ 登入失敗：" + error.message);
+        // 初始化 Firebase Firestore
+        let db = null;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
             }
+            db = firebase.firestore();
+        } catch (e) {
+            console.warn("Firebase 初始化失敗，請檢查網路:", e);
         }
 
-        // Google 登出處理
-        async function logoutGoogle() {
-            try {
-                await signOut(auth);
-                showToast("✔ 已成功登出帳號");
-            } catch (error) {
-                console.error("登出失敗:", error);
-            }
-        }
-
-        // 將登入/登出函式綁定給全局 window 物件，供 HTML onclick 呼叫
-        window.loginWithGoogle = loginWithGoogle;
-        window.logoutGoogle = logoutGoogle;
-
-        // 監聽 Firebase Auth 登入狀態改變
-        onAuthStateChanged(auth, async (user) => {
-            const statusMsg = document.getElementById('status-message');
-            const profileCard = document.getElementById('profile-card');
-            const stateUnauth = document.getElementById('login-state-unauth');
-            const stateRegister = document.getElementById('login-state-register');
-            const stateAuthed = document.getElementById('login-state-authed');
-
-            if (user) {
-                currentUser = user;
-                document.getElementById('logged-in-email').innerText = user.email;
-                document.getElementById('reg-google-email').innerText = user.email;
-
-                statusMsg.style.display = 'block';
-                statusMsg.innerHTML = '<p><i class="fa-solid fa-spinner fa-spin"></i> 正在驗證登入並讀取 Firestore 玩家資料...</p>';
-
-                await checkUserAndLoadData(user.email);
-            } else {
-                currentUser = null;
-                stateUnauth.style.display = 'block';
-                stateRegister.style.display = 'none';
-                stateAuthed.style.display = 'none';
-                profileCard.classList.remove('active');
-
-                statusMsg.style.display = 'block';
-                statusMsg.innerHTML = `
-                    <i class="fa-solid fa-user-gear fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
-                    <p>請於上方點擊按鈕登入 Google 帳號以載入資料。</p>
-                `;
+        // 頁面初次載入：自動檢查是否有登入 Session
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = sessionStorage.getItem('mcsvr_user');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    if (user && user.mcId) {
+                        document.getElementById('search-mc-id').value = user.mcId;
+                        fetchUserData(user.mcIdLower || user.mcId.toLowerCase());
+                    }
+                } catch (e) {
+                    sessionStorage.removeItem('mcsvr_user');
+                }
             }
         });
 
-        // 檢查使用者是否存在並載入資料
-        async function checkUserAndLoadData(email) {
+        // 監聽查詢表單提交
+        document.getElementById('search-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const mcId = document.getElementById('search-mc-id').value.trim();
+            const verifyCode = document.getElementById('search-verify-code').value.trim();
+
+            if (!mcId || !verifyCode) {
+                showToast("⚠️ 請填寫 Minecraft ID 與個人驗證碼！");
+                return;
+            }
+
+            await fetchUserData(mcId.toLowerCase(), verifyCode);
+        });
+
+        // 讀取 Firebase `users` 與 `market_claims` 集合資料
+        async function fetchUserData(mcIdLower, verifyCode = null) {
+            const btnSearch = document.getElementById('btn-search');
             const statusMsg = document.getElementById('status-message');
             const profileCard = document.getElementById('profile-card');
-            const stateUnauth = document.getElementById('login-state-unauth');
-            const stateRegister = document.getElementById('login-state-register');
-            const stateAuthed = document.getElementById('login-state-authed');
+
+            btnSearch.disabled = true;
+            btnSearch.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 讀取中...';
+            statusMsg.style.display = 'block';
+            statusMsg.innerHTML = '<p>🔍 正在查詢 Firestore 玩家資料...</p>';
+            profileCard.classList.remove('active');
+
+            if (!db) {
+                showToast("❌ 資料庫未連接");
+                btnSearch.disabled = false;
+                btnSearch.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> 查詢帳號';
+                return;
+            }
 
             try {
-                const q = query(collection(db, 'users'), where('email', '==', email));
-                const userSnapshot = await getDocs(q);
+                // 1. 查詢 users 集合
+                let userQueryRef = db.collection('users').where('minecraftIdLower', '==', mcIdLower);
+                if (verifyCode) {
+                    userQueryRef = userQueryRef.where('verificationCode', '==', verifyCode);
+                }
+
+                const userSnapshot = await userQueryRef.get();
 
                 if (userSnapshot.empty) {
-                    // 查無資料：提示綁定 Minecraft ID 註冊
-                    stateUnauth.style.display = 'none';
-                    stateRegister.style.display = 'block';
-                    stateAuthed.style.display = 'none';
-                    profileCard.classList.remove('active');
-
-                    statusMsg.style.display = 'block';
                     statusMsg.innerHTML = `
-                        <i class="fa-solid fa-user-plus fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
-                        <p style="color: #ffaa00;">尚未綁定 Minecraft 帳號，請於上方輸入 ID 以完成首次註冊。</p>
+                        <i class="fa-solid fa-circle-xmark fa-2x" style="margin-bottom: 12px; color: #ff5555;"></i>
+                        <p style="color: #ff5555;">查無此玩家資料或驗證碼不正確！</p>
                     `;
-                } else {
-                    // 找到資料：載入面板
-                    stateUnauth.style.display = 'none';
-                    stateRegister.style.display = 'none';
-                    stateAuthed.style.display = 'flex';
-
-                    const userData = userSnapshot.docs[0].data();
-                    const mcIdLower = userData.minecraftIdLower || (userData.minecraftId ? userData.minecraftId.toLowerCase() : '');
-
-                    let claimsDocs = [];
-                    if (mcIdLower) {
-                        const claimsQ = query(collection(db, 'market_claims'), where('minecraftIdLower', '==', mcIdLower));
-                        const claimsSnapshot = await getDocs(claimsQ);
-                        claimsDocs = claimsSnapshot.docs.map(doc => doc.data());
-                    }
-
-                    renderUserProfile(userData, claimsDocs);
-                    statusMsg.style.display = 'none';
-                    profileCard.classList.add('active');
+                    btnSearch.disabled = false;
+                    btnSearch.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> 查詢帳號';
+                    return;
                 }
+
+                const userData = userSnapshot.docs[0].data();
+                
+                // 2. 查詢該玩家的商城領取與兌換歷史
+                const claimsSnapshot = await db.collection('market_claims')
+                    .where('minecraftIdLower', '==', mcIdLower)
+                    .get();
+
+                // 3. 渲染至 UI 面板
+                renderUserProfile(userData, claimsSnapshot.docs.map(doc => doc.data()));
+
+                statusMsg.style.display = 'none';
+                profileCard.classList.add('active');
+                showToast(`✔ 成功載入 ${userData.minecraftId || mcIdLower} 的帳號資料`);
+
             } catch (error) {
                 console.error("讀取玩家資料失敗:", error);
-                statusMsg.style.display = 'block';
                 statusMsg.innerHTML = `
                     <i class="fa-solid fa-triangle-exclamation fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
                     <p style="color: #ffaa00;">讀取資料失敗，請稍後再試或確認網路連線。</p>
                 `;
+            } finally {
+                btnSearch.disabled = false;
+                btnSearch.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> 查詢帳號';
             }
         }
-
-        // 處理首次綁定註冊表單提交
-        document.getElementById('register-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                showToast("⚠️ 請先登入 Google 帳號！");
-                return;
-            }
-
-            const mcId = document.getElementById('reg-mc-id').value.trim();
-            if (!mcId) {
-                showToast("⚠️ 請填寫 Minecraft ID！");
-                return;
-            }
-
-            const btnRegister = document.getElementById('btn-register');
-            btnRegister.disabled = true;
-            btnRegister.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 建立帳號中...';
-
-            try {
-                const newUserObj = {
-                    email: currentUser.email,
-                    googleUid: currentUser.uid,
-                    minecraftId: mcId,
-                    minecraftIdLower: mcId.toLowerCase(),
-                    plan: 'FREE',
-                    points: 0,
-                    playtimeHours: 0,
-                    status: '正常運作中',
-                    createdAt: serverTimestamp()
-                };
-
-                await setDoc(doc(db, 'users', currentUser.uid), newUserObj, { merge: true });
-
-                showToast("🎉 帳號綁定成功！");
-                await checkUserAndLoadData(currentUser.email);
-            } catch (error) {
-                console.error("註冊寫入失敗:", error);
-                showToast("❌ 註冊失敗：" + error.message);
-            } finally {
-                btnRegister.disabled = false;
-                btnRegister.innerHTML = '<i class="fa-solid fa-check"></i> 完成註冊綁定';
-            }
-        });
 
         // 將抓取到的資料填入畫面
         function renderUserProfile(user, claims) {
             const mcId = user.minecraftId || '未知玩家';
             
+            // 替換頭像與基本資訊
             document.getElementById('user-avatar').src = `https://mc-heads.net/avatar/${mcId}/80`;
             document.getElementById('disp-mc-id').innerText = mcId;
             document.getElementById('disp-email').innerHTML = `<i class="fa-regular fa-envelope"></i> ${user.email || '未設定 Email'}`;
 
+            // 贊助方案標籤
             const planBadge = document.getElementById('disp-plan-badge');
             const plan = (user.plan || 'FREE').toUpperCase();
             planBadge.innerText = plan;
             planBadge.className = `plan-badge-tag plan-${plan.toLowerCase()}`;
 
+            // 四大核心統計
             document.getElementById('disp-points').innerHTML = `${user.points ?? 0} <small>點</small>`;
             document.getElementById('disp-playtime').innerHTML = `${user.playtimeHours ?? 0} <small>小時</small>`;
 
+            // 最新繳費時間處理
             if (user.lastPaymentAt) {
                 const payDate = user.lastPaymentAt.toDate ? user.lastPaymentAt.toDate() : new Date(user.lastPaymentAt);
                 document.getElementById('disp-last-payment').innerText = payDate.toLocaleDateString('zh-TW');
@@ -351,8 +256,10 @@
                 document.getElementById('disp-last-payment').innerText = '無繳費紀錄';
             }
 
+            // 權限狀態
             document.getElementById('disp-status').innerText = user.status || '正常運作中';
 
+            // 渲染兌換/領取紀錄表格
             const tbody = document.getElementById('history-table-body');
             tbody.innerHTML = '';
 
@@ -391,6 +298,7 @@
             });
         }
 
+        // 顯示浮動 Toast 提示
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.innerText = message;
