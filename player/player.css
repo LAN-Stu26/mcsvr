@@ -234,6 +234,25 @@ body {
     cursor: wait;
 }
 
+/* 登出按鈕 */
+.btn-logout {
+    padding: 8px 14px;
+    background-color: #333;
+    color: #ffaa00;
+    border: 2px solid #000;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: inset -1px -1px 0 #111, inset 1px 1px 0 #555;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-logout:hover {
+    background-color: #ffaa00;
+    color: #000;
+}
+
 
 /* ========================================================
    07. 狀態訊息
