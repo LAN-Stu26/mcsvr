@@ -115,236 +115,266 @@
 
     <div id="footer-placeholder"></div>
 
-    <script>
-        // ========================================================
-        // Firebase 專案設定
-        // ========================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDhQu5yJD1ojrWv9xZ6GTU2zhZwFH4e4KA",
-            authDomain: "lazy-sheep-server.firebaseapp.com",
-            projectId: "lazy-sheep-server",
-            storageBucket: "lazy-sheep-server.firebasestorage.app",
-            messagingSenderId: "665251951199",
-            appId: "1:665251951199:web:45c36cc44badd65681a1ea",
-            measurementId: "G-REH9JHGGJ8"
-        };
+<script>
+    // ========================================================
+    // Firebase 專案設定
+    // ========================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyDhQu5yJD1ojrWv9xZ6GTU2zhZwFH4e4KA",
+        authDomain: "lazy-sheep-server.firebaseapp.com",
+        projectId: "lazy-sheep-server",
+        storageBucket: "lazy-sheep-server.firebasestorage.app",
+        messagingSenderId: "665251951199",
+        appId: "1:665251951199:web:45c36cc44badd65681a1ea",
+        measurementId: "G-REH9JHGGJ8"
+    };
 
-        // 初始化 Firebase
-        let db = null;
-        let auth = null;
-        try {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
+    // 初始化 Firebase
+    let db = null;
+    let auth = null;
+    let isSigningIn = false; // 防止重複開啟 Pop-up 的鎖定開關
+
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.firestore();
+        auth = firebase.auth();
+    } catch (e) {
+        console.warn("Firebase 初始化失敗，請檢查網路:", e);
+    }
+
+    // 監聽 Firebase 身份驗證狀態變更
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!auth) return;
+
+        auth.onAuthStateChanged(async (currentUser) => {
+            if (currentUser) {
+                const inputMcId = document.getElementById('search-mc-id').value.trim();
+                await fetchUserData(currentUser, inputMcId);
+            } else {
+                document.getElementById('status-message').style.display = 'flex';
+                document.getElementById('status-message').innerHTML = `
+                    <i class="fa-solid fa-user-shield fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
+                    <p>請點擊「Google 登入 / 查詢」以驗證身分並載入帳號資料。</p>
+                `;
+                document.getElementById('profile-card').classList.remove('active');
             }
-            db = firebase.firestore();
-            auth = firebase.auth();
-        } catch (e) {
-            console.warn("Firebase 初始化失敗，請檢查網路:", e);
+        });
+    });
+
+    // 統一處理 Google 登入或查詢的入口函數
+    async function handleLoginOrSearch() {
+        if (!auth) {
+            showToast("❌ Firebase Auth 未連接");
+            return;
         }
 
-        // 監聽 Firebase 身份驗證狀態變更
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!auth) return;
+        const inputMcId = document.getElementById('search-mc-id').value.trim();
 
-            auth.onAuthStateChanged(async (currentUser) => {
-                if (currentUser) {
-                    const inputMcId = document.getElementById('search-mc-id').value.trim();
-                    await fetchUserData(currentUser, inputMcId);
-                } else {
-                    document.getElementById('status-message').style.display = 'flex';
-                    document.getElementById('status-message').innerHTML = `
-                        <i class="fa-solid fa-user-shield fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
-                        <p>請點擊「Google 登入 / 查詢」以驗證身分並載入帳號資料。</p>
-                    `;
-                    document.getElementById('profile-card').classList.remove('active');
-                }
-            });
-        });
+        // 1. 如果已經登入，直接查詢資料即可
+        if (auth.currentUser) {
+            await fetchUserData(auth.currentUser, inputMcId);
+            return;
+        }
 
-        // 點擊 Google 登入 / 查詢按鈕
-        document.getElementById('btn-google-login').addEventListener('click', async () => {
-            if (!auth) {
-                showToast("❌ Firebase Auth 未連接");
-                return;
+        // 2. 如果正在進行彈出登入，避免重複觸發
+        if (isSigningIn) {
+            return;
+        }
+
+        try {
+            isSigningIn = true;
+            const btnSearch = document.getElementById('btn-google-login');
+            btnSearch.disabled = true;
+            btnSearch.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Google 驗證中...';
+
+            const provider = new firebase.auth.GoogleAuthProvider();
+            // 強制提示選擇帳號，避免快取問題
+            provider.setCustomParameters({ prompt: 'select_account' });
+
+            const result = await auth.signInWithPopup(provider);
+            if (result.user) {
+                await fetchUserData(result.user, inputMcId);
             }
-
-            try {
-                if (!auth.currentUser) {
-                    const provider = new firebase.auth.GoogleAuthProvider();
-                    await auth.signInWithPopup(provider);
-                } else {
-                    const inputMcId = document.getElementById('search-mc-id').value.trim();
-                    await fetchUserData(auth.currentUser, inputMcId);
-                }
-            } catch (error) {
+        } catch (error) {
+            // 忽略被使用者手動關閉或取消的錯誤，避免跳出令人困惑的警告
+            if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
+                console.warn("Google 登入視窗已關閉或被取消。");
+            } else {
                 console.error("Google 登入失敗:", error);
                 showToast("❌ Google 登入失敗: " + error.message);
             }
-        });
-
-        // 表單提交處理
-        document.getElementById('search-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!auth.currentUser) {
-                document.getElementById('btn-google-login').click();
-            } else {
-                const inputMcId = document.getElementById('search-mc-id').value.trim();
-                await fetchUserData(auth.currentUser, inputMcId);
-            }
-        });
-
-        // 登出按鈕處理
-        document.getElementById('btn-logout').addEventListener('click', async () => {
-            if (auth) {
-                await auth.signOut();
-                showToast("✔ 已成功登出");
-            }
-        });
-
-        // 讀取 Firebase `users` 與 `market_claims` 集合資料
-        async function fetchUserData(currentUser, inputMcId = '') {
+        } finally {
+            isSigningIn = false;
             const btnSearch = document.getElementById('btn-google-login');
-            const statusMsg = document.getElementById('status-message');
-            const profileCard = document.getElementById('profile-card');
+            btnSearch.disabled = false;
+            btnSearch.innerHTML = '<i class="fa-brands fa-google"></i> Google 登入 / 查詢';
+        }
+    }
 
-            btnSearch.disabled = true;
-            btnSearch.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 驗證中...';
-            statusMsg.style.display = 'flex';
-            statusMsg.innerHTML = '<p>🔍 正在查詢 Firestore 玩家資料...</p>';
-            profileCard.classList.remove('active');
+    // 點擊 Google 登入 / 查詢按鈕
+    document.getElementById('btn-google-login').addEventListener('click', (e) => {
+        e.preventDefault();
+        handleLoginOrSearch();
+    });
 
-            if (!db) {
-                showToast("❌ 資料庫未連接");
-                btnSearch.disabled = false;
-                btnSearch.innerHTML = '<i class="fa-brands fa-google"></i> Google 登入 / 查詢';
-                return;
+    // 表單 Enter 提交處理
+    document.getElementById('search-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleLoginOrSearch();
+    });
+
+    // 登出按鈕處理
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+        if (auth) {
+            await auth.signOut();
+            showToast("✔ 已成功登出");
+        }
+    });
+
+    // 讀取 Firebase `users` 與 `market_claims` 集合資料
+    async function fetchUserData(currentUser, inputMcId = '') {
+        const btnSearch = document.getElementById('btn-google-login');
+        const statusMsg = document.getElementById('status-message');
+        const profileCard = document.getElementById('profile-card');
+
+        btnSearch.disabled = true;
+        btnSearch.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 查詢中...';
+        statusMsg.style.display = 'flex';
+        statusMsg.innerHTML = '<p>🔍 正在查詢 Firestore 玩家資料...</p>';
+        profileCard.classList.remove('active');
+
+        if (!db) {
+            showToast("❌ 資料庫未連接");
+            btnSearch.disabled = false;
+            btnSearch.innerHTML = '<i class="fa-brands fa-google"></i> Google 登入 / 查詢';
+            return;
+        }
+
+        try {
+            // 1. 查詢 users 集合，透過登入者 Email 比對
+            let userQueryRef = db.collection('users').where('email', '==', currentUser.email);
+
+            if (inputMcId) {
+                userQueryRef = userQueryRef.where('minecraftIdLower', '==', inputMcId.toLowerCase());
             }
 
-            try {
-                // 1. 查詢 users 集合，透過登入者 Email 比對
-                let userQueryRef = db.collection('users').where('email', '==', currentUser.email);
+            const userSnapshot = await userQueryRef.get();
 
-                if (inputMcId) {
-                    userQueryRef = userQueryRef.where('minecraftIdLower', '==', inputMcId.toLowerCase());
-                }
-
-                const userSnapshot = await userQueryRef.get();
-
-                if (userSnapshot.empty) {
-                    statusMsg.innerHTML = `
-                        <i class="fa-solid fa-circle-xmark fa-2x" style="margin-bottom: 12px; color: #ff5555;"></i>
-                        <p style="color: #ff5555;">查無與此 Google 帳號 (${currentUser.email}) 相符的玩家資料！</p>
-                    `;
-                    btnSearch.disabled = false;
-                    btnSearch.innerHTML = '<i class="fa-brands fa-google"></i> 重新查詢';
-                    return;
-                }
-
-                const userData = userSnapshot.docs[0].data();
-                const mcIdLower = userData.minecraftIdLower || (userData.minecraftId ? userData.minecraftId.toLowerCase() : '');
-                
-                // 2. 查詢該玩家的商城領取與兌換歷史
-                const claimsSnapshot = await db.collection('market_claims')
-                    .where('minecraftIdLower', '==', mcIdLower)
-                    .get();
-
-                // 3. 渲染至 UI 面板
-                renderUserProfile(userData, claimsSnapshot.docs.map(doc => doc.data()));
-
-                statusMsg.style.display = 'none';
-                profileCard.classList.add('active');
-                showToast(`✔ 成功載入 ${userData.minecraftId || mcIdLower} 的帳號資料`);
-
-            } catch (error) {
-                console.error("讀取玩家資料失敗:", error);
+            if (userSnapshot.empty) {
                 statusMsg.innerHTML = `
-                    <i class="fa-solid fa-triangle-exclamation fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
-                    <p style="color: #ffaa00;">讀取資料失敗，請稍後再試或確認網路連線。</p>
+                    <i class="fa-solid fa-circle-xmark fa-2x" style="margin-bottom: 12px; color: #ff5555;"></i>
+                    <p style="color: #ff5555;">查無與此 Google 帳號 (${currentUser.email}) 相符的玩家資料！</p>
                 `;
-            } finally {
-                btnSearch.disabled = false;
-                btnSearch.innerHTML = '<i class="fa-brands fa-google"></i> Google 登入 / 查詢';
-            }
-        }
-
-        // 將抓取到的資料填入畫面
-        function renderUserProfile(user, claims) {
-            const mcId = user.minecraftId || '未知玩家';
-            
-            // 替換頭像與基本資訊
-            document.getElementById('user-avatar').src = `https://mc-heads.net/avatar/${mcId}/80`;
-            document.getElementById('disp-mc-id').innerText = mcId;
-            document.getElementById('disp-email').innerHTML = `<i class="fa-regular fa-envelope"></i> ${user.email || '未設定 Email'}`;
-
-            // 贊助方案標籤
-            const planBadge = document.getElementById('disp-plan-badge');
-            const plan = (user.plan || 'FREE').toUpperCase();
-            planBadge.innerText = plan;
-            planBadge.className = `plan-badge-tag plan-${plan.toLowerCase()}`;
-
-            // 四大核心統計
-            document.getElementById('disp-points').innerHTML = `${user.points ?? 0} <small>點</small>`;
-            document.getElementById('disp-playtime').innerHTML = `${user.playtimeHours ?? 0} <small>小時</small>`;
-
-            // 最新繳費時間處理
-            if (user.lastPaymentAt) {
-                const payDate = user.lastPaymentAt.toDate ? user.lastPaymentAt.toDate() : new Date(user.lastPaymentAt);
-                document.getElementById('disp-last-payment').innerText = payDate.toLocaleDateString('zh-TW');
-            } else {
-                document.getElementById('disp-last-payment').innerText = '無繳費紀錄';
-            }
-
-            // 權限狀態
-            document.getElementById('disp-status').innerText = user.status || '正常運作中';
-
-            // 渲染兌換/領取紀錄表格
-            const tbody = document.getElementById('history-table-body');
-            tbody.innerHTML = '';
-
-            if (!claims || claims.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888;">尚無任何領取紀錄</td></tr>';
                 return;
             }
 
-            claims.sort((a, b) => {
-                const dateA = a.claimedAt ? (a.claimedAt.toDate ? a.claimedAt.toDate() : new Date(a.claimedAt)) : new Date(0);
-                const dateB = b.claimedAt ? (b.claimedAt.toDate ? b.claimedAt.toDate() : new Date(b.claimedAt)) : new Date(0);
-                return dateB - dateA;
-            });
+            const userData = userSnapshot.docs[0].data();
+            const mcIdLower = userData.minecraftIdLower || (userData.minecraftId ? userData.minecraftId.toLowerCase() : '');
+            
+            // 2. 查詢該玩家的商城領取與兌換歷史
+            const claimsSnapshot = await db.collection('market_claims')
+                .where('minecraftIdLower', '==', mcIdLower)
+                .get();
 
-            claims.forEach(item => {
-                const tr = document.createElement('tr');
-                
-                let claimTime = '未知時間';
-                if (item.claimedAt) {
-                    const d = item.claimedAt.toDate ? item.claimedAt.toDate() : new Date(item.claimedAt);
-                    claimTime = d.toLocaleString('zh-TW', { hour12: false });
-                }
+            // 3. 渲染至 UI 面板
+            renderUserProfile(userData, claimsSnapshot.docs.map(doc => doc.data()));
 
-                const priceStr = (!item.price || item.price === '0' || item.price === 0) ? '免費領取' : `$${item.price}`;
-                const statusHtml = item.status === 'completed' 
-                    ? '<span class="status-badge status-completed">✔ 已發放</span>' 
-                    : '<span class="status-badge status-pending">⏳ 處理中</span>';
+            statusMsg.style.display = 'none';
+            profileCard.classList.add('active');
+            showToast(`✔ 成功載入 ${userData.minecraftId || mcIdLower} 的帳號資料`);
 
-                tr.innerHTML = `
-                    <td><strong>${item.itemName || '未命名商品'}</strong></td>
-                    <td style="color: #ffaa00;">${priceStr}</td>
-                    <td style="color: #aaa; font-size: 0.85rem;">${claimTime}</td>
-                    <td>${statusHtml}</td>
-                `;
-                tbody.appendChild(tr);
-            });
+        } catch (error) {
+            console.error("讀取玩家資料失敗:", error);
+            statusMsg.innerHTML = `
+                <i class="fa-solid fa-triangle-exclamation fa-2x" style="margin-bottom: 12px; color: #ffaa00;"></i>
+                <p style="color: #ffaa00;">讀取資料失敗，請稍後再試或確認網路連線。</p>
+            `;
+        } finally {
+            btnSearch.disabled = false;
+            btnSearch.innerHTML = '<i class="fa-brands fa-google"></i> Google 登入 / 查詢';
+        }
+    }
+
+    // 將抓取到的資料填入畫面
+    function renderUserProfile(user, claims) {
+        const mcId = user.minecraftId || '未知玩家';
+        
+        // 替換頭像與基本資訊
+        document.getElementById('user-avatar').src = `https://mc-heads.net/avatar/${mcId}/80`;
+        document.getElementById('disp-mc-id').innerText = mcId;
+        document.getElementById('disp-email').innerHTML = `<i class="fa-regular fa-envelope"></i> ${user.email || '未設定 Email'}`;
+
+        // 贊助方案標籤
+        const planBadge = document.getElementById('disp-plan-badge');
+        const plan = (user.plan || 'FREE').toUpperCase();
+        planBadge.innerText = plan;
+        planBadge.className = `plan-badge-tag plan-${plan.toLowerCase()}`;
+
+        // 四大核心統計
+        document.getElementById('disp-points').innerHTML = `${user.points ?? 0} <small>點</small>`;
+        document.getElementById('disp-playtime').innerHTML = `${user.playtimeHours ?? 0} <small>小時</small>`;
+
+        // 最新繳費時間處理
+        if (user.lastPaymentAt) {
+            const payDate = user.lastPaymentAt.toDate ? user.lastPaymentAt.toDate() : new Date(user.lastPaymentAt);
+            document.getElementById('disp-last-payment').innerText = payDate.toLocaleDateString('zh-TW');
+        } else {
+            document.getElementById('disp-last-payment').innerText = '無繳費紀錄';
         }
 
-        // 顯示浮動 Toast 提示
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
+        // 權限狀態
+        document.getElementById('disp-status').innerText = user.status || '正常運作中';
+
+        // 渲染兌換/領取紀錄表格
+        const tbody = document.getElementById('history-table-body');
+        tbody.innerHTML = '';
+
+        if (!claims || claims.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888;">尚無任何領取紀錄</td></tr>';
+            return;
         }
-    </script>
+
+        claims.sort((a, b) => {
+            const dateA = a.claimedAt ? (a.claimedAt.toDate ? a.claimedAt.toDate() : new Date(a.claimedAt)) : new Date(0);
+            const dateB = b.claimedAt ? (b.claimedAt.toDate ? b.claimedAt.toDate() : new Date(b.claimedAt)) : new Date(0);
+            return dateB - dateA;
+        });
+
+        claims.forEach(item => {
+            const tr = document.createElement('tr');
+            
+            let claimTime = '未知時間';
+            if (item.claimedAt) {
+                const d = item.claimedAt.toDate ? item.claimedAt.toDate() : new Date(item.claimedAt);
+                claimTime = d.toLocaleString('zh-TW', { hour12: false });
+            }
+
+            const priceStr = (!item.price || item.price === '0' || item.price === 0) ? '免費領取' : `$${item.price}`;
+            const statusHtml = item.status === 'completed' 
+                ? '<span class="status-badge status-completed">✔ 已發放</span>' 
+                : '<span class="status-badge status-pending">⏳ 處理中</span>';
+
+            tr.innerHTML = `
+                <td><strong>${item.itemName || '未命名商品'}</strong></td>
+                <td style="color: #ffaa00;">${priceStr}</td>
+                <td style="color: #aaa; font-size: 0.85rem;">${claimTime}</td>
+                <td>${statusHtml}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // 顯示浮動 Toast 提示
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+</script>
 </body>
 </html>
