@@ -13,7 +13,7 @@ firebase - users
     minecraftIdLower
     verificationCode
     email
-    plan - Regular/Plus/Super
+    plan - demo(參觀/體驗)/Free(免費版)/Regular/Plus/Super
     points
     playtimeHours
     lastPaymentAt

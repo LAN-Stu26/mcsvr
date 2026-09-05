@@ -452,25 +452,31 @@ body {
     text-shadow: none;
 }
 
-.plan-badge-tag.plan-a {
+.plan-badge-tag.plan-super {
+    background-color: #6355ff;
+
+    color: #fff;
+}
+
+.plan-badge-tag.plan-plus {
     background-color: #ff5555;
 
     color: #fff;
 }
 
-.plan-badge-tag.plan-b {
+.plan-badge-tag.plan-regular {
     background-color: #ffaa00;
 
     color: #000;
 }
 
-.plan-badge-tag.plan-c {
+.plan-badge-tag.plan-free {
     background-color: #55ff55;
 
     color: #000;
 }
 
-.plan-badge-tag.plan-free {
+.plan-badge-tag.plan-demo {
     background-color: #aaaaaa;
 
     color: #000;
